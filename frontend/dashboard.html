@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - SVRMS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <h1>SVRMS Dashboard</h1>
+    <nav>
+      <a href="vehicles.html">Vehicles</a>
+      <a href="rentals.html">Rentals</a>
+      <a href="index.html" onclick="logout()">Logout</a>
+    </nav>
+  </header>
+
+  <section class="dashboard">
+    <div class="card">
+      <h3>Total Vehicles</h3>
+      <p id="vehicleCount">0</p>
+    </div>
+    <div class="card">
+      <h3>Active Rentals</h3>
+      <p id="rentalCount">0</p>
+    </div>
+  </section>
+  <script src="js/app.js"></script>
+</body>
+</html>
