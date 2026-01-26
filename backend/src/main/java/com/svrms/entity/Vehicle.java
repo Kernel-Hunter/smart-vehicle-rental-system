@@ -7,13 +7,24 @@ import lombok.Data;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 public abstract class Vehicle {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String make;
+    private String type;
+    private String brand;
     private String model;
-    private int year;
-    private double dailyRate;
 
-    private boolean available;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    private Double latitude;
+    private Double longitude;
+
+    private Double pricePerMinute;
+    private Double pricePerDay;
+
+    public enum Status {
+        AVAILABLE, RENTED, MAINTENANCE
+    }
 }
