@@ -1,13 +1,23 @@
 package com.svrms.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Rental {
+
+    public enum RentalStatus {
+        PENDING,
+        ACTIVE,
+        COMPLETED,
+        CANCELLED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,22 +28,11 @@ public class Rental {
     @ManyToOne
     private Vehicle vehicle;
 
-    @Enumerated(EnumType.STRING)
-    private RentalType rentalType;
-
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
+    private double totalPrice;
+
     @Enumerated(EnumType.STRING)
     private RentalStatus status;
-
-    private Double totalPrice;
-
-    public enum RentalType {
-        INSTANT, CONTRACT
-    }
-
-    public enum RentalStatus {
-        PENDING, ACTIVE, COMPLETED, CANCELLED
-    }
 }
