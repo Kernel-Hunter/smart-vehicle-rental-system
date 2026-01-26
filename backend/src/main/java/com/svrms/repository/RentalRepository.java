@@ -15,11 +15,13 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
         WHERE r.vehicle.id = :vehicleId
           AND r.status IN (com.svrms.entity.Rental.RentalStatus.ACTIVE, com.svrms.entity.Rental.RentalStatus.PENDING)
           AND r.startTime < :endTime
-          AND r.endTime > :startTime
+          AND (r.endTime IS NULL OR r.endTime > :startTime)
         """)
     List<Rental> findOverlappingActiveOrPendingRentals(
             @Param("vehicleId") Long vehicleId,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime
     );
+
+    List<Rental> findByUserId(Long userId);
 }
