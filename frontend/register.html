@@ -12,8 +12,13 @@
       <input type="text" id="fullName" placeholder="Full Name" required>
       <input type="email" id="registerEmail" placeholder="Email" required>
       <input type="password" id="registerPassword" placeholder="Password" required>
+      <select id="registerRole" required>
+        <option value="CUSTOMER">Regular User</option>
+        <option value="ADMIN">Admin / Seller</option>
+      </select>
       <button type="submit">Create Account</button>
     </form>
+    <p id="authMessage"></p>
     <p>Already have an account? <a href="login.html">Login</a></p>
   </div>
   <script src="js/app.js"></script>
