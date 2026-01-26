@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://smart-vehicle-rental-system.onrender.com/api";
 let token = localStorage.getItem("token");
 
 async function register(e) {
