@@ -9,14 +9,19 @@
   <header class="navbar">
     <h1>Vehicles</h1>
     <nav>
-      <a href="dashboard.html">Dashboard</a>
+      <a href="index.html">Home</a>
+      <a href="vehicles.html">Vehicles</a>
       <a href="rentals.html">Rentals</a>
-      <a href="index.html" onclick="logout()">Logout</a>
+      <a class="guest-only" href="login.html">Login</a>
+      <a class="guest-only" href="register.html">Register</a>
+      <a class="auth-only" href="dashboard.html">Dashboard</a>
+      <a class="auth-only" href="index.html" onclick="logout()">Logout</a>
     </nav>
   </header>
 
   <section class="content">
     <h2>All Vehicles</h2>
+    <p id="vehiclesAuthNote"></p>
     <table id="vehiclesTable">
       <thead>
         <tr>
