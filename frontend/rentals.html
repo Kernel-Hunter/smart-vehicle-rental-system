@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SVRMS - Welcome</title>
+  <title>Rentals - SVRMS</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="navbar">
-    <h1>SVRMS</h1>
+    <h1>Rentals</h1>
     <nav>
       <a href="index.html">Home</a>
       <a href="vehicles.html">Vehicles</a>
@@ -19,11 +19,14 @@
     </nav>
   </header>
 
-  <section class="hero">
-    <h2>Smart Vehicle Rental Management System</h2>
-    <p>Manage vehicles, bookings, rentals, and contracts with real-world workflows.</p>
-    <a class="btn guest-only" href="register.html">Get Started</a>
-    <a class="btn auth-only" href="vehicles.html">Browse Vehicles</a>
+  <section class="content">
+    <p id="rentalsAuthNote"></p>
+
+    <h2>Instant Rentals</h2>
+    <ul id="instantRentals"></ul>
+
+    <h2>Contract Rentals</h2>
+    <ul id="contractRentals"></ul>
   </section>
 
   <script src="js/app.js"></script>
