@@ -37,22 +37,22 @@ public class RentalService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
         if (!vehicle.isAvailable()) {
-            throw new RuntimeException("Vehicle is not available");
+            throw new RuntimeException("Vehicle not available");
         }
 
         if (vehicle.getPricePerMinute() <= 0) {
-            throw new RuntimeException("Vehicle does not support instant rental");
+            throw new RuntimeException("Instant rental not supported");
         }
 
         Rental rental = new Rental();
         rental.setUser(user);
         rental.setVehicle(vehicle);
         rental.setStartTime(LocalDateTime.now());
-        rental.setStatus("ACTIVE");
+        rental.setStatus(Rental.RentalStatus.ACTIVE);
 
         vehicle.setAvailable(false);
-
         vehicleRepository.save(vehicle);
+
         return rentalRepository.save(rental);
     }
 
@@ -61,8 +61,8 @@ public class RentalService {
         Rental rental = rentalRepository.findById(rentalId)
                 .orElseThrow(() -> new RuntimeException("Rental not found"));
 
-        if (!"ACTIVE".equals(rental.getStatus())) {
-            throw new RuntimeException("Rental is not active");
+        if (rental.getStatus() != Rental.RentalStatus.ACTIVE) {
+            throw new RuntimeException("Rental not active");
         }
 
         rental.setEndTime(LocalDateTime.now());
@@ -74,7 +74,7 @@ public class RentalService {
 
         double totalPrice = minutes * rental.getVehicle().getPricePerMinute();
         rental.setTotalPrice(totalPrice);
-        rental.setStatus("COMPLETED");
+        rental.setStatus(Rental.RentalStatus.COMPLETED);
 
         Vehicle vehicle = rental.getVehicle();
         vehicle.setAvailable(true);
@@ -101,7 +101,7 @@ public class RentalService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
         if (vehicle.getPricePerDay() <= 0) {
-            throw new RuntimeException("Vehicle does not support contract rental");
+            throw new RuntimeException("Contract rental not supported");
         }
 
         long days = Duration.between(start, end).toDays();
@@ -115,14 +115,13 @@ public class RentalService {
         rental.setStartTime(start);
         rental.setEndTime(end);
         rental.setTotalPrice(totalPrice);
-        rental.setStatus("PENDING");
+        rental.setStatus(Rental.RentalStatus.PENDING);
 
         Rental savedRental = rentalRepository.save(rental);
 
         Contract contract = new Contract();
         contract.setRental(savedRental);
         contract.setApproved(false);
-
         contractRepository.save(contract);
 
         return savedRental;
@@ -139,9 +138,11 @@ public class RentalService {
         contract.setApproved(true);
         contractRepository.save(contract);
 
-        rental.setStatus("ACTIVE");
-        rental.getVehicle().setAvailable(false);
-        vehicleRepository.save(rental.getVehicle());
+        rental.setStatus(Rental.RentalStatus.ACTIVE);
+
+        Vehicle vehicle = rental.getVehicle();
+        vehicle.setAvailable(false);
+        vehicleRepository.save(vehicle);
 
         return rentalRepository.save(rental);
     }
@@ -150,25 +151,25 @@ public class RentalService {
        COMMON
        ========================= */
 
-    public void cancelRental(Long rentalId) {
+    public Rental cancelRental(Long rentalId) {
 
         Rental rental = rentalRepository.findById(rentalId)
                 .orElseThrow(() -> new RuntimeException("Rental not found"));
 
-        rental.setStatus("CANCELLED");
+        rental.setStatus(Rental.RentalStatus.CANCELLED);
 
         Vehicle vehicle = rental.getVehicle();
         vehicle.setAvailable(true);
         vehicleRepository.save(vehicle);
 
-        rentalRepository.save(rental);
+        return rentalRepository.save(rental);
     }
 
     public List<Rental> listRentalsByUser(Long userId) {
         return rentalRepository.findByUserId(userId);
     }
 
-    public List<Rental> listAllRentals() {
+    public List<Rental> listRentalsForAdmin() {
         return rentalRepository.findAll();
     }
 }
