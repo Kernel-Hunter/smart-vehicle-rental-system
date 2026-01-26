@@ -27,7 +27,7 @@ public class AuthService {
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.CUSTOMER);
+        user.setRole(request.getRole() != null ? request.getRole() : Role.CUSTOMER);
 
         userRepository.save(user);
         return new AuthResponse(jwtService.generateToken(user.getEmail()));
