@@ -1,30 +1,30 @@
 package com.svrms.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Data
-public abstract class Vehicle {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Vehicle {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // CAR, BIKE, SCOOTER, MOTORCYCLE, etc.
     private String type;
+
     private String brand;
     private String model;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    // For instant rentals
+    private double pricePerMinute;
 
-    private Double latitude;
-    private Double longitude;
+    // For contract rentals
+    private double pricePerDay;
 
-    private Double pricePerMinute;
-    private Double pricePerDay;
-
-    public enum Status {
-        AVAILABLE, RENTED, MAINTENANCE
-    }
+    private boolean available;
 }
