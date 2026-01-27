@@ -5,7 +5,6 @@ import com.svrms.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class RentalController {
     private final RentalService rentalService;
 
     @PostMapping("/instant/start")
-    public Rental startInstantRental(
+    public Rental startInstant(
             @RequestParam Long userId,
             @RequestParam Long vehicleId
     ) {
@@ -25,42 +24,39 @@ public class RentalController {
     }
 
     @PostMapping("/instant/end/{rentalId}")
-    public Rental endInstantRental(@PathVariable Long rentalId) {
+    public Rental endInstant(@PathVariable Long rentalId) {
         return rentalService.endInstantRental(rentalId);
     }
 
     @PostMapping("/contract")
-    public Rental createContractRental(
+    public Rental createContract(
             @RequestParam Long userId,
             @RequestParam Long vehicleId,
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate
+            @RequestParam LocalDateTime start,
+            @RequestParam LocalDateTime end
     ) {
         return rentalService.createContractRental(
-                userId,
-                vehicleId,
-                startDate.atStartOfDay(),
-                endDate.atStartOfDay()
+                userId, vehicleId, start, end
         );
     }
 
     @PostMapping("/contract/approve/{rentalId}")
-    public Rental approveContract(@PathVariable Long rentalId) {
+    public Rental approve(@PathVariable Long rentalId) {
         return rentalService.approveContractRental(rentalId);
     }
 
     @PostMapping("/cancel/{rentalId}")
-    public Rental cancelRental(@PathVariable Long rentalId) {
+    public Rental cancel(@PathVariable Long rentalId) {
         return rentalService.cancelRental(rentalId);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Rental> listUserRentals(@PathVariable Long userId) {
+    public List<Rental> byUser(@PathVariable Long userId) {
         return rentalService.listRentalsByUser(userId);
     }
 
     @GetMapping("/admin")
-    public List<Rental> listRentalsForAdmin() {
+    public List<Rental> adminAll() {
         return rentalService.listRentalsForAdmin();
     }
 }
