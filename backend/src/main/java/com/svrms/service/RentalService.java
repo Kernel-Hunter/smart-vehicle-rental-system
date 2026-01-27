@@ -36,13 +36,11 @@ public class RentalService {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
-        if (!vehicle.isAvailable()) {
+        if (!vehicle.isAvailable())
             throw new RuntimeException("Vehicle not available");
-        }
 
-        if (vehicle.getPricePerMinute() <= 0) {
+        if (vehicle.getPricePerMinute() <= 0)
             throw new RuntimeException("Instant rental not supported");
-        }
 
         Rental rental = new Rental();
         rental.setUser(user);
@@ -61,9 +59,8 @@ public class RentalService {
         Rental rental = rentalRepository.findById(rentalId)
                 .orElseThrow(() -> new RuntimeException("Rental not found"));
 
-        if (rental.getStatus() != Rental.RentalStatus.ACTIVE) {
+        if (rental.getStatus() != Rental.RentalStatus.ACTIVE)
             throw new RuntimeException("Rental not active");
-        }
 
         rental.setEndTime(LocalDateTime.now());
 
@@ -72,8 +69,10 @@ public class RentalService {
                 rental.getEndTime()
         ).toMinutes();
 
-        double totalPrice = minutes * rental.getVehicle().getPricePerMinute();
-        rental.setTotalPrice(totalPrice);
+        rental.setTotalPrice(
+                minutes * rental.getVehicle().getPricePerMinute()
+        );
+
         rental.setStatus(Rental.RentalStatus.COMPLETED);
 
         Vehicle vehicle = rental.getVehicle();
@@ -100,31 +99,25 @@ public class RentalService {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
-        if (vehicle.getPricePerDay() <= 0) {
-            throw new RuntimeException("Contract rental not supported");
-        }
-
         long days = Duration.between(start, end).toDays();
         if (days <= 0) days = 1;
-
-        double totalPrice = days * vehicle.getPricePerDay();
 
         Rental rental = new Rental();
         rental.setUser(user);
         rental.setVehicle(vehicle);
         rental.setStartTime(start);
         rental.setEndTime(end);
-        rental.setTotalPrice(totalPrice);
+        rental.setTotalPrice(days * vehicle.getPricePerDay());
         rental.setStatus(Rental.RentalStatus.PENDING);
 
-        Rental savedRental = rentalRepository.save(rental);
+        Rental saved = rentalRepository.save(rental);
 
         Contract contract = new Contract();
-        contract.setRental(savedRental);
+        contract.setRental(saved);
         contract.setApproved(false);
         contractRepository.save(contract);
 
-        return savedRental;
+        return saved;
     }
 
     public Rental approveContractRental(Long rentalId) {
@@ -139,10 +132,8 @@ public class RentalService {
         contractRepository.save(contract);
 
         rental.setStatus(Rental.RentalStatus.ACTIVE);
-
-        Vehicle vehicle = rental.getVehicle();
-        vehicle.setAvailable(false);
-        vehicleRepository.save(vehicle);
+        rental.getVehicle().setAvailable(false);
+        vehicleRepository.save(rental.getVehicle());
 
         return rentalRepository.save(rental);
     }
