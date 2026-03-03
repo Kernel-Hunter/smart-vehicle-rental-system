@@ -24,7 +24,7 @@
             <th>Start Time</th>
             <th>End Time</th>
             <th>Total Price</th>
-            <th>Action</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -32,24 +32,69 @@
           <tr v-for="r in rentals" :key="r.id">
             <td class="id-cell">#{{ r.id }}</td>
             <td>{{ r.vehicle?.brand }} {{ r.vehicle?.model }}</td>
+
             <!-- Rental type badge: INSTANT or CONTRACT -->
-            <td><span :class="['type-badge', r.rentalType === 'INSTANT' ? 'type-instant' : 'type-contract']">{{ r.rentalType }}</span></td>
+            <td>
+              <span :class="['type-badge', r.rentalType === 'INSTANT' ? 'type-instant' : 'type-contract']">
+                {{ r.rentalType }}
+              </span>
+            </td>
+
             <!-- Status badge with dynamic color -->
-            <td><span :class="['status-badge', statusClass(r.status)]">{{ r.status }}</span></td>
+            <td>
+              <span :class="['status-badge', statusClass(r.status)]">
+                {{ r.status }}
+              </span>
+            </td>
+
             <td class="time-cell">{{ r.startTime || '—' }}</td>
             <td class="time-cell">{{ r.endTime || '—' }}</td>
+
             <!-- Total price only appears after rental ends -->
-            <td class="price-cell">{{ r.totalPrice != null ? r.totalPrice + ' DZD' : '—' }}</td>
+            <td class="price-cell">
+              {{ r.totalPrice != null ? r.totalPrice + ' DZD' : '—' }}
+            </td>
+
+            <!-- Actions column -->
             <td>
-              <!-- End Rental button: only for ACTIVE INSTANT rentals -->
-              <button
-                v-if="r.status === 'ACTIVE' && r.rentalType === 'INSTANT'"
-                class="btn-end"
-                @click="endRental(r.id)"
-              >
-                End Rental
-              </button>
-              <span v-else class="no-action">—</span>
+              <div class="row-actions">
+
+                <!-- End Rental: only for ACTIVE INSTANT rentals -->
+                <button
+                  v-if="r.status === 'ACTIVE' && r.rentalType === 'INSTANT'"
+                  class="btn-end"
+                  @click="endRental(r.id)"
+                >
+                  End Rental
+                </button>
+
+                <!-- Receipt link: only for COMPLETED rentals -->
+                <!-- navigates to /rentals/:id/receipt -->
+                <router-link
+                  v-if="r.status === 'COMPLETED'"
+                  :to="`/rentals/${r.id}/receipt`"
+                  class="btn-view"
+                >
+                  Receipt
+                </router-link>
+
+                <!-- Contract detail link: only for CONTRACT type rentals -->
+                <!-- navigates to /rentals/:id/contract -->
+                <router-link
+                  v-if="r.rentalType === 'CONTRACT'"
+                  :to="`/rentals/${r.id}/contract`"
+                  class="btn-view"
+                >
+                  Details
+                </router-link>
+
+                <!-- Dash if no actions available -->
+                <span
+                  v-if="r.status !== 'ACTIVE' && r.status !== 'COMPLETED' && r.rentalType !== 'CONTRACT'"
+                  class="no-action"
+                >—</span>
+
+              </div>
             </td>
           </tr>
         </tbody>
@@ -65,6 +110,7 @@ import axios from 'axios'
 
 export default {
   name: 'RentalsView',
+
   data() {
     return {
       rentals: [],    // List of rentals belonging to the logged-in user
@@ -221,21 +267,43 @@ export default {
 .type-instant  { background: #0c1a3a; color: #60a5fa; border: 1px solid #1e3a5f; }
 .type-contract { background: #1a0c3a; color: #a78bfa; border: 1px solid #3b1f7f; }
 
-/* End rental button */
+/* Row action buttons group */
+.row-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* End rental: red outlined button */
 .btn-end {
   background: transparent;
   border: 1px solid #7f1d1d;
   color: #ef4444;
-  padding: 6px 14px;
+  padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   transition: all 0.2s;
   white-space: nowrap;
 }
 .btn-end:hover { background: #1f0707; }
 
-.msg-error  { color: #ef4444; font-size: 13px; margin-bottom: 16px; }
+/* View links: receipt and contract details */
+.btn-view {
+  background: transparent;
+  border: 1px solid #1e3a5f;
+  color: #3b82f6;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-view:hover { background: #0f1a2e; }
+
+.msg-error   { color: #ef4444; font-size: 13px; margin-bottom: 16px; }
 .status-text { color: #475569; font-size: 13px; }
 </style>
