@@ -1,29 +1,37 @@
 <template>
   <div class="app-shell">
+
     <!-- ── Top navigation bar: sticky, always visible on every page ── -->
     <header class="topbar">
 
       <!-- Brand logo on the left -->
       <div class="topbar-brand">
-        <span class="brand-icon">◈</span>
-        <span class="brand-name">SMART<span class="brand-accent">RENT</span></span>
+        <router-link to="/" class="brand-link">
+          <span class="brand-icon">◈</span>
+          <span class="brand-name">SMART<span class="brand-accent">RENT</span></span>
+        </router-link>
       </div>
 
       <!-- Center nav links -->
       <nav class="topbar-nav">
-        <!-- Always visible: anyone can browse vehicles -->
+        <!-- Public: always visible -->
+        <router-link to="/" class="nav-link">Home</router-link>
         <router-link to="/vehicles" class="nav-link">Vehicles</router-link>
+        <router-link to="/about" class="nav-link">About</router-link>
 
-        <!-- Only shown when user is logged in -->
+        <!-- Customer only: shown when logged in -->
         <router-link v-if="isLoggedIn" to="/rentals" class="nav-link">My Rentals</router-link>
+        <router-link v-if="isLoggedIn" to="/profile" class="nav-link">Profile</router-link>
 
-        <!-- Only shown when role is ADMIN -->
-        <router-link v-if="isAdmin" to="/admin" class="nav-link">Admin</router-link>
+        <!-- Admin only: shown when role is ADMIN -->
+        <router-link v-if="isAdmin" to="/admin" class="nav-link">Dashboard</router-link>
+        <router-link v-if="isAdmin" to="/admin/users" class="nav-link">Users</router-link>
+        <router-link v-if="isAdmin" to="/admin/stats" class="nav-link">Stats</router-link>
       </nav>
 
       <!-- Right side: user info or login button -->
       <div class="topbar-user">
-        <!-- If logged in: show role badge, username, and logout button -->
+        <!-- If logged in: show role badge, username, logout button -->
         <span v-if="isLoggedIn" class="user-info">
           <span class="user-badge">{{ role }}</span>
           {{ username }}
@@ -58,7 +66,7 @@ export default {
     // Role saved to localStorage: either 'CUSTOMER' or 'ADMIN'
     role() { return localStorage.getItem('role') || '' },
 
-    // True only if role is ADMIN — controls Admin nav link visibility
+    // True only if role is ADMIN — controls Admin nav links visibility
     isAdmin() { return localStorage.getItem('role') === 'ADMIN' }
   },
 
@@ -86,7 +94,7 @@ export default {
 }
 
 :global(body) {
-  background-color: #0d0f14;  /* Deep dark background */
+  background-color: #0d0f14; /* Deep dark background */
   color: #c8d0e0;
   font-family: 'IBM Plex Mono', monospace;
   min-height: 100vh;
@@ -108,15 +116,15 @@ export default {
   justify-content: space-between;
   padding: 0 32px;
   height: 60px;
-  background: #13161e;             /* Slightly lighter than page background */
+  background: #13161e;              /* Slightly lighter than page background */
   border-bottom: 1px solid #1e2535;
-  position: sticky;                /* Stays at top when scrolling */
+  position: sticky;                 /* Stays at top when scrolling */
   top: 0;
-  z-index: 100;                    /* Always above page content */
+  z-index: 100;                     /* Always above page content */
 }
 
-/* Brand area */
-.topbar-brand {
+/* ── Brand ── */
+.brand-link {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -124,7 +132,7 @@ export default {
 
 .brand-icon {
   font-size: 22px;
-  color: #3b82f6;  /* Blue accent */
+  color: #3b82f6;
 }
 
 .brand-name {
@@ -141,21 +149,23 @@ export default {
 /* ── Nav links ── */
 .topbar-nav {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
 .nav-link {
-  padding: 6px 16px;
+  padding: 6px 12px;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-family: 'IBM Plex Mono', monospace;
   color: #94a3b8;
   letter-spacing: 1px;
   transition: all 0.2s;
   border: 1px solid transparent;
+  white-space: nowrap;
 }
 
-/* Active page link and hover both get blue highlight */
+/* Active page and hover both get blue highlight */
 .nav-link:hover,
 .nav-link.router-link-active {
   color: #3b82f6;
@@ -168,6 +178,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .user-info {
@@ -178,7 +189,7 @@ export default {
   color: #94a3b8;
 }
 
-/* Role badge: small tag showing CUSTOMER or ADMIN */
+/* Role badge: shows CUSTOMER or ADMIN */
 .user-badge {
   background: #0f1a2e;
   border: 1px solid #1e3a5f;
@@ -206,7 +217,7 @@ export default {
   color: #ef4444;
 }
 
-/* Login button: solid blue pill */
+/* Login button: solid blue */
 .btn-login {
   background: #3b82f6;
   color: #fff;
@@ -221,10 +232,10 @@ export default {
 
 /* ── Page content area ── */
 .page-content {
-  flex: 1;                   /* Takes remaining vertical space */
+  flex: 1;               /* Takes remaining vertical space */
   padding: 36px 40px;
-  max-width: 1280px;         /* Prevents content from stretching too wide */
+  max-width: 1280px;     /* Prevents content from stretching too wide */
   width: 100%;
-  margin: 0 auto;            /* Centers content horizontally */
+  margin: 0 auto;        /* Centers content horizontally */
 }
 </style>
