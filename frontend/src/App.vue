@@ -1,81 +1,133 @@
 <template>
-  <div class="app-shell">
+  <!-- v-app is required by Vuetify — it wraps everything and applies the theme -->
+  <v-app :theme="theme">
 
-    <!-- ── Top navigation bar: sticky, always visible on every page ── -->
-    <header class="topbar">
+    <!-- ── Top navigation bar ── -->
+    <v-app-bar flat border="b" :elevation="0">
 
-      <!-- Brand logo on the left -->
-      <div class="topbar-brand">
+      <!-- Brand -->
+      <v-app-bar-title>
         <router-link to="/" class="brand-link">
-          <span class="brand-icon">◈</span>
-          <span class="brand-name">SMART<span class="brand-accent">RENT</span></span>
+          <v-icon color="primary" class="mr-1">mdi-car-multiple</v-icon>
+          <span class="brand-text">Smart<span class="brand-accent">Rent</span></span>
         </router-link>
-      </div>
+      </v-app-bar-title>
 
-      <!-- Center nav links -->
-      <nav class="topbar-nav">
-        <!-- Public: always visible -->
-        <router-link to="/" class="nav-link">Home</router-link>
-        <router-link to="/vehicles" class="nav-link">Vehicles</router-link>
-        <router-link to="/about" class="nav-link">About</router-link>
+      <!-- Nav links (desktop) -->
+      <template v-slot:append>
+        <div class="nav-links mr-2">
+          <v-btn variant="text" to="/" exact>Home</v-btn>
+          <v-btn variant="text" to="/vehicles">Vehicles</v-btn>
+          <v-btn variant="text" to="/about">About</v-btn>
 
-        <!-- Customer only: shown when logged in -->
-        <router-link v-if="isLoggedIn" to="/rentals" class="nav-link">My Rentals</router-link>
-        <router-link v-if="isLoggedIn" to="/profile" class="nav-link">Profile</router-link>
+          <!-- Customer links: only when logged in -->
+          <template v-if="currentUser">
+            <v-btn variant="text" to="/rentals">My Rentals</v-btn>
+            <v-btn variant="text" to="/profile">Profile</v-btn>
+          </template>
 
-        <!-- Admin only: shown when role is ADMIN -->
-        <router-link v-if="isAdmin" to="/admin" class="nav-link">Dashboard</router-link>
-        <router-link v-if="isAdmin" to="/admin/users" class="nav-link">Users</router-link>
-        <router-link v-if="isAdmin" to="/admin/stats" class="nav-link">Stats</router-link>
-      </nav>
+          <!-- Admin links: only when role is ADMIN -->
+          <template v-if="isAdmin">
+            <v-btn variant="text" to="/admin" color="primary">Dashboard</v-btn>
+            <v-btn variant="text" to="/admin/users" color="primary">Users</v-btn>
+            <v-btn variant="text" to="/admin/stats" color="primary">Stats</v-btn>
+          </template>
+        </div>
 
-      <!-- Right side: user info or login button -->
-      <div class="topbar-user">
-        <!-- If logged in: show role badge, username, logout button -->
-        <span v-if="isLoggedIn" class="user-info">
-          <span class="user-badge">{{ role }}</span>
-          {{ username }}
-          <button class="btn-logout" @click="logout">Logout</button>
-        </span>
+        <!-- Dark/light mode toggle button -->
+        <v-btn
+          :icon="theme === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+          variant="text"
+          @click="toggleTheme"
+          class="mr-1"
+        />
 
-        <!-- If NOT logged in: show login/register link -->
-        <router-link v-else to="/login" class="btn-login">Login / Register</router-link>
-      </div>
+        <!-- Logged in: show user chip + logout -->
+        <template v-if="currentUser">
+          <v-chip
+            :color="isAdmin ? 'secondary' : 'primary'"
+            variant="tonal"
+            class="mr-2"
+            prepend-icon="mdi-account"
+          >
+            {{ currentUser.username }}
+            <!-- Role badge inside chip -->
+            <v-badge
+              :content="currentUser.role"
+              color="primary"
+              inline
+              class="ml-1"
+            />
+          </v-chip>
+          <v-btn variant="tonal" color="error" @click="logout" prepend-icon="mdi-logout">
+            Logout
+          </v-btn>
+        </template>
 
-    </header>
+        <!-- Not logged in: login button -->
+        <v-btn v-else variant="tonal" color="primary" to="/login" prepend-icon="mdi-login">
+          Login
+        </v-btn>
+      </template>
+    </v-app-bar>
 
-    <!-- ── Main content area: router-view renders the current page ── -->
-    <main class="page-content">
-      <router-view />
-    </main>
+    <!-- ── Page content ── -->
+    <v-main>
+      <v-container fluid class="pa-6" style="max-width: 1280px;">
+        <router-view />
+      </v-container>
+    </v-main>
 
-  </div>
+    <!-- ── Global snackbar for notifications ── -->
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000" location="bottom right">
+      {{ snackbar.text }}
+      <template v-slot:actions>
+        <v-btn variant="text" @click="snackbar.show = false">Close</v-btn>
+      </template>
+    </v-snackbar>
+
+  </v-app>
 </template>
 
 <script>
+import { getCurrentUser, clearCurrentUser } from './store/data.js'
+
 export default {
   name: 'App',
 
+  data() {
+    return {
+      // Theme: read from localStorage so it persists across sessions
+      theme: localStorage.getItem('sr_theme') || 'light',
+      currentUser: getCurrentUser(),
+      // Global snackbar used for notifications
+      snackbar: { show: false, text: '', color: 'success' }
+    }
+  },
+
   computed: {
-    // True if a JWT token exists in localStorage (user is authenticated)
-    isLoggedIn() { return !!localStorage.getItem('token') },
+    isAdmin() { return this.currentUser?.role === 'ADMIN' }
+  },
 
-    // Username saved to localStorage after successful login
-    username() { return localStorage.getItem('username') || '' },
-
-    // Role saved to localStorage: either 'CUSTOMER' or 'ADMIN'
-    role() { return localStorage.getItem('role') || '' },
-
-    // True only if role is ADMIN — controls Admin nav links visibility
-    isAdmin() { return localStorage.getItem('role') === 'ADMIN' }
+  // Watch route changes to re-read the current user
+  // (needed after login/logout)
+  watch: {
+    $route() {
+      this.currentUser = getCurrentUser()
+    }
   },
 
   methods: {
-    // Logout: wipe all stored auth data and redirect to login page
+    // Toggle between light and dark theme and save preference
+    toggleTheme() {
+      this.theme = this.theme === 'light' ? 'dark' : 'light'
+      localStorage.setItem('sr_theme', this.theme)
+    },
+
+    // Clear session and redirect to login
     logout() {
-      localStorage.removeItem('token')
-      localStorage.removeItem('username')
-      localStorage.removeItem('role')
+      clearCurrentUser()
+      this.currentUser = null
       this.$router.push('/login')
     }
   }
@@ -83,159 +135,25 @@ export default {
 </script>
 
 <style scoped>
-/* ── Google Fonts: Rajdhani for headings, IBM Plex Mono for body/data ── */
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-
-/* ── Global resets applied to the whole page via :global ── */
-:global(*, *::before, *::after) {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-:global(body) {
-  background-color: #0d0f14; /* Deep dark background */
-  color: #c8d0e0;
-  font-family: 'IBM Plex Mono', monospace;
-  min-height: 100vh;
-}
-
-:global(a) { text-decoration: none; }
-
-/* ── App shell: full height column layout ── */
-.app-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ── Top bar ── */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-  height: 60px;
-  background: #13161e;              /* Slightly lighter than page background */
-  border-bottom: 1px solid #1e2535;
-  position: sticky;                 /* Stays at top when scrolling */
-  top: 0;
-  z-index: 100;                     /* Always above page content */
-}
-
-/* ── Brand ── */
 .brand-link {
+  text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.brand-icon {
-  font-size: 22px;
-  color: #3b82f6;
-}
-
-.brand-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 22px;
+.brand-text {
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: 3px;
-  color: #e2e8f0;
-}
-
-/* The RENT part of SMARTRENT is blue */
-.brand-accent { color: #3b82f6; }
-
-/* ── Nav links ── */
-.topbar-nav {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-
-.nav-link {
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: 'IBM Plex Mono', monospace;
-  color: #94a3b8;
   letter-spacing: 1px;
-  transition: all 0.2s;
-  border: 1px solid transparent;
-  white-space: nowrap;
+  color: inherit;
 }
 
-/* Active page and hover both get blue highlight */
-.nav-link:hover,
-.nav-link.router-link-active {
-  color: #3b82f6;
-  border-color: #1e3a5f;
-  background: #0f1a2e;
+.brand-accent {
+  color: rgb(var(--v-theme-primary));
 }
 
-/* ── User area (right side) ── */
-.topbar-user {
+.nav-links {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: #94a3b8;
-}
-
-/* Role badge: shows CUSTOMER or ADMIN */
-.user-badge {
-  background: #0f1a2e;
-  border: 1px solid #1e3a5f;
-  color: #3b82f6;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-
-/* Logout button: subtle until hovered, then turns red */
-.btn-logout {
-  background: transparent;
-  border: 1px solid #2a3548;
-  color: #64748b;
-  padding: 5px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-.btn-logout:hover {
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
-/* Login button: solid blue */
-.btn-login {
-  background: #3b82f6;
-  color: #fff;
-  padding: 7px 18px;
-  border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-.btn-login:hover { background: #2563eb; }
-
-/* ── Page content area ── */
-.page-content {
-  flex: 1;               /* Takes remaining vertical space */
-  padding: 36px 40px;
-  max-width: 1280px;     /* Prevents content from stretching too wide */
-  width: 100%;
-  margin: 0 auto;        /* Centers content horizontally */
+  gap: 2px;
 }
 </style>
