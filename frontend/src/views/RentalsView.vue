@@ -1,309 +1,158 @@
 <template>
   <div>
-    <!-- ── Page header ── -->
-    <div class="page-header">
+    <div class="d-flex align-center justify-space-between mb-6">
       <div>
-        <h2 class="page-title">My Rentals</h2>
-        <p class="page-sub">Your complete rental history</p>
+        <h2 class="text-h5 font-weight-bold">My Rentals</h2>
+        <p class="text-medium-emphasis text-body-2 mt-1">Your complete rental history</p>
       </div>
-      <button class="btn-refresh" @click="fetchRentals">↻ Refresh</button>
+      <v-btn variant="tonal" color="primary" prepend-icon="mdi-refresh" @click="loadRentals">
+        Refresh
+      </v-btn>
     </div>
 
-    <p v-if="loading" class="status-text">Loading rentals...</p>
-    <p v-if="error" class="msg-error">{{ error }}</p>
+    <!-- Rentals data table using Vuetify v-data-table -->
+    <v-card rounded="xl" elevation="1">
+      <v-data-table
+        :headers="headers"
+        :items="enrichedRentals"
+        :items-per-page="10"
+        rounded="xl"
+      >
+        <!-- Rental type column -->
+        <template v-slot:item.rentalType="{ item }">
+          <v-chip
+            :color="item.rentalType === 'INSTANT' ? 'warning' : 'primary'"
+            variant="tonal"
+            size="small"
+          >
+            <v-icon start size="12">
+              {{ item.rentalType === 'INSTANT' ? 'mdi-lightning-bolt' : 'mdi-file-document-outline' }}
+            </v-icon>
+            {{ item.rentalType }}
+          </v-chip>
+        </template>
 
-    <!-- ── Rentals table ── -->
-    <div v-if="rentals.length" class="table-wrapper">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Vehicle</th>
-            <th>Type</th>
-            <th>Status</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Total Price</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- One row per rental -->
-          <tr v-for="r in rentals" :key="r.id">
-            <td class="id-cell">#{{ r.id }}</td>
-            <td>{{ r.vehicle?.brand }} {{ r.vehicle?.model }}</td>
+        <!-- Status column -->
+        <template v-slot:item.status="{ item }">
+          <v-chip :color="statusColor(item.status)" variant="tonal" size="small">
+            {{ item.status }}
+          </v-chip>
+        </template>
 
-            <!-- Rental type badge: INSTANT or CONTRACT -->
-            <td>
-              <span :class="['type-badge', r.rentalType === 'INSTANT' ? 'type-instant' : 'type-contract']">
-                {{ r.rentalType }}
-              </span>
-            </td>
+        <!-- Total price column -->
+        <template v-slot:item.totalPrice="{ item }">
+          <span :class="item.totalPrice ? 'text-success font-weight-bold' : 'text-medium-emphasis'">
+            {{ item.totalPrice ? item.totalPrice + ' DZD' : '—' }}
+          </span>
+        </template>
 
-            <!-- Status badge with dynamic color -->
-            <td>
-              <span :class="['status-badge', statusClass(r.status)]">
-                {{ r.status }}
-              </span>
-            </td>
+        <!-- Actions column -->
+        <template v-slot:item.actions="{ item }">
+          <div class="d-flex gap-1">
+            <!-- End rental: only for ACTIVE INSTANT -->
+            <v-btn
+              v-if="item.status === 'ACTIVE' && item.rentalType === 'INSTANT'"
+              color="error"
+              variant="tonal"
+              size="small"
+              rounded="lg"
+              @click="endRental(item)"
+            >
+              End
+            </v-btn>
 
-            <td class="time-cell">{{ r.startTime || '—' }}</td>
-            <td class="time-cell">{{ r.endTime || '—' }}</td>
+            <!-- Receipt: only for COMPLETED -->
+            <v-btn
+              v-if="item.status === 'COMPLETED'"
+              color="success"
+              variant="tonal"
+              size="small"
+              rounded="lg"
+              :to="`/rentals/${item.id}/receipt`"
+              prepend-icon="mdi-receipt"
+            >
+              Receipt
+            </v-btn>
 
-            <!-- Total price only appears after rental ends -->
-            <td class="price-cell">
-              {{ r.totalPrice != null ? r.totalPrice + ' DZD' : '—' }}
-            </td>
+            <!-- Details: only for CONTRACT -->
+            <v-btn
+              v-if="item.rentalType === 'CONTRACT'"
+              color="primary"
+              variant="tonal"
+              size="small"
+              rounded="lg"
+              :to="`/rentals/${item.id}/contract`"
+              prepend-icon="mdi-eye"
+            >
+              Details
+            </v-btn>
+          </div>
+        </template>
+      </v-data-table>
+    </v-card>
 
-            <!-- Actions column -->
-            <td>
-              <div class="row-actions">
-
-                <!-- End Rental: only for ACTIVE INSTANT rentals -->
-                <button
-                  v-if="r.status === 'ACTIVE' && r.rentalType === 'INSTANT'"
-                  class="btn-end"
-                  @click="endRental(r.id)"
-                >
-                  End Rental
-                </button>
-
-                <!-- Receipt link: only for COMPLETED rentals -->
-                <!-- navigates to /rentals/:id/receipt -->
-                <router-link
-                  v-if="r.status === 'COMPLETED'"
-                  :to="`/rentals/${r.id}/receipt`"
-                  class="btn-view"
-                >
-                  Receipt
-                </router-link>
-
-                <!-- Contract detail link: only for CONTRACT type rentals -->
-                <!-- navigates to /rentals/:id/contract -->
-                <router-link
-                  v-if="r.rentalType === 'CONTRACT'"
-                  :to="`/rentals/${r.id}/contract`"
-                  class="btn-view"
-                >
-                  Details
-                </router-link>
-
-                <!-- Dash if no actions available -->
-                <span
-                  v-if="r.status !== 'ACTIVE' && r.status !== 'COMPLETED' && r.rentalType !== 'CONTRACT'"
-                  class="no-action"
-                >—</span>
-
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p v-else-if="!loading" class="status-text">You have no rentals yet.</p>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
+      {{ snackbar.text }}
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { getRentalsByUser, getVehicleById, endInstantRental, getCurrentUser } from '../store/data.js'
 
 export default {
   name: 'RentalsView',
-
   data() {
     return {
-      rentals: [],    // List of rentals belonging to the logged-in user
-      loading: false,
-      error: ''
+      rentals:     [],
+      currentUser: getCurrentUser(),
+      snackbar:    { show: false, text: '', color: 'success' },
+      headers: [
+        { title: 'ID',          key: 'id',           width: '60px' },
+        { title: 'Vehicle',     key: 'vehicleName'   },
+        { title: 'Type',        key: 'rentalType'    },
+        { title: 'Status',      key: 'status'        },
+        { title: 'Start',       key: 'startTime'     },
+        { title: 'Total Price', key: 'totalPrice'    },
+        { title: 'Actions',     key: 'actions', sortable: false },
+      ]
     }
   },
 
-  // Fetch rentals immediately when page loads
-  mounted() { this.fetchRentals() },
+  computed: {
+    // Enrich rentals with vehicle name for display in table
+    enrichedRentals() {
+      return this.rentals.map(r => {
+        const vehicle = getVehicleById(r.vehicleId)
+        return {
+          ...r,
+          vehicleName: vehicle ? `${vehicle.brand} ${vehicle.model}` : '—',
+          startTime: r.startTime ? new Date(r.startTime).toLocaleString() : '—'
+        }
+      })
+    }
+  },
+
+  mounted() { this.loadRentals() },
 
   methods: {
-    // Authorization header using JWT token from localStorage
-    auth() {
-      return { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } }
+    loadRentals() {
+      this.rentals = getRentalsByUser(this.currentUser.id)
     },
 
-    // Returns CSS class name for coloring status badges
-    statusClass(status) {
-      if (status === 'ACTIVE')    return 'badge-green'
-      if (status === 'PENDING')   return 'badge-yellow'
-      if (status === 'COMPLETED') return 'badge-gray'
-      return 'badge-red' // CANCELLED
+    statusColor(status) {
+      if (status === 'ACTIVE')    return 'success'
+      if (status === 'PENDING')   return 'warning'
+      if (status === 'COMPLETED') return 'primary'
+      return 'error'
     },
 
-    // Fetches only the logged-in user's rentals
-    // Backend reads the user identity from the JWT token
-    async fetchRentals() {
-      this.loading = true
-      try {
-        const res = await axios.get('http://localhost:8080/api/rentals/my', this.auth())
-        this.rentals = res.data
-      } catch {
-        this.error = 'Failed to load rentals.'
-      } finally {
-        this.loading = false
-      }
-    },
-
-    // Ends an active instant rental:
-    // backend sets endTime, calculates totalPrice, sets vehicle back to AVAILABLE
-    async endRental(id) {
-      try {
-        await axios.post(`http://localhost:8080/api/rentals/instant/end/${id}`, {}, this.auth())
-        this.fetchRentals() // Refresh table to show COMPLETED status and final price
-      } catch (err) {
-        this.error = err.response?.data?.message || 'Failed to end rental.'
-      }
+    // End an active instant rental
+    endRental(rental) {
+      endInstantRental(rental.id)
+      this.loadRentals()
+      this.snackbar = { show: true, text: 'Rental ended successfully!', color: 'success' }
     }
   }
 }
 </script>
-
-<style scoped>
-/* ── Page header ── */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-}
-
-.page-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 2px;
-}
-
-.page-sub { color: #475569; font-size: 13px; margin-top: 4px; }
-
-.btn-refresh {
-  background: transparent;
-  border: 1px solid #1e2535;
-  color: #3b82f6;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  transition: all 0.2s;
-}
-.btn-refresh:hover { background: #0f1a2e; }
-
-/* ── Table wrapper adds horizontal scroll on small screens ── */
-.table-wrapper {
-  overflow-x: auto;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-/* Table header */
-.data-table thead tr {
-  background: #0d0f14;
-  border-bottom: 1px solid #1e2535;
-}
-
-.data-table th {
-  padding: 12px 16px;
-  text-align: left;
-  color: #475569;
-  font-weight: 500;
-  letter-spacing: 1px;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-/* Table body rows */
-.data-table tbody tr {
-  border-bottom: 1px solid #1a1e2a;
-  transition: background 0.15s;
-}
-.data-table tbody tr:hover { background: #13161e; }
-.data-table tbody tr:last-child { border-bottom: none; }
-
-.data-table td {
-  padding: 14px 16px;
-  color: #94a3b8;
-  vertical-align: middle;
-}
-
-/* Special cell styling */
-.id-cell    { color: #3b82f6; font-size: 12px; }
-.time-cell  { color: #64748b; font-size: 12px; }
-.price-cell { color: #22c55e; font-weight: 500; }
-.no-action  { color: #2a3548; }
-
-/* Status badges */
-.status-badge {
-  padding: 3px 10px;
-  border-radius: 3px;
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-.badge-green  { background: #052e16; color: #22c55e; border: 1px solid #166534; }
-.badge-yellow { background: #1c1500; color: #eab308; border: 1px solid #854d0e; }
-.badge-gray   { background: #1a1e2a; color: #64748b; border: 1px solid #2a3548; }
-.badge-red    { background: #1f0707; color: #ef4444; border: 1px solid #7f1d1d; }
-
-/* Type badges */
-.type-badge {
-  padding: 3px 8px;
-  border-radius: 3px;
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-.type-instant  { background: #0c1a3a; color: #60a5fa; border: 1px solid #1e3a5f; }
-.type-contract { background: #1a0c3a; color: #a78bfa; border: 1px solid #3b1f7f; }
-
-/* Row action buttons group */
-.row-actions {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-/* End rental: red outlined button */
-.btn-end {
-  background: transparent;
-  border: 1px solid #7f1d1d;
-  color: #ef4444;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.btn-end:hover { background: #1f0707; }
-
-/* View links: receipt and contract details */
-.btn-view {
-  background: transparent;
-  border: 1px solid #1e3a5f;
-  color: #3b82f6;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.btn-view:hover { background: #0f1a2e; }
-
-.msg-error   { color: #ef4444; font-size: 13px; margin-bottom: 16px; }
-.status-text { color: #475569; font-size: 13px; }
-</style>
