@@ -370,10 +370,96 @@ h1, h2, h3, h4, .font-display {
 .skeleton { animation: sk-pulse 1.5s ease-in-out infinite !important; }
 .v-theme--light .skeleton { background: #e2e8f0 !important; }
 .v-theme--dark  .skeleton { background: #1e2a3a !important; }
+
+/* ── Shimmer effect for loading/highlight states ── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  background-size: 400px 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+/* ── Float animation for hero elements ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+.float { animation: float 4s ease-in-out infinite; }
+.float-slow { animation: float 6s ease-in-out infinite; }
+
+/* ── Pulse glow for primary CTAs ── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(13,148,136,0.4); }
+  50%       { box-shadow: 0 0 0 12px rgba(13,148,136,0); }
+}
+.pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+
+/* ── Fade-up for staggered card grids (used by v-col children) ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up   { animation: fade-up 0.5s ease both; }
+.fade-up-1 { animation: fade-up 0.5s 0.05s ease both; }
+.fade-up-2 { animation: fade-up 0.5s 0.10s ease both; }
+.fade-up-3 { animation: fade-up 0.5s 0.15s ease both; }
+.fade-up-4 { animation: fade-up 0.5s 0.20s ease both; }
+
+/* ── Smooth chip hover ── */
+.v-chip { transition: transform 0.15s ease, box-shadow 0.15s ease !important; }
+.v-chip:hover { transform: translateY(-1px) !important; }
+
+/* ── Button press micro-interaction ── */
+.v-btn:active { transform: scale(0.97) !important; }
+
+/* ── Teal glow on primary buttons in dark mode ── */
+.v-theme--dark .v-btn--variant-elevated[class*="bg-primary"],
+.v-theme--dark .v-btn[color="primary"]:not([variant="text"]):not([variant="outlined"]):not([variant="tonal"]) {
+  box-shadow: 0 0 20px rgba(45,212,191,0.25) !important;
+}
+
+/* ── Smooth v-card entrance ── */
+.v-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* ── Input focus ring in teal ── */
+.v-theme--light .v-field--focused .v-field__outline {
+  color: #0d9488 !important;
+}
+.v-theme--dark .v-field--focused .v-field__outline {
+  color: #2dd4bf !important;
+}
 </style>
 
 <style scoped>
-.navbar { transition: box-shadow 0.3s ease; }
+/* ── Navbar base ── */
+.navbar {
+  transition: background 0.35s ease, backdrop-filter 0.35s ease,
+              border-color 0.35s ease, box-shadow 0.35s ease !important;
+}
+
+/* Scrolled state: glassmorphism blur */
+.v-theme--light .navbar-scrolled :deep(.v-toolbar__content) { /* no-op, handled below */ }
+
+/* We target the actual Vuetify toolbar element */
+:deep(.v-app-bar.navbar-scrolled) {
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+}
+.v-theme--light :deep(.v-app-bar.navbar-scrolled) {
+  background: rgba(255,255,255,0.72) !important;
+  border-bottom: 1px solid rgba(148,163,184,0.4) !important;
+  box-shadow: 0 4px 24px rgba(15,23,42,0.08) !important;
+}
+.v-theme--dark :deep(.v-app-bar.navbar-scrolled) {
+  background: rgba(10,15,30,0.72) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4) !important;
+}
 
 .brand-link {
   text-decoration: none;
@@ -387,6 +473,11 @@ h1, h2, h3, h4, .font-display {
   border-radius: 10px;
   background: rgba(13,148,136,0.12);
   display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+}
+.brand-link:hover .brand-icon-wrap {
+  background: rgba(13,148,136,0.22);
+  transform: rotate(-6deg) scale(1.08);
 }
 
 /* Brand text — hardcoded per theme, never inherit */
@@ -403,7 +494,25 @@ h1, h2, h3, h4, .font-display {
 .brand-accent { color: rgb(var(--v-theme-primary)); }
 
 .nav-links { display: flex; align-items: center; gap: 2px; }
-.nav-btn   { font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 600; }
+.nav-btn {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+/* Subtle underline slide on nav btn hover */
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 4px; left: 50%; right: 50%;
+  height: 2px;
+  background: rgb(var(--v-theme-primary));
+  border-radius: 2px;
+  transition: left 0.22s ease, right 0.22s ease;
+}
+.nav-btn:hover::after { left: 12px; right: 12px; }
+
 .user-chip { font-size: 12px; }
 
 /* Mobile bottom nav */
