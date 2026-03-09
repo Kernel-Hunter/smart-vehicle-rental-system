@@ -52,7 +52,19 @@ function load(key, defaults) {
 }
 function save(key, data) { localStorage.setItem(key, JSON.stringify(data)) }
 
-// Initialize on first run
+// ── Data version: bump this whenever mock data structure changes ──
+// Forces a full localStorage reset so stale old data never breaks the app
+const DATA_VERSION = 'v3-cities'
+
+if (localStorage.getItem('sr_data_version') !== DATA_VERSION) {
+  localStorage.removeItem('sr_companies')
+  localStorage.removeItem('sr_customers')
+  localStorage.removeItem('sr_vehicles')
+  localStorage.removeItem('sr_rentals')
+  localStorage.setItem('sr_data_version', DATA_VERSION)
+}
+
+// Initialize (runs on first load OR after a version reset)
 if (!localStorage.getItem('sr_companies')) save('sr_companies', defaultCompanies)
 if (!localStorage.getItem('sr_customers')) save('sr_customers', defaultCustomers)
 if (!localStorage.getItem('sr_vehicles'))  save('sr_vehicles',  defaultVehicles)
