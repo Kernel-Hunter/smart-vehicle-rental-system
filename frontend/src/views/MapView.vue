@@ -101,7 +101,7 @@
           <!-- Tooltip on hover -->
           <div class="marker-tooltip">
             <strong>{{ v.brand }} {{ v.model }}</strong>
-            <span>{{ v.pricePerMinute }} DZD/min</span>
+            <span>{{ v.pricePerMinute }} TND/min</span>
           </div>
         </div>
 
@@ -151,12 +151,12 @@
             <div class="pricing-row">
               <div class="price-box">
                 <span class="price-amount">{{ selectedVehicle.pricePerMinute }}</span>
-                <span class="price-unit">DZD/min</span>
+                <span class="price-unit">TND/min</span>
               </div>
               <div class="price-divider" />
               <div class="price-box">
                 <span class="price-amount">{{ selectedVehicle.pricePerDay }}</span>
-                <span class="price-unit">DZD/day</span>
+                <span class="price-unit">TND/day</span>
               </div>
             </div>
 
@@ -233,7 +233,7 @@
                 <v-chip :color="statusColor(v.status)" variant="tonal" size="x-small">
                   {{ v.status }}
                 </v-chip>
-                <div class="svc-price">{{ v.pricePerMinute }} DZD/min</div>
+                <div class="svc-price">{{ v.pricePerMinute }} TND/min</div>
               </div>
             </div>
             <p v-if="filteredMapVehicles.length === 0" class="no-vehicles">
@@ -267,7 +267,7 @@
             </v-col>
           </v-row>
           <v-alert v-if="contractEstimate" color="primary" variant="tonal" density="compact" rounded="lg">
-            Estimated: <strong>{{ contractEstimate }} DZD</strong> ({{ contractDays }} day(s))
+            Estimated: <strong>{{ contractEstimate }} TND</strong> ({{ contractDays }} day(s))
           </v-alert>
         </v-card-text>
         <v-card-actions class="pa-4 pt-0">
@@ -404,20 +404,20 @@ export default {
 .map-container {
   position: relative;
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.12);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 20px;
   overflow: hidden;
 }
 
-.map-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+.v-theme--dark .map-container { border-color: rgba(255,255,255,0.08); }
 
-.city-block { fill: rgba(92, 107, 192, 0.06); stroke: rgba(92, 107, 192, 0.12); stroke-width: 0.3; }
-.park-block { fill: rgba(67, 160, 71, 0.12); stroke: rgba(67, 160, 71, 0.2); stroke-width: 0.3; }
-.road { stroke: rgba(92, 107, 192, 0.08); stroke-width: 1.5; }
+.map-svg { width: 100%; height: 100%; display: block; }
+
+.v-theme--light .city-block { fill: rgba(79,70,229,0.04); stroke: rgba(79,70,229,0.1); stroke-width: 0.3; }
+.v-theme--dark  .city-block { fill: rgba(129,140,248,0.06); stroke: rgba(129,140,248,0.12); stroke-width: 0.3; }
+.park-block { fill: rgba(22,163,74,0.1); stroke: rgba(22,163,74,0.2); stroke-width: 0.3; }
+.v-theme--light .road { stroke: rgba(79,70,229,0.07); stroke-width: 1.5; }
+.v-theme--dark  .road { stroke: rgba(129,140,248,0.08); stroke-width: 1.5; }
 
 /* ── Markers ── */
 .vehicle-marker {
@@ -428,34 +428,34 @@ export default {
 }
 
 .marker-icon {
-  width: 28px; height: 28px;
+  width: 30px; height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
   transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
   z-index: 1;
   background: rgb(var(--v-theme-error));
 }
 
-.marker-available  .marker-icon { background: rgb(var(--v-theme-success)); }
-.marker-rented     .marker-icon { background: rgb(var(--v-theme-primary)); }
+.marker-available   .marker-icon { background: rgb(var(--v-theme-success)); }
+.marker-rented      .marker-icon { background: rgb(var(--v-theme-primary)); }
 .marker-maintenance .marker-icon { background: rgb(var(--v-theme-warning)); }
 
 .vehicle-marker:hover .marker-icon,
 .marker-selected .marker-icon {
   transform: scale(1.3);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 }
 
 .marker-ring {
   position: absolute;
-  width: 28px; height: 28px;
+  width: 30px; height: 30px;
   border-radius: 50%;
-  border: 2px solid rgba(67, 160, 71, 0.4);
+  border: 2px solid rgba(22, 163, 74, 0.4);
   top: 0; left: 0;
   animation: ring-pulse 2s ease-out infinite;
 }
@@ -468,11 +468,11 @@ export default {
 /* Marker tooltip */
 .marker-tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(15, 14, 23, 0.9);
-  color: white;
+  background: #111827;
+  color: #F9FAFB;
   padding: 6px 10px;
   border-radius: 8px;
   font-size: 11px;
@@ -503,9 +503,9 @@ export default {
   color: rgb(var(--v-theme-primary));
   margin-top: 2px;
   background: rgb(var(--v-theme-surface));
-  padding: 1px 4px;
+  padding: 1px 5px;
   border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 
 /* ── Legend ── */
@@ -514,7 +514,7 @@ export default {
   top: 14px;
   left: 14px;
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.12);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 10px;
   padding: 10px 14px;
   display: flex;
@@ -522,7 +522,9 @@ export default {
   gap: 6px;
   z-index: 20;
   font-size: 11px;
+  color: rgb(var(--v-theme-on-surface));
 }
+.v-theme--dark .map-legend { border-color: rgba(255,255,255,0.08); }
 .legend-item { display: flex; align-items: center; gap: 6px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
 .dot-available   { background: rgb(var(--v-theme-success)); }
@@ -538,18 +540,19 @@ export default {
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(92, 107, 192, 0.4);
+  color: rgba(79, 70, 229, 0.3);
   z-index: 5;
 }
 
 /* ── Sidebar ── */
 .map-sidebar {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.12);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 20px;
   overflow-y: auto;
   padding: 16px;
 }
+.v-theme--dark .map-sidebar { border-color: rgba(255,255,255,0.08); }
 
 .sidebar-title {
   font-family: 'Syne', sans-serif;
@@ -568,12 +571,12 @@ export default {
   border-radius: 12px;
   cursor: pointer;
   margin-bottom: 8px;
-  border: 1px solid rgba(92, 107, 192, 0.08);
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
 }
-.sidebar-vehicle-card:hover {
-  background: rgba(92, 107, 192, 0.04);
-}
+.v-theme--dark  .sidebar-vehicle-card { border-color: rgba(255,255,255,0.06); }
+.v-theme--light .sidebar-vehicle-card:hover { background: rgba(79,70,229,0.04); }
+.v-theme--dark  .sidebar-vehicle-card:hover { background: rgba(129,140,248,0.06); }
 
 .svc-left  { display: flex; align-items: center; gap: 10px; }
 .svc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
@@ -610,25 +613,27 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(92, 107, 192, 0.06);
+  background: rgba(79, 70, 229, 0.06);
   border-radius: 12px;
   padding: 14px;
   margin-bottom: 16px;
 }
-.price-box { display: flex; flex-direction: column; align-items: center; flex: 1; }
-.price-amount { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: rgb(var(--v-theme-primary)); }
-.price-unit { font-size: 11px; color: rgb(var(--v-theme-on-surface-variant)); }
-.price-divider { width: 1px; height: 36px; background: rgba(92, 107, 192, 0.15); }
+.v-theme--dark .pricing-row { background: rgba(129,140,248,0.08); }
+.price-box    { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.price-amount { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: rgb(var(--v-theme-primary)); }
+.price-unit   { font-size: 11px; color: rgb(var(--v-theme-on-surface-variant)); }
+.price-divider { width: 1px; height: 36px; background: rgba(79,70,229,0.15); }
 
 .company-badge {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px;
-  border: 1px solid rgba(92, 107, 192, 0.1);
+  border: 1px solid rgba(0,0,0,0.07);
   border-radius: 10px;
   margin-bottom: 16px;
 }
+.v-theme--dark .company-badge { border-color: rgba(255,255,255,0.07); }
 .company-name-text { font-size: 13px; font-weight: 600; color: rgb(var(--v-theme-on-surface)); }
 
 .detail-actions { display: flex; flex-direction: column; gap: 8px; }
