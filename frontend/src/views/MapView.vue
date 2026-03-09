@@ -118,7 +118,7 @@
 
         <!-- If a vehicle is selected: show detail -->
         <template v-if="selectedVehicle">
-          <div class="sidebar-detail reveal">
+          <div class="sidebar-detail">
             <div class="detail-header">
               <v-btn icon="mdi-arrow-left" variant="text" size="small" @click="selectedVehicle = null" />
               <span class="detail-back-label">Back to list</span>
@@ -339,6 +339,11 @@ export default {
     },
     selectVehicle(v) {
       this.selectedVehicle = v
+      // On mobile, scroll the sidebar panel into view after selecting
+      this.$nextTick(() => {
+        const sidebar = document.querySelector('.map-sidebar')
+        if (sidebar) sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
     },
     startInstant() {
       const rental = startInstantRental(this.selectedVehicle.id, this.currentUser.id)
@@ -379,7 +384,7 @@ export default {
 }
 
 .map-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 26px;
   font-weight: 700;
   color: rgb(var(--v-theme-on-background));
@@ -396,8 +401,20 @@ export default {
   height: 580px;
 }
 
+/* Mobile: stack vertically, map on top, list below */
 @media (max-width: 900px) {
-  .map-layout { grid-template-columns: 1fr; height: auto; }
+  .map-page { padding: 16px; }
+  .map-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 360px auto;
+    height: auto;
+  }
+  .map-container { height: 360px; }
+  .map-sidebar {
+    height: auto;
+    max-height: 420px;
+    overflow-y: auto;
+  }
 }
 
 /* ── Map container ── */
@@ -413,11 +430,11 @@ export default {
 
 .map-svg { width: 100%; height: 100%; display: block; }
 
-.v-theme--light .city-block { fill: rgba(79,70,229,0.04); stroke: rgba(79,70,229,0.1); stroke-width: 0.3; }
-.v-theme--dark  .city-block { fill: rgba(129,140,248,0.06); stroke: rgba(129,140,248,0.12); stroke-width: 0.3; }
+.v-theme--light .city-block { fill: rgba(13,148,136,0.04); stroke: rgba(13,148,136,0.1); stroke-width: 0.3; }
+.v-theme--dark  .city-block { fill: rgba(45,212,191,0.06); stroke: rgba(45,212,191,0.12); stroke-width: 0.3; }
 .park-block { fill: rgba(22,163,74,0.1); stroke: rgba(22,163,74,0.2); stroke-width: 0.3; }
-.v-theme--light .road { stroke: rgba(79,70,229,0.07); stroke-width: 1.5; }
-.v-theme--dark  .road { stroke: rgba(129,140,248,0.08); stroke-width: 1.5; }
+.v-theme--light .road { stroke: rgba(13,148,136,0.07); stroke-width: 1.5; }
+.v-theme--dark  .road { stroke: rgba(45,212,191,0.08); stroke-width: 1.5; }
 
 /* ── Markers ── */
 .vehicle-marker {
@@ -535,12 +552,12 @@ export default {
   position: absolute;
   bottom: 14px;
   right: 14px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(79, 70, 229, 0.3);
+  color: rgba(13, 148, 136, 0.3);
   z-index: 5;
 }
 
@@ -555,7 +572,7 @@ export default {
 .v-theme--dark .map-sidebar { border-color: rgba(255,255,255,0.08); }
 
 .sidebar-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: rgb(var(--v-theme-on-surface));
@@ -575,8 +592,8 @@ export default {
   transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
 }
 .v-theme--dark  .sidebar-vehicle-card { border-color: rgba(255,255,255,0.06); }
-.v-theme--light .sidebar-vehicle-card:hover { background: rgba(79,70,229,0.04); }
-.v-theme--dark  .sidebar-vehicle-card:hover { background: rgba(129,140,248,0.06); }
+.v-theme--light .sidebar-vehicle-card:hover { background: rgba(13,148,136,0.04); }
+.v-theme--dark  .sidebar-vehicle-card:hover { background: rgba(45,212,191,0.06); }
 
 .svc-left  { display: flex; align-items: center; gap: 10px; }
 .svc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
@@ -599,7 +616,7 @@ export default {
 .detail-back-label { font-size: 13px; color: rgb(var(--v-theme-on-surface-variant)); }
 
 .vehicle-detail-name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 22px;
   font-weight: 700;
   color: rgb(var(--v-theme-on-surface));
@@ -613,16 +630,16 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(79, 70, 229, 0.06);
+  background: rgba(13, 148, 136, 0.06);
   border-radius: 12px;
   padding: 14px;
   margin-bottom: 16px;
 }
-.v-theme--dark .pricing-row { background: rgba(129,140,248,0.08); }
+.v-theme--dark .pricing-row { background: rgba(45,212,191,0.08); }
 .price-box    { display: flex; flex-direction: column; align-items: center; flex: 1; }
-.price-amount { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: rgb(var(--v-theme-primary)); }
+.price-amount { font-family: 'Cabinet Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: rgb(var(--v-theme-primary)); }
 .price-unit   { font-size: 11px; color: rgb(var(--v-theme-on-surface-variant)); }
-.price-divider { width: 1px; height: 36px; background: rgba(79,70,229,0.15); }
+.price-divider { width: 1px; height: 36px; background: rgba(13,148,136,0.15); }
 
 .company-badge {
   display: flex;
