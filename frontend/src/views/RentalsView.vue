@@ -1,158 +1,84 @@
+<!-- ============================================================
+     RentalsView.vue  —  paste into src/views/RentalsView.vue
+     ============================================================ -->
 <template>
-  <div>
-    <div class="d-flex align-center justify-space-between mb-6">
+  <div style="max-width:1100px; margin:0 auto; padding:28px 32px;">
+    <div class="d-flex align-center justify-space-between mb-6 reveal">
       <div>
-        <h2 class="text-h5 font-weight-bold">My Rentals</h2>
-        <p class="text-medium-emphasis text-body-2 mt-1">Your complete rental history</p>
+        <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;">My Rentals</h2>
+        <p style="font-size:13px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">Your complete rental history</p>
       </div>
-      <v-btn variant="tonal" color="primary" prepend-icon="mdi-refresh" @click="loadRentals">
-        Refresh
-      </v-btn>
+      <v-btn variant="tonal" color="primary" prepend-icon="mdi-refresh" @click="load" rounded="lg">Refresh</v-btn>
     </div>
 
-    <!-- Rentals data table using Vuetify v-data-table -->
-    <v-card rounded="xl" elevation="1">
-      <v-data-table
-        :headers="headers"
-        :items="enrichedRentals"
-        :items-per-page="10"
-        rounded="xl"
-      >
-        <!-- Rental type column -->
+    <!-- Skeleton -->
+    <v-card v-if="loading" rounded="xl" elevation="1" class="skeleton">
+      <v-card-text class="pa-6">
+        <div v-for="i in 5" :key="i" style="height:48px;background:rgba(92,107,192,0.07);border-radius:8px;margin-bottom:10px;" />
+      </v-card-text>
+    </v-card>
+
+    <v-card v-else rounded="xl" elevation="1" class="reveal reveal-delay-1">
+      <v-data-table :headers="headers" :items="enriched" :items-per-page="10" rounded="xl">
         <template v-slot:item.rentalType="{ item }">
-          <v-chip
-            :color="item.rentalType === 'INSTANT' ? 'warning' : 'primary'"
-            variant="tonal"
-            size="small"
-          >
-            <v-icon start size="12">
-              {{ item.rentalType === 'INSTANT' ? 'mdi-lightning-bolt' : 'mdi-file-document-outline' }}
-            </v-icon>
+          <v-chip :color="item.rentalType==='INSTANT'?'warning':'primary'" variant="tonal" size="small">
+            <v-icon start size="12">{{ item.rentalType==='INSTANT'?'mdi-lightning-bolt':'mdi-file-sign' }}</v-icon>
             {{ item.rentalType }}
           </v-chip>
         </template>
-
-        <!-- Status column -->
         <template v-slot:item.status="{ item }">
-          <v-chip :color="statusColor(item.status)" variant="tonal" size="small">
-            {{ item.status }}
-          </v-chip>
+          <v-chip :color="sc(item.status)" variant="tonal" size="small">{{ item.status }}</v-chip>
         </template>
-
-        <!-- Total price column -->
         <template v-slot:item.totalPrice="{ item }">
-          <span :class="item.totalPrice ? 'text-success font-weight-bold' : 'text-medium-emphasis'">
-            {{ item.totalPrice ? item.totalPrice + ' DZD' : '—' }}
+          <span :class="item.totalPrice?'text-success font-weight-bold':'text-medium-emphasis'">
+            {{ item.totalPrice ? item.totalPrice+' DZD' : '—' }}
           </span>
         </template>
-
-        <!-- Actions column -->
         <template v-slot:item.actions="{ item }">
           <div class="d-flex gap-1">
-            <!-- End rental: only for ACTIVE INSTANT -->
-            <v-btn
-              v-if="item.status === 'ACTIVE' && item.rentalType === 'INSTANT'"
-              color="error"
-              variant="tonal"
-              size="small"
-              rounded="lg"
-              @click="endRental(item)"
-            >
-              End
-            </v-btn>
-
-            <!-- Receipt: only for COMPLETED -->
-            <v-btn
-              v-if="item.status === 'COMPLETED'"
-              color="success"
-              variant="tonal"
-              size="small"
-              rounded="lg"
-              :to="`/rentals/${item.id}/receipt`"
-              prepend-icon="mdi-receipt"
-            >
-              Receipt
-            </v-btn>
-
-            <!-- Details: only for CONTRACT -->
-            <v-btn
-              v-if="item.rentalType === 'CONTRACT'"
-              color="primary"
-              variant="tonal"
-              size="small"
-              rounded="lg"
-              :to="`/rentals/${item.id}/contract`"
-              prepend-icon="mdi-eye"
-            >
-              Details
-            </v-btn>
+            <v-btn v-if="item.status==='ACTIVE'&&item.rentalType==='INSTANT'" color="error" variant="tonal" size="small" rounded="lg" @click="end(item)">End</v-btn>
+            <v-btn v-if="item.status==='COMPLETED'" color="success" variant="tonal" size="small" rounded="lg" :to="`/rentals/${item.id}/receipt`" prepend-icon="mdi-receipt">Receipt</v-btn>
+            <v-btn v-if="item.rentalType==='CONTRACT'" color="primary" variant="tonal" size="small" rounded="lg" :to="`/rentals/${item.id}/contract`" prepend-icon="mdi-eye">Details</v-btn>
           </div>
         </template>
       </v-data-table>
     </v-card>
 
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
-      {{ snackbar.text }}
-    </v-snackbar>
+    <v-snackbar v-model="sb.show" :color="sb.color" :timeout="3000" rounded="lg">{{ sb.text }}</v-snackbar>
   </div>
 </template>
 
 <script>
-import { getRentalsByUser, getVehicleById, endInstantRental, getCurrentUser } from '../store/data.js'
-
+import { getRentalsByCustomer, getVehicleById, endInstantRental, getCurrentUser } from '../store/data.js'
+import { useReveal } from '../composables/useReveal.js'
 export default {
   name: 'RentalsView',
+  setup() { return useReveal() },
   data() {
     return {
-      rentals:     [],
-      currentUser: getCurrentUser(),
-      snackbar:    { show: false, text: '', color: 'success' },
+      rentals: [], loading: true, currentUser: getCurrentUser(),
+      sb: { show: false, text: '', color: 'success' },
       headers: [
-        { title: 'ID',          key: 'id',           width: '60px' },
-        { title: 'Vehicle',     key: 'vehicleName'   },
-        { title: 'Type',        key: 'rentalType'    },
-        { title: 'Status',      key: 'status'        },
-        { title: 'Start',       key: 'startTime'     },
-        { title: 'Total Price', key: 'totalPrice'    },
-        { title: 'Actions',     key: 'actions', sortable: false },
+        { title: '#', key: 'id', width: '60px' }, { title: 'Vehicle', key: 'vehicleName' },
+        { title: 'Type', key: 'rentalType' }, { title: 'Status', key: 'status' },
+        { title: 'Start', key: 'startTime' }, { title: 'Total', key: 'totalPrice' },
+        { title: '', key: 'actions', sortable: false }
       ]
     }
   },
-
   computed: {
-    // Enrich rentals with vehicle name for display in table
-    enrichedRentals() {
+    enriched() {
       return this.rentals.map(r => {
-        const vehicle = getVehicleById(r.vehicleId)
-        return {
-          ...r,
-          vehicleName: vehicle ? `${vehicle.brand} ${vehicle.model}` : '—',
-          startTime: r.startTime ? new Date(r.startTime).toLocaleString() : '—'
-        }
+        const v = getVehicleById(r.vehicleId)
+        return { ...r, vehicleName: v ? `${v.brand} ${v.model}` : '—', startTime: r.startTime ? new Date(r.startTime).toLocaleString() : '—' }
       })
     }
   },
-
-  mounted() { this.loadRentals() },
-
+  mounted() { setTimeout(() => { this.load(); this.$nextTick(() => this.setupReveal()) }, 400) },
   methods: {
-    loadRentals() {
-      this.rentals = getRentalsByUser(this.currentUser.id)
-    },
-
-    statusColor(status) {
-      if (status === 'ACTIVE')    return 'success'
-      if (status === 'PENDING')   return 'warning'
-      if (status === 'COMPLETED') return 'primary'
-      return 'error'
-    },
-
-    // End an active instant rental
-    endRental(rental) {
-      endInstantRental(rental.id)
-      this.loadRentals()
-      this.snackbar = { show: true, text: 'Rental ended successfully!', color: 'success' }
-    }
+    load() { this.rentals = getRentalsByCustomer(this.currentUser.id); this.loading = false },
+    sc(s) { return s==='ACTIVE'?'success':s==='PENDING'?'warning':s==='COMPLETED'?'primary':'error' },
+    end(r) { endInstantRental(r.id); this.load(); this.sb = { show: true, text: 'Rental ended!', color: 'success' } }
   }
 }
 </script>

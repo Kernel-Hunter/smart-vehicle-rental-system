@@ -1,55 +1,25 @@
 <template>
-  <v-row justify="center" align="center" style="min-height: calc(100vh - 120px)">
-    <v-col cols="12" sm="8" md="5" class="text-center">
-      <div class="text-h1 font-weight-bold text-primary mb-2" style="opacity: 0.15; font-size: 8rem">
-        404
-      </div>
-      <v-icon color="primary" size="64" class="mb-4" style="margin-top: -80px; position: relative;">
-        mdi-map-marker-question
-      </v-icon>
-      <h1 class="text-h4 font-weight-bold mb-3">Page Not Found</h1>
-      <p class="text-medium-emphasis text-body-1 mb-6">
-        The page you're looking for doesn't exist or has been moved.
+  <div style="min-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;padding:40px;">
+    <div class="text-center reveal">
+      <div style="font-family:'Syne',sans-serif;font-size:120px;font-weight:800;line-height:1;color:rgb(var(--v-theme-primary));opacity:0.08;user-select:none;">404</div>
+      <v-icon color="primary" size="64" style="margin-top:-80px;position:relative;" class="mb-4">mdi-map-marker-question</v-icon>
+      <h1 style="font-family:'Syne',sans-serif;font-size:32px;font-weight:700;margin-bottom:12px;">Page Not Found</h1>
+      <p style="color:rgb(var(--v-theme-on-surface-variant));font-size:16px;margin-bottom:32px;">
+        The page you're looking for doesn't exist.
       </p>
       <div class="d-flex justify-center gap-3">
-        <v-btn color="primary" size="large" rounded="lg" to="/vehicles" prepend-icon="mdi-car-multiple">
-          Browse Fleet
-        </v-btn>
-        <v-btn variant="outlined" color="primary" size="large" rounded="lg" to="/" prepend-icon="mdi-home">
-          Home
-        </v-btn>
+        <v-btn color="primary" size="large" rounded="xl" to="/" prepend-icon="mdi-home" elevation="0">Home</v-btn>
+        <v-btn variant="outlined" color="primary" size="large" rounded="xl" to="/vehicles" prepend-icon="mdi-car-multiple">Browse Fleet</v-btn>
       </div>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script>
-export default { name: 'NotFoundView' }
+import { useReveal } from '../composables/useReveal.js'
+export default {
+  name: 'NotFoundView',
+  setup() { return useReveal() },
+  mounted() { this.setupReveal() }
+}
 </script>
-```
-
----
-
-## Full file checklist — everything to create/replace
-```
-src/
-├── main.js                          ← REPLACE
-├── App.vue                          ← REPLACE
-├── store/
-│   └── data.js                      ← NEW FILE (create store/ folder)
-├── router/
-│   └── index.js                     ← REPLACE
-└── views/
-    ├── HomeView.vue                 ← REPLACE
-    ├── LoginView.vue                ← REPLACE
-    ├── VehiclesView.vue             ← REPLACE
-    ├── VehicleDetailView.vue        ← REPLACE
-    ├── RentalsView.vue              ← REPLACE
-    ├── ProfileView.vue              ← REPLACE
-    ├── ContractDetailView.vue       ← REPLACE
-    ├── RentalReceiptView.vue        ← REPLACE
-    ├── AdminView.vue                ← REPLACE
-    ├── AdminUsersView.vue           ← REPLACE
-    ├── AdminStatsView.vue           ← REPLACE
-    ├── AboutView.vue                ← REPLACE
-    └── NotFoundView.vue             ← REPLACE
