@@ -1,384 +1,175 @@
 <template>
-  <div class="home">
-
-    <!-- ── HERO SECTION ── -->
-    <section class="hero">
-      <div class="hero-content">
-        <p class="hero-tag">◈ SMART VEHICLE RENTAL</p>
-        <h1 class="hero-title">
+  <div>
+    <!-- ── HERO ── -->
+    <v-row align="center" class="py-8">
+      <v-col cols="12" md="7">
+        <v-chip color="primary" variant="tonal" size="small" class="mb-4">
+          Smart Vehicle Rental
+        </v-chip>
+        <h1 class="text-h3 font-weight-bold mb-4">
           Rent Any Vehicle<br />
-          <span class="hero-accent">Instantly or By Contract</span>
+          <span style="color: rgb(var(--v-theme-primary))">Instantly or By Contract</span>
         </h1>
-        <p class="hero-desc">
+        <p class="text-body-1 text-medium-emphasis mb-6" style="max-width:480px; line-height:1.8">
           SmartRent gives you full control over your rental experience.
           Jump in now with an instant rental, or plan ahead with a contract.
         </p>
-        <div class="hero-btns">
-          <!-- Takes logged-in users to vehicles, others to login -->
-          <router-link to="/vehicles" class="btn-primary">Browse Fleet</router-link>
-          <router-link to="/login" class="btn-ghost" v-if="!isLoggedIn">Get Started</router-link>
-          <router-link to="/rentals" class="btn-ghost" v-else>My Rentals</router-link>
+        <div class="d-flex gap-3">
+          <v-btn color="primary" size="large" rounded="lg" to="/vehicles" prepend-icon="mdi-car-multiple">
+            Browse Fleet
+          </v-btn>
+          <v-btn v-if="!currentUser" variant="outlined" color="primary" size="large" rounded="lg" to="/login">
+            Get Started
+          </v-btn>
+          <v-btn v-else variant="outlined" color="primary" size="large" rounded="lg" to="/rentals">
+            My Rentals
+          </v-btn>
         </div>
-      </div>
+      </v-col>
 
-      <!-- Decorative right side panel -->
-      <div class="hero-panel">
-        <div class="panel-card">
-          <p class="panel-label">RENTAL TYPES</p>
-          <div class="panel-item">
-            <span class="panel-icon">⚡</span>
-            <div>
-              <p class="panel-item-title">Instant Rental</p>
-              <p class="panel-item-sub">Start now · Billed per minute</p>
-            </div>
-          </div>
-          <div class="panel-item">
-            <span class="panel-icon">📋</span>
-            <div>
-              <p class="panel-item-title">Contract Rental</p>
-              <p class="panel-item-sub">Plan ahead · Billed per day</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      <!-- Rental type info card -->
+      <v-col cols="12" md="5">
+        <v-card rounded="xl" elevation="2">
+          <v-card-text class="pa-6">
+            <p class="text-overline text-medium-emphasis mb-3">Rental Models</p>
+            <v-list lines="two">
+              <v-list-item
+                prepend-icon="mdi-lightning-bolt"
+                title="Instant Rental"
+                subtitle="Start now · End anywhere · Billed per minute"
+                rounded="lg"
+                class="mb-2"
+              >
+                <template v-slot:prepend>
+                  <v-icon color="warning" size="32">mdi-lightning-bolt</v-icon>
+                </template>
+              </v-list-item>
+              <v-list-item
+                title="Contract Rental"
+                subtitle="Choose dates · Admin approves · Billed per day"
+                rounded="lg"
+              >
+                <template v-slot:prepend>
+                  <v-icon color="primary" size="32">mdi-file-document-outline</v-icon>
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-    <!-- ── STATS ROW ── -->
-    <section class="stats-row">
-      <!-- Each stat card shows a key platform number -->
-      <div class="stat-card" v-for="stat in stats" :key="stat.label">
-        <p class="stat-value">{{ stat.value }}</p>
-        <p class="stat-label">{{ stat.label }}</p>
-      </div>
-    </section>
+    <!-- ── STATS ── -->
+    <v-row class="my-4">
+      <v-col v-for="stat in stats" :key="stat.label" cols="6" md="3">
+        <v-card rounded="xl" elevation="1" class="text-center pa-4">
+          <v-icon :color="stat.color" size="36" class="mb-2">{{ stat.icon }}</v-icon>
+          <div class="text-h4 font-weight-bold" :style="`color: rgb(var(--v-theme-${stat.color}))`">
+            {{ stat.value }}
+          </div>
+          <div class="text-caption text-medium-emphasis mt-1">{{ stat.label }}</div>
+        </v-card>
+      </v-col>
+    </v-row>
 
     <!-- ── HOW IT WORKS ── -->
-    <section class="how-section">
-      <h2 class="section-title">How It Works</h2>
-      <p class="section-sub">Two ways to rent — both simple and fast</p>
+    <h2 class="text-h5 font-weight-bold mt-8 mb-2">How It Works</h2>
+    <p class="text-medium-emphasis mb-6">Two ways to rent — both simple and fast</p>
 
-      <div class="steps-grid">
+    <v-row>
+      <!-- Instant rental steps -->
+      <v-col cols="12" md="6">
+        <v-card rounded="xl" elevation="1">
+          <v-card-title class="pa-4 pb-2">
+            <v-icon color="warning" class="mr-2">mdi-lightning-bolt</v-icon>
+            Instant Rental
+          </v-card-title>
+          <v-card-text>
+            <v-timeline density="compact" align="start">
+              <v-timeline-item
+                v-for="(step, i) in instantSteps"
+                :key="i"
+                dot-color="warning"
+                size="small"
+              >
+                <div class="font-weight-medium">{{ step.title }}</div>
+                <div class="text-caption text-medium-emphasis">{{ step.desc }}</div>
+              </v-timeline-item>
+            </v-timeline>
+          </v-card-text>
+        </v-card>
+      </v-col>
 
-        <!-- Instant rental steps -->
-        <div class="steps-card">
-          <p class="steps-type">⚡ Instant Rental</p>
-          <div class="step" v-for="(step, i) in instantSteps" :key="i">
-            <span class="step-num">{{ i + 1 }}</span>
-            <div>
-              <p class="step-title">{{ step.title }}</p>
-              <p class="step-desc">{{ step.desc }}</p>
-            </div>
-          </div>
-        </div>
+      <!-- Contract rental steps -->
+      <v-col cols="12" md="6">
+        <v-card rounded="xl" elevation="1">
+          <v-card-title class="pa-4 pb-2">
+            <v-icon color="primary" class="mr-2">mdi-file-document-outline</v-icon>
+            Contract Rental
+          </v-card-title>
+          <v-card-text>
+            <v-timeline density="compact" align="start">
+              <v-timeline-item
+                v-for="(step, i) in contractSteps"
+                :key="i"
+                dot-color="primary"
+                size="small"
+              >
+                <div class="font-weight-medium">{{ step.title }}</div>
+                <div class="text-caption text-medium-emphasis">{{ step.desc }}</div>
+              </v-timeline-item>
+            </v-timeline>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-        <!-- Contract rental steps -->
-        <div class="steps-card">
-          <p class="steps-type">📋 Contract Rental</p>
-          <div class="step" v-for="(step, i) in contractSteps" :key="i">
-            <span class="step-num">{{ i + 1 }}</span>
-            <div>
-              <p class="step-title">{{ step.title }}</p>
-              <p class="step-desc">{{ step.desc }}</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ── ROLES SECTION ── -->
-    <section class="roles-section">
-      <h2 class="section-title">Who Uses SmartRent?</h2>
-      <div class="roles-grid">
-        <div class="role-card" v-for="role in roles" :key="role.title">
-          <span class="role-icon">{{ role.icon }}</span>
-          <h3 class="role-title">{{ role.title }}</h3>
-          <p class="role-desc">{{ role.desc }}</p>
-        </div>
-      </div>
-    </section>
-
+    <!-- ── ROLES ── -->
+    <h2 class="text-h5 font-weight-bold mt-10 mb-6">Who Uses SmartRent?</h2>
+    <v-row>
+      <v-col v-for="role in roles" :key="role.title" cols="12" md="4">
+        <v-card rounded="xl" elevation="1" height="100%">
+          <v-card-text class="pa-6">
+            <v-icon :color="role.color" size="40" class="mb-3">{{ role.icon }}</v-icon>
+            <h3 class="text-h6 font-weight-bold mb-2">{{ role.title }}</h3>
+            <p class="text-body-2 text-medium-emphasis">{{ role.desc }}</p>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
+import { getCurrentUser } from '../store/data.js'
+
 export default {
   name: 'HomeView',
-
-  computed: {
-    // Check if user is logged in to show correct CTA button
-    isLoggedIn() { return !!localStorage.getItem('token') }
-  },
-
   data() {
     return {
-      // Platform statistics displayed in the stats row
+      currentUser: getCurrentUser(),
       stats: [
-        { value: '2', label: 'Rental Models' },
-        { value: '3', label: 'User Roles' },
-        { value: '100%', label: 'Web Based' },
-        { value: '24/7', label: 'Available' }
+        { value: '2',    label: 'Rental Models',  icon: 'mdi-swap-horizontal', color: 'primary' },
+        { value: '3',    label: 'User Roles',     icon: 'mdi-account-group',   color: 'secondary' },
+        { value: '8',    label: 'Vehicles',       icon: 'mdi-car-multiple',    color: 'success' },
+        { value: '24/7', label: 'Available',      icon: 'mdi-clock-outline',   color: 'warning' },
       ],
-
-      // Steps for instant rental flow
       instantSteps: [
-        { title: 'Browse the Fleet', desc: 'Find an available vehicle near you' },
-        { title: 'Start Instantly', desc: 'One click to begin — no approval needed' },
-        { title: 'End Anywhere', desc: 'Stop when done — price calculated automatically' }
+        { title: 'Browse the Fleet',  desc: 'Find an available vehicle near you' },
+        { title: 'Start Instantly',   desc: 'One click — no approval needed' },
+        { title: 'End Anywhere',      desc: 'Stop when done — price calculated automatically' }
       ],
-
-      // Steps for contract rental flow
       contractSteps: [
-        { title: 'Choose Your Dates', desc: 'Pick start and end date for your trip' },
-        { title: 'Submit Request', desc: 'Send your request with delivery details' },
-        { title: 'Admin Approves', desc: 'Get confirmed and pay per day' }
+        { title: 'Choose Your Dates',  desc: 'Pick start and end date for your trip' },
+        { title: 'Submit Request',     desc: 'Send your request with delivery details' },
+        { title: 'Admin Approves',     desc: 'Get confirmed and pay per day' }
       ],
-
-      // User role descriptions
       roles: [
-        {
-          icon: '👤',
-          title: 'Visitor',
-          desc: 'Browse the full vehicle fleet without an account. See availability, pricing, and locations.'
-        },
-        {
-          icon: '🙋',
-          title: 'Customer',
-          desc: 'Register to start instant rentals, submit contract requests, and track your rental history.'
-        },
-        {
-          icon: '🛠️',
-          title: 'Admin',
-          desc: 'Manage the fleet, approve contract rentals, and monitor all platform activity.'
-        }
+        { icon: 'mdi-account-outline', color: 'info',      title: 'Visitor',  desc: 'Browse the full vehicle fleet without an account. See availability, pricing, and locations.' },
+        { icon: 'mdi-account',         color: 'primary',   title: 'Customer', desc: 'Register to start instant rentals, submit contract requests, and track your rental history.' },
+        { icon: 'mdi-shield-account',  color: 'secondary', title: 'Admin',    desc: 'Manage the fleet, approve contract rentals, and monitor all platform activity.' }
       ]
     }
   }
 }
 </script>
-
-<style scoped>
-.home { display: flex; flex-direction: column; gap: 80px; }
-
-/* ── Hero ── */
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 48px;
-  padding: 48px 0;
-}
-
-.hero-content { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-
-.hero-tag {
-  color: #3b82f6;
-  font-size: 12px;
-  letter-spacing: 3px;
-}
-
-.hero-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 52px;
-  font-weight: 700;
-  color: #e2e8f0;
-  line-height: 1.1;
-  letter-spacing: 1px;
-}
-
-.hero-accent { color: #3b82f6; }
-
-.hero-desc {
-  color: #64748b;
-  font-size: 15px;
-  line-height: 1.7;
-  max-width: 480px;
-}
-
-.hero-btns { display: flex; gap: 12px; margin-top: 8px; }
-
-.btn-primary {
-  background: #3b82f6;
-  color: #fff;
-  padding: 12px 28px;
-  border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 1px;
-  transition: background 0.2s;
-}
-.btn-primary:hover { background: #2563eb; }
-
-.btn-ghost {
-  background: transparent;
-  color: #3b82f6;
-  border: 1px solid #1e3a5f;
-  padding: 12px 28px;
-  border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 1px;
-  transition: all 0.2s;
-}
-.btn-ghost:hover { background: #0f1a2e; }
-
-/* Hero decorative panel */
-.hero-panel { flex-shrink: 0; }
-
-.panel-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 28px;
-  width: 280px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.panel-label {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: #475569;
-}
-
-.panel-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #0d0f14;
-  border: 1px solid #1e2535;
-  border-radius: 6px;
-  padding: 14px;
-}
-
-.panel-icon { font-size: 22px; }
-
-.panel-item-title {
-  color: #e2e8f0;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.panel-item-sub {
-  color: #475569;
-  font-size: 12px;
-  margin-top: 2px;
-}
-
-/* ── Stats row ── */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-.stat-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 28px;
-  text-align: center;
-}
-
-.stat-value {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 40px;
-  font-weight: 700;
-  color: #3b82f6;
-  letter-spacing: 2px;
-}
-
-.stat-label {
-  color: #475569;
-  font-size: 12px;
-  margin-top: 4px;
-  letter-spacing: 1px;
-}
-
-/* ── How it works ── */
-.how-section { display: flex; flex-direction: column; gap: 32px; }
-
-.section-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 2px;
-}
-
-.section-sub { color: #475569; font-size: 13px; margin-top: -20px; }
-
-.steps-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.steps-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.steps-type {
-  color: #3b82f6;
-  font-size: 13px;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-
-.step { display: flex; gap: 16px; align-items: flex-start; }
-
-.step-num {
-  background: #0f1a2e;
-  border: 1px solid #1e3a5f;
-  color: #3b82f6;
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.step-title { color: #e2e8f0; font-size: 14px; }
-.step-desc  { color: #475569; font-size: 12px; margin-top: 3px; }
-
-/* ── Roles ── */
-.roles-section { display: flex; flex-direction: column; gap: 28px; }
-
-.roles-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.role-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  transition: border-color 0.2s;
-}
-.role-card:hover { border-color: #2a4a7f; }
-
-.role-icon  { font-size: 28px; }
-.role-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 1px;
-}
-.role-desc  { color: #64748b; font-size: 13px; line-height: 1.6; }
-</style>
