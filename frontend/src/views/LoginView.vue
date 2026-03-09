@@ -254,7 +254,7 @@ export default {
   position: absolute;
   width: 600px; height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(92, 107, 192, 0.1), transparent 70%);
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.08), transparent 70%);
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -262,10 +262,14 @@ export default {
 
 .login-card {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.12);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 24px;
   padding: 36px;
-  box-shadow: 0 20px 60px rgba(92, 107, 192, 0.08);
+  box-shadow: 0 20px 60px rgba(79, 70, 229, 0.07);
+}
+.v-theme--dark .login-card {
+  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
 .login-header { text-align: center; margin-bottom: 28px; }
@@ -273,7 +277,7 @@ export default {
 .login-logo {
   width: 56px; height: 56px;
   border-radius: 16px;
-  background: rgba(92, 107, 192, 0.1);
+  background: rgba(79, 70, 229, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -298,19 +302,22 @@ export default {
   gap: 8px;
   font-size: 12px;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 6px;
+  padding: 5px 8px;
+  border-radius: 8px;
   transition: background 0.15s;
+  color: rgb(var(--v-theme-on-surface));
 }
-.demo-item:hover { background: rgba(92, 107, 192, 0.1); }
+.v-theme--light .demo-item:hover { background: rgba(79,70,229,0.08); }
+.v-theme--dark  .demo-item:hover { background: rgba(129,140,248,0.1); }
 
 /* Register toggle */
 .register-toggle {
   display: flex;
-  background: rgba(92, 107, 192, 0.07);
+  background: rgba(79,70,229,0.06);
   border-radius: 12px;
   padding: 4px;
 }
+.v-theme--dark .register-toggle { background: rgba(129,140,248,0.08); }
 .toggle-option {
   flex: 1;
   display: flex;
