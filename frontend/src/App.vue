@@ -147,13 +147,72 @@ export default {
 
 <style>
 /* ── Google Fonts ── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Clash+Display:wght@600;700&display=swap');
+/* Fallback for Clash Display via Bunny Fonts */
+@import url('https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700|syne:600,700,800');
 
 /* ── Global base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+}
+
+/* ── Force correct text colors in both themes ── */
+/* Vuetify sets these but we reinforce them explicitly */
+.v-theme--light {
+  --text-primary:   #111827;
+  --text-secondary: #6B7280;
+  --text-accent:    #4F46E5;
+  --border-color:   rgba(0, 0, 0, 0.08);
+  --card-bg:        #FFFFFF;
+  --surface-bg:     #F9FAFB;
+}
+
+.v-theme--dark {
+  --text-primary:   #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-accent:    #818CF8;
+  --border-color:   rgba(255, 255, 255, 0.08);
+  --card-bg:        #18181F;
+  --surface-bg:     #0F0F14;
+}
+
+/* ── Ensure all text in cards is visible ── */
+.v-theme--light .v-card,
+.v-theme--light .v-card-text,
+.v-theme--light .v-card-title,
+.v-theme--light .v-card-subtitle {
+  color: #111827 !important;
+}
+
+.v-theme--dark .v-card,
+.v-theme--dark .v-card-text,
+.v-theme--dark .v-card-title,
+.v-theme--dark .v-card-subtitle {
+  color: #F9FAFB !important;
+}
+
+/* ── Vuetify medium-emphasis text fix ── */
+.v-theme--light .text-medium-emphasis { color: #6B7280 !important; opacity: 1 !important; }
+.v-theme--dark  .text-medium-emphasis { color: #9CA3AF !important; opacity: 1 !important; }
+
+/* ── List items text ── */
+.v-theme--light .v-list-item-title    { color: #111827 !important; }
+.v-theme--light .v-list-item-subtitle { color: #6B7280 !important; }
+.v-theme--dark  .v-list-item-title    { color: #F9FAFB !important; }
+.v-theme--dark  .v-list-item-subtitle { color: #9CA3AF !important; }
+
+/* ── Table text ── */
+.v-theme--light .v-data-table { color: #111827 !important; }
+.v-theme--dark  .v-data-table { color: #F9FAFB !important; }
+
+/* ── Chip text ── */
+.v-theme--light .v-chip { color: inherit; }
+
+/* ── Headings always use Syne ── */
+h1, h2, h3, .syne {
+  font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
 }
 
 /* ── Page transition: fade ── */
@@ -161,52 +220,59 @@ body {
 .fade-enter-from, .fade-leave-to       { opacity: 0; }
 
 /* ── Page transition: slide left ── */
-.slide-left-enter-active, .slide-left-leave-active { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-.slide-left-enter-from  { opacity: 0; transform: translateX(30px); }
-.slide-left-leave-to    { opacity: 0; transform: translateX(-30px); }
+.slide-left-enter-active, .slide-left-leave-active { transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
+.slide-left-enter-from  { opacity: 0; transform: translateX(24px); }
+.slide-left-leave-to    { opacity: 0; transform: translateX(-24px); }
 
 /* ── Page transition: slide right ── */
-.slide-right-enter-active, .slide-right-leave-active { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-.slide-right-enter-from  { opacity: 0; transform: translateX(-30px); }
-.slide-right-leave-to    { opacity: 0; transform: translateX(30px); }
+.slide-right-enter-active, .slide-right-leave-active { transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
+.slide-right-enter-from  { opacity: 0; transform: translateX(-24px); }
+.slide-right-leave-to    { opacity: 0; transform: translateX(24px); }
 
-/* ── Scroll reveal animation ── */
+/* ── Scroll reveal ── */
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
 }
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
 
 /* ── Card hover lift ── */
 .hover-lift {
-  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+  cursor: pointer;
 }
-.hover-lift:hover {
+.v-theme--light .hover-lift:hover {
   transform: translateY(-4px) !important;
-  box-shadow: 0 12px 32px rgba(92, 107, 192, 0.15) !important;
+  box-shadow: 0 12px 32px rgba(79, 70, 229, 0.13) !important;
+}
+.v-theme--dark .hover-lift:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 32px rgba(129, 140, 248, 0.18) !important;
 }
 
 /* ── Skeleton pulse ── */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
+  50%       { opacity: 0.35; }
 }
-.skeleton { animation: skeleton-pulse 1.5s ease-in-out infinite; }
+.v-theme--light .skeleton { animation: skeleton-pulse 1.6s ease-in-out infinite; background: #F3F4F6 !important; }
+.v-theme--dark  .skeleton { animation: skeleton-pulse 1.6s ease-in-out infinite; background: #23232E !important; }
 
-/* ── Number counter animation ── */
-@keyframes count-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.count-animated { animation: count-up 0.5s ease forwards; }
 </style>
 
 <style scoped>
