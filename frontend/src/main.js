@@ -14,32 +14,48 @@ const vuetify = createVuetify({
   theme: {
     defaultTheme: localStorage.getItem('sr_theme') || 'light',
     themes: {
+
+      // ── LIGHT THEME ──
       light: {
         dark: false,
         colors: {
-          primary:    '#5C6BC0',
-          secondary:  '#7E57C2',
-          accent:     '#9575CD',
-          background: '#F8F7FF',
-          surface:    '#FFFFFF',
-          error:      '#EF5350',
-          success:    '#43A047',
-          warning:    '#FB8C00',
-          info:       '#039BE5',
+          primary:              '#4F46E5',
+          secondary:            '#7C3AED',
+          accent:               '#A78BFA',
+          background:           '#F9FAFB',
+          surface:              '#FFFFFF',
+          'surface-variant':    '#F3F4F6',
+          'on-background':      '#111827',
+          'on-surface':         '#111827',
+          'on-surface-variant': '#6B7280',
+          'on-primary':         '#FFFFFF',
+          'on-secondary':       '#FFFFFF',
+          error:                '#DC2626',
+          success:              '#16A34A',
+          warning:              '#D97706',
+          info:                 '#0284C7',
         }
       },
+
+      // ── DARK THEME ──
       dark: {
         dark: true,
         colors: {
-          primary:    '#7986CB',
-          secondary:  '#9575CD',
-          accent:     '#B39DDB',
-          background: '#0F0E17',
-          surface:    '#1A1825',
-          error:      '#EF5350',
-          success:    '#43A047',
-          warning:    '#FB8C00',
-          info:       '#039BE5',
+          primary:              '#818CF8',
+          secondary:            '#A78BFA',
+          accent:               '#C4B5FD',
+          background:           '#0F0F14',
+          surface:              '#18181F',
+          'surface-variant':    '#23232E',
+          'on-background':      '#F9FAFB',
+          'on-surface':         '#F9FAFB',
+          'on-surface-variant': '#9CA3AF',
+          'on-primary':         '#1E1B4B',
+          'on-secondary':       '#2E1065',
+          error:                '#F87171',
+          success:              '#4ADE80',
+          warning:              '#FBBF24',
+          info:                 '#38BDF8',
         }
       }
     }
