@@ -215,37 +215,81 @@ h1, h2, h3, h4, .font-display {
    Text: slate-900 (#0f172a) — maximum contrast
    ═══════════════════════════════════════════════════════════ */
 .v-theme--light {
-  /* Kill Vuetify's medium-emphasis opacity dimming at the root */
   --v-medium-emphasis-opacity: 1;
-  --v-high-emphasis-opacity: 1;
-  /* Named tokens for scoped styles */
-  --sr-text:        #0f172a;
-  --sr-muted:       #475569;
-  --sr-border:      #cbd5e1;
-  --sr-card:        #ffffff;
-  --sr-bg:          #f1f5f9;
+  --v-high-emphasis-opacity:   1;
+  --sr-text:      #0f172a;
+  --sr-muted:     #475569;
+  --sr-border:    #94a3b8;
+  --sr-card:      #ffffff;
+  --sr-bg:        #c8d6e5;
+  /* This is what every card's border: var(--border-color, ...) actually reads */
+  --border-color: #94a3b8;
 }
 
-/* Explicit text colors — never rely on Vuetify opacity */
+/* Every card in light mode: white background + visible border + real shadow */
+.v-theme--light .v-card {
+  background-color: #ffffff !important;
+  border: 1.5px solid #b8c4d4 !important;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.08) !important;
+}
+
+/* Kill Vuetify opacity dimming — explicit text colors everywhere */
 .v-theme--light .v-card-title,
-.v-theme--light .v-list-item-title     { color: #0f172a !important; }
+.v-theme--light .v-list-item-title      { color: #0f172a !important; opacity: 1 !important; }
 
 .v-theme--light .v-card-subtitle,
 .v-theme--light .v-list-item-subtitle,
-.v-theme--light .text-medium-emphasis  { color: #475569 !important; opacity: 1 !important; }
+.v-theme--light .text-medium-emphasis   { color: #475569 !important; opacity: 1 !important; }
 
-.v-theme--light .v-card-text           { color: #0f172a !important; }
+.v-theme--light .v-card-text            { color: #0f172a !important; opacity: 1 !important; }
 
 .v-theme--light .v-data-table,
 .v-theme--light .v-data-table td,
-.v-theme--light .v-data-table th       { color: #0f172a !important; }
+.v-theme--light .v-data-table th        { color: #0f172a !important; }
 
-.v-theme--light .v-btn.v-btn--variant-text:not([class*="text-"]) { color: #0f172a; }
+/* Table rows get a border too */
+.v-theme--light .v-data-table .v-table__wrapper {
+  border: 1.5px solid #b8c4d4 !important;
+  border-radius: 12px;
+}
 
-/* App bar in light: white with a subtle border */
+/* Chips */
+.v-theme--light .v-chip { color: inherit !important; opacity: 1 !important; }
+
+/* Btn text */
+.v-theme--light .v-btn.v-btn--variant-text { color: #0f172a; }
+
+/* App bar */
 .v-theme--light .v-app-bar {
   background-color: #ffffff !important;
-  border-bottom: 1px solid #e2e8f0 !important;
+  border-bottom: 1.5px solid #b8c4d4 !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.07) !important;
+}
+
+/* List items */
+.v-theme--light .v-list { background: transparent !important; }
+.v-theme--light .v-list-item { color: #0f172a !important; }
+
+/* ── Global catch-all: any div/section using common card-like class names ──
+   Catches all custom .kpi-card, .stat-card, .step-card, .type-card etc.
+   that have a border defined inline — override to be visible in light mode */
+.v-theme--light [class*="-card"]:not(.v-card):not(.earnings-card):not(.company-cta-card) {
+  border-color: #b8c4d4 !important;
+}
+
+/* Input fields in light mode need visible borders */
+.v-theme--light .v-field__outline { color: #94a3b8 !important; }
+.v-theme--light .v-field--variant-outlined .v-field__outline { opacity: 1 !important; }
+
+/* Dialog/overlay cards */
+.v-theme--light .v-overlay .v-card {
+  border: 1.5px solid #b8c4d4 !important;
+}
+
+/* Bottom nav in light mode */
+.v-theme--light .v-bottom-navigation {
+  border-top: 1.5px solid #b8c4d4 !important;
+  background: #ffffff !important;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -253,12 +297,13 @@ h1, h2, h3, h4, .font-display {
    ═══════════════════════════════════════════════════════════ */
 .v-theme--dark {
   --v-medium-emphasis-opacity: 1;
-  --v-high-emphasis-opacity: 1;
-  --sr-text:        #f0f9ff;
-  --sr-muted:       #94a3b8;
-  --sr-border:      rgba(255,255,255,0.08);
-  --sr-card:        #111827;
-  --sr-bg:          #0a0f1e;
+  --v-high-emphasis-opacity:   1;
+  --sr-text:      #f0f9ff;
+  --sr-muted:     #94a3b8;
+  --sr-border:    rgba(255,255,255,0.12);
+  --sr-card:      #111827;
+  --sr-bg:        #0a0f1e;
+  --border-color: rgba(255,255,255,0.10);
 }
 
 .v-theme--dark .v-card-title,
