@@ -65,7 +65,7 @@
       <v-col cols="12" md="4">
         <div class="earnings-card hover-lift reveal reveal-delay-3">
           <div class="earnings-label">Total Earnings</div>
-          <div class="earnings-amount">{{ animatedEarnings }} <span class="earnings-currency">DZD</span></div>
+          <div class="earnings-amount">{{ animatedEarnings }} <span class="earnings-currency">TND</span></div>
           <v-progress-linear
             :model-value="earningsPercent"
             color="secondary"
@@ -250,10 +250,11 @@ export default {
 /* KPI Cards */
 .kpi-card {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.1);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 18px;
   padding: 20px;
 }
+.v-theme--dark .kpi-card { border-color: rgba(255,255,255,0.08); }
 
 .kpi-icon-wrap {
   width: 40px; height: 40px;
@@ -276,29 +277,25 @@ export default {
 
 /* Quick actions */
 .quick-action {
-  border: 1px solid rgba(92, 107, 192, 0.1) !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
   height: 100%;
   text-decoration: none;
 }
+.v-theme--dark .quick-action { border-color: rgba(255,255,255,0.08) !important; }
 .qa-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: rgb(var(--v-theme-on-surface)); margin-bottom: 6px; }
 .qa-desc  { font-size: 13px; line-height: 1.6; color: rgb(var(--v-theme-on-surface-variant)); }
 
-/* Earnings card */
+/* Earnings card — always white text since it has gradient bg */
 .earnings-card {
-  background: linear-gradient(135deg, rgb(var(--v-theme-secondary)), rgb(var(--v-theme-primary)));
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
   border-radius: 18px;
   padding: 24px;
   height: 100%;
-  color: white;
+  color: #FFFFFF;
 }
 
-.earnings-label { font-size: 13px; font-weight: 600; opacity: 0.8; margin-bottom: 8px; }
-.earnings-amount {
-  font-family: 'Syne', sans-serif;
-  font-size: 36px;
-  font-weight: 800;
-  line-height: 1;
-}
-.earnings-currency { font-size: 18px; opacity: 0.7; }
-.earnings-sub { font-size: 12px; opacity: 0.7; margin-top: 8px; }
+.earnings-label   { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 8px; }
+.earnings-amount  { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; color: #FFFFFF; }
+.earnings-currency{ font-size: 16px; color: rgba(255,255,255,0.7); }
+.earnings-sub     { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 8px; }
 </style>
