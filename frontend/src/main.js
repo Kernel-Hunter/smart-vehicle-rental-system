@@ -15,47 +15,56 @@ const vuetify = createVuetify({
     defaultTheme: localStorage.getItem('sr_theme') || 'light',
     themes: {
 
-      // ── LIGHT THEME ──
+      // ── LIGHT: clean white with deep indigo accents ──
       light: {
         dark: false,
         colors: {
-          primary:              '#4F46E5',
-          secondary:            '#7C3AED',
-          accent:               '#A78BFA',
-          background:           '#F9FAFB',
-          surface:              '#FFFFFF',
-          'surface-variant':    '#F3F4F6',
-          'on-background':      '#111827',
-          'on-surface':         '#111827',
-          'on-surface-variant': '#6B7280',
-          'on-primary':         '#FFFFFF',
-          'on-secondary':       '#FFFFFF',
-          error:                '#DC2626',
-          success:              '#16A34A',
-          warning:              '#D97706',
-          info:                 '#0284C7',
+          primary:              '#4338ca', // deep indigo
+          secondary:            '#6d28d9', // violet
+          accent:               '#7c3aed',
+          background:           '#f7f8fc', // very light cool gray
+          surface:              '#ffffff',
+          'surface-variant':    '#eef0f8',
+          // These 'on-*' values are what Vuetify uses for text on those surfaces
+          'on-background':      '#1a1a2e',
+          'on-surface':         '#1a1a2e',
+          'on-surface-variant': '#4a5568',
+          'on-primary':         '#ffffff',
+          'on-secondary':       '#ffffff',
+          error:                '#c0392b',
+          success:              '#16a34a',
+          warning:              '#b45309',
+          info:                 '#0369a1',
+          'on-error':           '#ffffff',
+          'on-success':         '#ffffff',
+          'on-warning':         '#ffffff',
+          'on-info':            '#ffffff',
         }
       },
 
-      // ── DARK THEME ──
+      // ── DARK: deep navy with bright indigo accents ──
       dark: {
         dark: true,
         colors: {
-          primary:              '#818CF8',
-          secondary:            '#A78BFA',
-          accent:               '#C4B5FD',
-          background:           '#0F0F14',
-          surface:              '#18181F',
-          'surface-variant':    '#23232E',
-          'on-background':      '#F9FAFB',
-          'on-surface':         '#F9FAFB',
-          'on-surface-variant': '#9CA3AF',
-          'on-primary':         '#1E1B4B',
-          'on-secondary':       '#2E1065',
-          error:                '#F87171',
-          success:              '#4ADE80',
-          warning:              '#FBBF24',
-          info:                 '#38BDF8',
+          primary:              '#818cf8', // bright indigo — readable on dark
+          secondary:            '#a78bfa', // bright violet
+          accent:               '#c4b5fd',
+          background:           '#0c0c14',
+          surface:              '#13131c',
+          'surface-variant':    '#1c1c28',
+          'on-background':      '#e8e8f5',
+          'on-surface':         '#e8e8f5',
+          'on-surface-variant': '#94a3b8',
+          'on-primary':         '#1e1b4b',
+          'on-secondary':       '#2e1065',
+          error:                '#f87171',
+          success:              '#4ade80',
+          warning:              '#fbbf24',
+          info:                 '#38bdf8',
+          'on-error':           '#1a0000',
+          'on-success':         '#022c22',
+          'on-warning':         '#1c1000',
+          'on-info':            '#001a2e',
         }
       }
     }
