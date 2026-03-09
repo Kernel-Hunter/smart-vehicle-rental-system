@@ -1,428 +1,277 @@
 <template>
   <div>
-    <!-- ── Page header with title and refresh button ── -->
-    <div class="page-header">
+    <!-- Page header -->
+    <div class="d-flex align-center justify-space-between mb-6">
       <div>
-        <h2 class="page-title">Fleet Overview</h2>
-        <p class="page-sub">Browse and rent available vehicles</p>
+        <h2 class="text-h5 font-weight-bold">Fleet Overview</h2>
+        <p class="text-medium-emphasis text-body-2 mt-1">Browse and rent available vehicles</p>
       </div>
-      <button class="btn-refresh" @click="fetchVehicles">↻ Refresh</button>
-    </div>
-
-    <!-- Status messages -->
-    <p v-if="loading" class="status-text">Loading vehicles...</p>
-    <p v-if="error" class="msg-error">{{ error }}</p>
-    <p v-if="actionMessage" class="msg-success">{{ actionMessage }}</p>
-
-    <!-- ── Vehicle cards grid: one card per vehicle ── -->
-    <div v-if="vehicles.length" class="vehicle-grid">
-      <div v-for="v in vehicles" :key="v.id" class="vehicle-card">
-
-        <!-- Card top: ID, name, and status badge -->
-        <div class="card-top">
-          <div>
-            <p class="card-id">#{{ v.id }}</p>
-            <h3 class="card-name">{{ v.brand }} {{ v.model }}</h3>
-            <p class="card-type">{{ v.type }}</p>
-          </div>
-          <!-- Status badge color changes based on vehicle status -->
-          <span :class="['status-badge', statusClass(v.status)]">{{ v.status }}</span>
-        </div>
-
-        <!-- Card pricing info -->
-        <div class="card-prices">
-          <div class="price-item">
-            <span class="price-label">PER MINUTE</span>
-            <span class="price-value">{{ v.pricePerMinute }} DZD</span>
-          </div>
-          <div class="price-divider"></div>
-          <div class="price-item">
-            <span class="price-label">PER DAY</span>
-            <span class="price-value">{{ v.pricePerDay }} DZD</span>
-          </div>
-        </div>
-
-        <!-- Location line -->
-        <p class="card-location">◎ {{ v.location || 'No location set' }}</p>
-
-        <!-- ── Action buttons: shown based on login state and vehicle availability ── -->
-        <div class="card-actions">
-          <!-- Not logged in -->
-          <span v-if="!isLoggedIn" class="hint-text">Login to rent this vehicle</span>
-
-          <!-- Logged in but vehicle not available -->
-          <span v-else-if="v.status !== 'AVAILABLE'" class="hint-text">Vehicle not available</span>
-
-          <!-- Available + logged in: show both rental options -->
-          <div v-else class="action-btns">
-            <!-- Instant rental: starts immediately, billed per minute -->
-            <button class="btn-instant" @click="startInstant(v.id)">⚡ Instant Rental</button>
-            <!-- Contract rental: opens form below for date range + admin approval -->
-            <button class="btn-contract" @click="openContract(v)">📋 Request Contract</button>
-          </div>
-        </div>
-
+      <!-- Status filter chips -->
+      <div class="d-flex gap-2">
+        <v-chip
+          v-for="f in filters"
+          :key="f.value"
+          :color="activeFilter === f.value ? 'primary' : undefined"
+          :variant="activeFilter === f.value ? 'tonal' : 'outlined'"
+          @click="activeFilter = f.value"
+          class="cursor-pointer"
+        >
+          {{ f.label }}
+        </v-chip>
       </div>
     </div>
 
-    <p v-else-if="!loading" class="status-text">No vehicles found.</p>
+    <!-- Vehicle cards grid -->
+    <v-row>
+      <v-col
+        v-for="v in filteredVehicles"
+        :key="v.id"
+        cols="12" sm="6" md="4" lg="3"
+      >
+        <v-card rounded="xl" elevation="1" height="100%" class="d-flex flex-column">
+          <!-- Card header: status chip top right -->
+          <v-card-item>
+            <template v-slot:append>
+              <v-chip :color="statusColor(v.status)" variant="tonal" size="small">
+                {{ v.status }}
+              </v-chip>
+            </template>
+            <v-card-subtitle class="text-caption">#{{ v.id }} · {{ v.type }}</v-card-subtitle>
+            <v-card-title class="text-h6">{{ v.brand }} {{ v.model }}</v-card-title>
+          </v-card-item>
 
-    <!-- ── Contract rental form: appears when a vehicle is selected ── -->
-    <div v-if="contractVehicle" class="contract-panel">
-      <div class="panel-header">
-        <h3 class="panel-title">Contract Rental Request</h3>
-        <!-- X button to dismiss the form -->
-        <button class="btn-close" @click="contractVehicle = null">✕</button>
-      </div>
+          <!-- Pricing -->
+          <v-card-text class="flex-grow-1">
+            <v-row dense>
+              <v-col cols="6">
+                <div class="text-caption text-medium-emphasis">Per Minute</div>
+                <div class="text-body-1 font-weight-bold text-primary">{{ v.pricePerMinute }} DZD</div>
+              </v-col>
+              <v-col cols="6">
+                <div class="text-caption text-medium-emphasis">Per Day</div>
+                <div class="text-body-1 font-weight-bold text-primary">{{ v.pricePerDay }} DZD</div>
+              </v-col>
+            </v-row>
+            <div class="d-flex align-center mt-3 text-caption text-medium-emphasis">
+              <v-icon size="14" class="mr-1">mdi-map-marker</v-icon>
+              {{ v.location }}
+            </div>
+          </v-card-text>
 
-      <p class="panel-vehicle">{{ contractVehicle.brand }} {{ contractVehicle.model }}</p>
+          <v-divider />
 
-      <div class="form-grid">
-        <div class="field">
-          <label class="field-label">START DATE</label>
-          <input v-model="contractForm.startDate" type="date" class="field-input" required />
-        </div>
-        <div class="field">
-          <label class="field-label">END DATE</label>
-          <input v-model="contractForm.endDate" type="date" class="field-input" required />
-        </div>
-      </div>
+          <!-- Action buttons -->
+          <v-card-actions class="pa-3 flex-column gap-2">
+            <template v-if="!currentUser">
+              <v-btn variant="tonal" color="primary" block to="/login" rounded="lg">
+                Login to Rent
+              </v-btn>
+            </template>
+            <template v-else-if="v.status !== 'AVAILABLE'">
+              <v-btn disabled block variant="tonal" rounded="lg">Not Available</v-btn>
+            </template>
+            <template v-else>
+              <!-- More info button -->
+              <v-btn
+                variant="outlined"
+                color="primary"
+                block
+                rounded="lg"
+                :to="`/vehicles/${v.id}`"
+                prepend-icon="mdi-information-outline"
+              >
+                View Details
+              </v-btn>
+              <v-btn
+                color="warning"
+                block
+                rounded="lg"
+                prepend-icon="mdi-lightning-bolt"
+                @click="startInstant(v)"
+              >
+                Instant Rental
+              </v-btn>
+              <v-btn
+                color="primary"
+                variant="tonal"
+                block
+                rounded="lg"
+                prepend-icon="mdi-file-document-outline"
+                @click="openContractDialog(v)"
+              >
+                Request Contract
+              </v-btn>
+            </template>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
 
-      <div class="field">
-        <label class="field-label">DELIVERY LOCATION</label>
-        <input v-model="contractForm.deliveryLocation" type="text" class="field-input" placeholder="Optional delivery address" />
-      </div>
+    <v-alert v-if="filteredVehicles.length === 0" type="info" variant="tonal" class="mt-4">
+      No vehicles match the selected filter.
+    </v-alert>
 
-      <div class="panel-actions">
-        <button class="btn-primary" @click="submitContract">Submit Request</button>
-        <button class="btn-ghost" @click="contractVehicle = null">Cancel</button>
-      </div>
+    <!-- ── Contract Request Dialog ── -->
+    <v-dialog v-model="contractDialog" max-width="500" rounded="xl">
+      <v-card rounded="xl">
+        <v-card-title class="pa-6 pb-2">
+          <v-icon color="primary" class="mr-2">mdi-file-document-outline</v-icon>
+          Contract Rental Request
+        </v-card-title>
+        <v-card-subtitle class="px-6">
+          {{ selectedVehicle?.brand }} {{ selectedVehicle?.model }}
+        </v-card-subtitle>
 
-      <p v-if="contractMessage" class="msg-success">{{ contractMessage }}</p>
-    </div>
+        <v-card-text class="pa-6">
+          <v-row dense>
+            <v-col cols="6">
+              <v-text-field
+                v-model="contractForm.startDate"
+                label="Start Date"
+                type="date"
+                variant="outlined"
+                density="comfortable"
+                required
+              />
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                v-model="contractForm.endDate"
+                label="End Date"
+                type="date"
+                variant="outlined"
+                density="comfortable"
+                required
+              />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-model="contractForm.deliveryLocation"
+                label="Delivery Location (optional)"
+                prepend-inner-icon="mdi-map-marker"
+                variant="outlined"
+                density="comfortable"
+              />
+            </v-col>
+          </v-row>
 
+          <!-- Price estimate -->
+          <v-alert v-if="contractEstimate" color="primary" variant="tonal" density="compact">
+            Estimated total: <strong>{{ contractEstimate }} DZD</strong>
+            ({{ contractDays }} day(s) × {{ selectedVehicle?.pricePerDay }} DZD/day)
+          </v-alert>
+        </v-card-text>
+
+        <v-card-actions class="pa-4 pt-0">
+          <v-spacer />
+          <v-btn variant="text" @click="contractDialog = false">Cancel</v-btn>
+          <v-btn color="primary" variant="tonal" @click="submitContract" rounded="lg">
+            Submit Request
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- ── Snackbar feedback ── -->
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
+      {{ snackbar.text }}
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { getVehicles, startInstantRental, submitContractRental, getCurrentUser } from '../store/data.js'
 
 export default {
   name: 'VehiclesView',
-
   data() {
     return {
-      vehicles: [],          // All vehicles returned by the backend
-      loading: false,        // Controls the loading message
-      error: '',             // Shown if vehicle fetch fails
-      actionMessage: '',     // Shown after instant rental action
-      contractVehicle: null, // The vehicle selected for contract (controls form visibility)
-      contractForm: { startDate: '', endDate: '', deliveryLocation: '' },
-      contractMessage: ''    // Shown after contract form submission
+      vehicles:        [],
+      currentUser:     getCurrentUser(),
+      activeFilter:    'ALL',
+      contractDialog:  false,
+      selectedVehicle: null,
+      contractForm:    { startDate: '', endDate: '', deliveryLocation: '' },
+      snackbar:        { show: false, text: '', color: 'success' },
+      filters: [
+        { label: 'All',         value: 'ALL' },
+        { label: 'Available',   value: 'AVAILABLE' },
+        { label: 'Rented',      value: 'RENTED' },
+        { label: 'Maintenance', value: 'MAINTENANCE' },
+      ]
     }
   },
 
   computed: {
-    // True if a JWT token exists — controls which buttons are visible
-    isLoggedIn() { return !!localStorage.getItem('token') }
+    // Filter vehicles based on selected status chip
+    filteredVehicles() {
+      if (this.activeFilter === 'ALL') return this.vehicles
+      return this.vehicles.filter(v => v.status === this.activeFilter)
+    },
+
+    // Number of days between selected contract dates
+    contractDays() {
+      if (!this.contractForm.startDate || !this.contractForm.endDate) return 0
+      const start = new Date(this.contractForm.startDate)
+      const end   = new Date(this.contractForm.endDate)
+      return Math.max(0, Math.ceil((end - start) / (1000 * 60 * 60 * 24)))
+    },
+
+    // Estimated price shown in the contract dialog
+    contractEstimate() {
+      if (!this.contractDays || !this.selectedVehicle) return null
+      return (this.contractDays * this.selectedVehicle.pricePerDay).toFixed(2)
+    }
   },
 
-  // Automatically fetch vehicles when this page loads
-  mounted() { this.fetchVehicles() },
+  mounted() { this.vehicles = getVehicles() },
 
   methods: {
-    // Returns the Authorization header for protected backend endpoints
-    auth() {
-      return { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } }
+    // Returns Vuetify color name for vehicle status
+    statusColor(status) {
+      if (status === 'AVAILABLE')   return 'success'
+      if (status === 'RENTED')      return 'primary'
+      return 'warning'
     },
 
-    // Returns a CSS class name based on vehicle status for badge coloring
-    statusClass(status) {
-      if (status === 'AVAILABLE') return 'badge-green'
-      if (status === 'RENTED') return 'badge-blue'
-      return 'badge-yellow' // MAINTENANCE
-    },
-
-    // Fetches all vehicles from the public endpoint (no auth required)
-    async fetchVehicles() {
-      this.loading = true
-      this.error = ''
-      try {
-        const res = await axios.get('http://localhost:8080/api/vehicles')
-        this.vehicles = res.data
-      } catch {
-        this.error = 'Failed to load vehicles.'
-      } finally {
-        this.loading = false
+    // Start an instant rental immediately
+    startInstant(vehicle) {
+      const rental = startInstantRental(vehicle.id, this.currentUser.id)
+      if (!rental) {
+        this.notify('Could not start rental. Vehicle may no longer be available.', 'error')
+        return
       }
+      this.vehicles = getVehicles() // Refresh vehicle list
+      this.notify(`Instant rental started for ${vehicle.brand} ${vehicle.model}!`, 'success')
     },
 
-    // Starts an instant rental: backend sets rental ACTIVE, vehicle RENTED
-    async startInstant(vehicleId) {
-      this.actionMessage = ''
-      try {
-        await axios.post('http://localhost:8080/api/rentals/instant/start', { vehicleId }, this.auth())
-        this.actionMessage = 'Instant rental started successfully!'
-        this.fetchVehicles() // Refresh so the card shows RENTED status
-      } catch (err) {
-        this.actionMessage = err.response?.data?.message || 'Failed to start rental.'
+    // Open contract dialog for selected vehicle
+    openContractDialog(vehicle) {
+      this.selectedVehicle = vehicle
+      this.contractForm    = { startDate: '', endDate: '', deliveryLocation: '' }
+      this.contractDialog  = true
+    },
+
+    // Submit contract rental request
+    submitContract() {
+      if (!this.contractForm.startDate || !this.contractForm.endDate) {
+        this.notify('Please fill in both dates.', 'error')
+        return
       }
+      submitContractRental(
+        this.selectedVehicle.id,
+        this.currentUser.id,
+        this.contractForm.startDate,
+        this.contractForm.endDate,
+        this.contractForm.deliveryLocation
+      )
+      this.contractDialog = false
+      this.notify('Contract request submitted! Awaiting admin approval.', 'success')
     },
 
-    // Opens the contract form for the selected vehicle
-    openContract(vehicle) {
-      this.contractVehicle = vehicle
-      this.contractForm = { startDate: '', endDate: '', deliveryLocation: '' }
-      this.contractMessage = ''
-    },
-
-    // Submits contract rental: backend creates PENDING rental, admin must approve
-    async submitContract() {
-      this.contractMessage = ''
-      try {
-        await axios.post('http://localhost:8080/api/rentals/contract', {
-          vehicleId: this.contractVehicle.id,
-          ...this.contractForm // spreads startDate, endDate, deliveryLocation
-        }, this.auth())
-        this.contractMessage = 'Request submitted! Awaiting admin approval.'
-        this.contractVehicle = null // Hide the form
-      } catch (err) {
-        this.contractMessage = err.response?.data?.message || 'Failed to submit request.'
-      }
+    notify(text, color = 'success') {
+      this.snackbar = { show: true, text, color }
     }
   }
 }
 </script>
-
-<style scoped>
-/* ── Page header ── */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-}
-
-.page-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 2px;
-}
-
-.page-sub {
-  color: #475569;
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.btn-refresh {
-  background: transparent;
-  border: 1px solid #1e2535;
-  color: #3b82f6;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  transition: all 0.2s;
-}
-.btn-refresh:hover { background: #0f1a2e; }
-
-/* ── Vehicle grid ── */
-.vehicle-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-/* ── Vehicle card ── */
-.vehicle-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  transition: border-color 0.2s;
-}
-.vehicle-card:hover { border-color: #2a4a7f; }
-
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.card-id { color: #3b82f6; font-size: 11px; letter-spacing: 2px; }
-
-.card-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #e2e8f0;
-  margin-top: 2px;
-}
-
-.card-type { color: #475569; font-size: 12px; margin-top: 2px; }
-
-/* Status badge with dynamic color class */
-.status-badge {
-  padding: 3px 10px;
-  border-radius: 3px;
-  font-size: 11px;
-  letter-spacing: 1px;
-  font-weight: 500;
-}
-.badge-green { background: #052e16; color: #22c55e; border: 1px solid #166534; }
-.badge-blue  { background: #0c1a3a; color: #60a5fa; border: 1px solid #1e3a5f; }
-.badge-yellow{ background: #1c1500; color: #eab308; border: 1px solid #854d0e; }
-
-/* Pricing row */
-.card-prices {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #0d0f14;
-  border: 1px solid #1e2535;
-  border-radius: 6px;
-  padding: 12px 16px;
-}
-
-.price-item { display: flex; flex-direction: column; gap: 3px; }
-.price-label { color: #475569; font-size: 10px; letter-spacing: 2px; }
-.price-value { color: #3b82f6; font-size: 15px; font-weight: 500; }
-.price-divider { width: 1px; height: 28px; background: #1e2535; }
-
-.card-location { color: #475569; font-size: 12px; }
-
-/* Action area */
-.card-actions { margin-top: auto; }
-.hint-text { color: #334155; font-size: 12px; }
-
-.action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.btn-instant {
-  flex: 1;
-  background: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 9px 12px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  transition: background 0.2s;
-}
-.btn-instant:hover { background: #2563eb; }
-
-.btn-contract {
-  flex: 1;
-  background: transparent;
-  color: #3b82f6;
-  border: 1px solid #1e3a5f;
-  border-radius: 4px;
-  padding: 9px 12px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-.btn-contract:hover { background: #0f1a2e; }
-
-/* ── Contract panel ── */
-.contract-panel {
-  margin-top: 36px;
-  background: #13161e;
-  border: 1px solid #1e3a5f;
-  border-radius: 8px;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  max-width: 600px;
-}
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.panel-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 1px;
-}
-
-.panel-vehicle { color: #3b82f6; font-size: 14px; }
-
-.btn-close {
-  background: transparent;
-  border: none;
-  color: #475569;
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.btn-close:hover { color: #ef4444; }
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-/* Shared field styles (reused in all views) */
-.field { display: flex; flex-direction: column; gap: 6px; }
-.field-label { font-size: 11px; letter-spacing: 2px; color: #475569; }
-.field-input {
-  background: #0d0f14;
-  border: 1px solid #1e2535;
-  border-radius: 4px;
-  padding: 10px 14px;
-  color: #c8d0e0;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.field-input:focus { border-color: #3b82f6; }
-
-.panel-actions { display: flex; gap: 10px; }
-
-.btn-primary {
-  background: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 24px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  transition: background 0.2s;
-}
-.btn-primary:hover { background: #2563eb; }
-
-.btn-ghost {
-  background: transparent;
-  color: #475569;
-  border: 1px solid #1e2535;
-  border-radius: 4px;
-  padding: 10px 20px;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  transition: all 0.2s;
-}
-.btn-ghost:hover { color: #94a3b8; border-color: #2a3548; }
-
-/* Feedback messages */
-.msg-error   { color: #ef4444; font-size: 13px; }
-.msg-success { color: #22c55e; font-size: 13px; }
-.status-text { color: #475569; font-size: 13px; }
-</style>
