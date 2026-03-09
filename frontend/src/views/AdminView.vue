@@ -161,7 +161,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: 'AdminView',
@@ -502,4 +501,5 @@ export default {
 .msg-error   { color: #ef4444; font-size: 13px; }
 .msg-success { color: #22c55e; font-size: 13px; }
 .status-text { color: #475569; font-size: 13px; }
+
 </style>
