@@ -146,95 +146,95 @@ export default {
 </script>
 
 <style>
-/* ── Fonts: single clean import ── */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
+/* ═══════════════════════════════════════════════════════════
+   FONTS
+   Instrument Sans — refined, modern body text (used by Figma)
+   Cabinet Grotesk — geometric display, characterful headings
+   ═══════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&display=swap');
 
-/* ── Base reset ── */
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body {
-  font-family: 'Nunito', system-ui, sans-serif;
-  /* Vuetify handles the background color via theme */
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* =========================================================
-   LIGHT THEME — explicit, nothing left to chance
-   ========================================================= */
+h1, h2, h3, h4, .font-display {
+  font-family: 'Cabinet Grotesk', 'Instrument Sans', system-ui, sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME
+   Background: slate-100 (#f1f5f9) — warm, not blinding white
+   Cards: white — pop clearly against the slate background
+   Text: slate-900 (#0f172a) — maximum contrast
+   ═══════════════════════════════════════════════════════════ */
 .v-theme--light {
-  --sr-text:        #1a1a2e;   /* very dark navy — max contrast */
-  --sr-text-muted:  #4a5568;   /* medium gray — clearly visible */
-  --sr-border:      #e2e8f0;   /* light gray border */
-  --sr-surface:     #ffffff;
-  --sr-bg:          #f7f8fc;
+  /* Kill Vuetify's medium-emphasis opacity dimming at the root */
+  --v-medium-emphasis-opacity: 1;
+  --v-high-emphasis-opacity: 1;
+  /* Named tokens for scoped styles */
+  --sr-text:        #0f172a;
+  --sr-muted:       #475569;
+  --sr-border:      #cbd5e1;
+  --sr-card:        #ffffff;
+  --sr-bg:          #f1f5f9;
 }
 
-/* Override Vuetify's opacity-based dimming on light theme */
-.v-theme--light .v-card-subtitle,
-.v-theme--light .v-list-item-subtitle {
-  opacity: 1 !important;
-  color: #4a5568 !important;
-}
+/* Explicit text colors — never rely on Vuetify opacity */
 .v-theme--light .v-card-title,
-.v-theme--light .v-list-item-title {
-  color: #1a1a2e !important;
-}
-.v-theme--light .v-card-text {
-  color: #1a1a2e !important;
-}
-/* Vuetify applies --v-medium-emphasis-opacity (0.6) — kill it */
-.v-theme--light .text-medium-emphasis {
-  opacity: 1 !important;
-  color: #4a5568 !important;
-}
+.v-theme--light .v-list-item-title     { color: #0f172a !important; }
+
+.v-theme--light .v-card-subtitle,
+.v-theme--light .v-list-item-subtitle,
+.v-theme--light .text-medium-emphasis  { color: #475569 !important; opacity: 1 !important; }
+
+.v-theme--light .v-card-text           { color: #0f172a !important; }
+
 .v-theme--light .v-data-table,
 .v-theme--light .v-data-table td,
-.v-theme--light .v-data-table th {
-  color: #1a1a2e !important;
+.v-theme--light .v-data-table th       { color: #0f172a !important; }
+
+.v-theme--light .v-btn.v-btn--variant-text:not([class*="text-"]) { color: #0f172a; }
+
+/* App bar in light: white with a subtle border */
+.v-theme--light .v-app-bar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
 }
 
-/* =========================================================
+/* ═══════════════════════════════════════════════════════════
    DARK THEME
-   ========================================================= */
+   ═══════════════════════════════════════════════════════════ */
 .v-theme--dark {
-  --sr-text:        #f0f0ff;
-  --sr-text-muted:  #94a3b8;
-  --sr-border:      rgba(255,255,255,0.09);
-  --sr-surface:     #16161f;
-  --sr-bg:          #0c0c14;
+  --v-medium-emphasis-opacity: 1;
+  --v-high-emphasis-opacity: 1;
+  --sr-text:        #f0f9ff;
+  --sr-muted:       #94a3b8;
+  --sr-border:      rgba(255,255,255,0.08);
+  --sr-card:        #111827;
+  --sr-bg:          #0a0f1e;
 }
+
+.v-theme--dark .v-card-title,
+.v-theme--dark .v-list-item-title       { color: #f0f9ff !important; }
 
 .v-theme--dark .v-card-subtitle,
-.v-theme--dark .v-list-item-subtitle {
-  opacity: 1 !important;
-  color: #94a3b8 !important;
-}
-.v-theme--dark .v-card-title,
-.v-theme--dark .v-list-item-title {
-  color: #f0f0ff !important;
-}
-.v-theme--dark .v-card-text {
-  color: #f0f0ff !important;
-}
-.v-theme--dark .text-medium-emphasis {
-  opacity: 1 !important;
-  color: #94a3b8 !important;
-}
+.v-theme--dark .v-list-item-subtitle,
+.v-theme--dark .text-medium-emphasis    { color: #94a3b8 !important; opacity: 1 !important; }
+
+.v-theme--dark .v-card-text             { color: #f0f9ff !important; }
+
 .v-theme--dark .v-data-table,
 .v-theme--dark .v-data-table td,
-.v-theme--dark .v-data-table th {
-  color: #f0f0ff !important;
-}
+.v-theme--dark .v-data-table th         { color: #f0f9ff !important; }
 
-/* =========================================================
+/* ═══════════════════════════════════════════════════════════
    SHARED UTILITIES
-   ========================================================= */
+   ═══════════════════════════════════════════════════════════ */
 
-/* Headings */
-h1, h2, h3, h4, .font-display {
-  font-family: 'Syne', 'Nunito', sans-serif;
-}
-
-/* Gradient text */
 .gradient-text {
   background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
   -webkit-background-clip: text;
@@ -243,41 +243,45 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* Page transitions */
-.fade-enter-active, .fade-leave-active { transition: opacity 0.22s ease; }
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
 .fade-enter-from,   .fade-leave-to     { opacity: 0; }
 
-.slide-left-enter-active,  .slide-left-leave-active  { transition: all 0.26s cubic-bezier(.4,0,.2,1); }
-.slide-left-enter-from  { opacity: 0; transform: translateX(20px); }
-.slide-left-leave-to    { opacity: 0; transform: translateX(-20px); }
+.slide-left-enter-active, .slide-left-leave-active   { transition: all 0.25s cubic-bezier(.4,0,.2,1); }
+.slide-left-enter-from  { opacity: 0; transform: translateX(18px); }
+.slide-left-leave-to    { opacity: 0; transform: translateX(-18px); }
 
-.slide-right-enter-active, .slide-right-leave-active { transition: all 0.26s cubic-bezier(.4,0,.2,1); }
-.slide-right-enter-from { opacity: 0; transform: translateX(-20px); }
-.slide-right-leave-to   { opacity: 0; transform: translateX(20px); }
+.slide-right-enter-active, .slide-right-leave-active { transition: all 0.25s cubic-bezier(.4,0,.2,1); }
+.slide-right-enter-from { opacity: 0; transform: translateX(-18px); }
+.slide-right-leave-to   { opacity: 0; transform: translateX(18px); }
 
 /* Scroll reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(18px);
+  transition: opacity 0.48s ease, transform 0.48s ease;
 }
-.reveal.visible     { opacity: 1; transform: translateY(0); }
-.reveal-delay-1     { transition-delay: 0.07s; }
-.reveal-delay-2     { transition-delay: 0.14s; }
-.reveal-delay-3     { transition-delay: 0.21s; }
-.reveal-delay-4     { transition-delay: 0.28s; }
+.reveal.visible   { opacity: 1; transform: translateY(0); }
+.reveal-delay-1   { transition-delay: 0.07s; }
+.reveal-delay-2   { transition-delay: 0.14s; }
+.reveal-delay-3   { transition-delay: 0.21s; }
+.reveal-delay-4   { transition-delay: 0.28s; }
 
 /* Hover lift */
 .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
-.hover-lift:hover {
+.v-theme--light .hover-lift:hover {
   transform: translateY(-3px) !important;
-  box-shadow: 0 8px 28px rgba(79,70,229,0.15) !important;
+  box-shadow: 0 8px 24px rgba(13,148,136,0.14) !important;
+}
+.v-theme--dark .hover-lift:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 24px rgba(45,212,191,0.16) !important;
 }
 
-/* Skeleton loader */
-@keyframes sk-pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+/* Skeleton */
+@keyframes sk-pulse { 0%,100% { opacity:1 } 50% { opacity:0.45 } }
 .skeleton { animation: sk-pulse 1.5s ease-in-out infinite !important; }
-.v-theme--light .skeleton * { background: #e9ecf3 !important; color: transparent !important; }
-.v-theme--dark  .skeleton * { background: #1e1e2a !important; color: transparent !important; }
+.v-theme--light .skeleton { background: #e2e8f0 !important; }
+.v-theme--dark  .skeleton { background: #1e2a3a !important; }
 </style>
 
 <style scoped>
@@ -293,24 +297,24 @@ h1, h2, h3, h4, .font-display {
 .brand-icon-wrap {
   width: 34px; height: 34px;
   border-radius: 10px;
-  background: rgba(79, 70, 229, 0.1);
+  background: rgba(13,148,136,0.12);
   display: flex; align-items: center; justify-content: center;
 }
 
-/* Brand text: explicit color per theme — never inherit */
-.v-theme--light .brand-text { color: #1a1a2e !important; }
-.v-theme--dark  .brand-text { color: #f0f0ff !important; }
+/* Brand text — hardcoded per theme, never inherit */
+.v-theme--light .brand-text { color: #0f172a !important; }
+.v-theme--dark  .brand-text { color: #f0f9ff !important; }
 
 .brand-text {
-  font-family: 'Syne', sans-serif;
-  font-size: 19px;
+  font-family: 'Cabinet Grotesk', 'Instrument Sans', sans-serif;
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: 0.3px;
+  letter-spacing: -0.3px;
 }
 
 .brand-accent { color: rgb(var(--v-theme-primary)); }
 
 .nav-links { display: flex; align-items: center; gap: 2px; }
-.nav-btn   { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; }
+.nav-btn   { font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 600; }
 .user-chip { font-size: 12px; }
 </style>

@@ -14,51 +14,46 @@ const vuetify = createVuetify({
   theme: {
     defaultTheme: localStorage.getItem('sr_theme') || 'light',
     themes: {
-
-      // ── LIGHT: clean white with deep indigo accents ──
       light: {
         dark: false,
         colors: {
-          primary:              '#4338ca', // deep indigo
-          secondary:            '#6d28d9', // violet
-          accent:               '#7c3aed',
-          background:           '#f7f8fc', // very light cool gray
+          primary:              '#0d9488',
+          secondary:            '#0891b2',
+          accent:               '#06b6d4',
+          background:           '#f1f5f9',
           surface:              '#ffffff',
-          'surface-variant':    '#eef0f8',
-          // These 'on-*' values are what Vuetify uses for text on those surfaces
-          'on-background':      '#1a1a2e',
-          'on-surface':         '#1a1a2e',
-          'on-surface-variant': '#4a5568',
+          'surface-variant':    '#e2e8f0',
+          'on-background':      '#0f172a',
+          'on-surface':         '#0f172a',
+          'on-surface-variant': '#475569',
           'on-primary':         '#ffffff',
           'on-secondary':       '#ffffff',
-          error:                '#c0392b',
-          success:              '#16a34a',
-          warning:              '#b45309',
-          info:                 '#0369a1',
+          error:                '#dc2626',
+          success:              '#059669',
+          warning:              '#d97706',
+          info:                 '#0284c7',
           'on-error':           '#ffffff',
           'on-success':         '#ffffff',
           'on-warning':         '#ffffff',
           'on-info':            '#ffffff',
         }
       },
-
-      // ── DARK: deep navy with bright indigo accents ──
       dark: {
         dark: true,
         colors: {
-          primary:              '#818cf8', // bright indigo — readable on dark
-          secondary:            '#a78bfa', // bright violet
-          accent:               '#c4b5fd',
-          background:           '#0c0c14',
-          surface:              '#13131c',
-          'surface-variant':    '#1c1c28',
-          'on-background':      '#e8e8f5',
-          'on-surface':         '#e8e8f5',
+          primary:              '#2dd4bf',
+          secondary:            '#22d3ee',
+          accent:               '#67e8f9',
+          background:           '#0a0f1e',
+          surface:              '#111827',
+          'surface-variant':    '#1e2a3a',
+          'on-background':      '#f0f9ff',
+          'on-surface':         '#f0f9ff',
           'on-surface-variant': '#94a3b8',
-          'on-primary':         '#1e1b4b',
-          'on-secondary':       '#2e1065',
+          'on-primary':         '#042f2e',
+          'on-secondary':       '#083344',
           error:                '#f87171',
-          success:              '#4ade80',
+          success:              '#34d399',
           warning:              '#fbbf24',
           info:                 '#38bdf8',
           'on-error':           '#1a0000',
