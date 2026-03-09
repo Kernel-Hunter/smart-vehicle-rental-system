@@ -280,12 +280,12 @@ export default {
 }
 .orb-1 {
   width: 500px; height: 500px;
-  background: rgba(92, 107, 192, 0.12);
+  background: rgba(79, 70, 229, 0.1);
   top: -100px; right: -100px;
 }
 .orb-2 {
   width: 350px; height: 350px;
-  background: rgba(126, 87, 194, 0.08);
+  background: rgba(124, 58, 237, 0.07);
   bottom: -50px; left: -50px;
 }
 
@@ -294,9 +294,9 @@ export default {
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  background: rgba(92, 107, 192, 0.1);
-  border: 1px solid rgba(92, 107, 192, 0.2);
+  border: 1px solid rgba(79, 70, 229, 0.25);
   color: rgb(var(--v-theme-primary));
+  background: rgba(79, 70, 229, 0.08);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
@@ -307,32 +307,23 @@ export default {
 
 .hero-title {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(38px, 5vw, 58px);
+  font-size: clamp(36px, 5vw, 56px);
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 20px;
   color: rgb(var(--v-theme-on-background));
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 .hero-sub {
   font-size: 17px;
   color: rgb(var(--v-theme-on-surface-variant));
-  line-height: 1.7;
+  line-height: 1.75;
   margin-bottom: 32px;
   max-width: 480px;
-  opacity: 0.8;
 }
 
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
-
-.hero-btn-primary { font-weight: 600; letter-spacing: 0.3px; }
+.hero-btn-primary { font-weight: 600; }
 
 .trust-row { display: flex; gap: 20px; flex-wrap: wrap; }
 .trust-item {
@@ -341,17 +332,16 @@ export default {
   gap: 6px;
   font-size: 13px;
   color: rgb(var(--v-theme-on-surface-variant));
-  opacity: 0.8;
 }
 
 /* Hero map card */
 .hero-map-card {
   width: 320px;
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.15);
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(92, 107, 192, 0.12);
+  box-shadow: 0 20px 60px rgba(79, 70, 229, 0.1);
   position: relative;
   z-index: 1;
 }
@@ -363,14 +353,14 @@ export default {
   padding: 12px 16px;
   font-size: 12px;
   font-weight: 600;
-  border-bottom: 1px solid rgba(92, 107, 192, 0.08);
+  border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.06));
   color: rgb(var(--v-theme-on-surface));
 }
 
 .mini-map {
   position: relative;
   height: 200px;
-  background: rgba(92, 107, 192, 0.04);
+  background: rgba(79, 70, 229, 0.03);
   overflow: hidden;
 }
 
@@ -378,8 +368,8 @@ export default {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(92, 107, 192, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(92, 107, 192, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(79, 70, 229, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
@@ -403,7 +393,7 @@ export default {
   position: absolute;
   width: 10px; height: 10px;
   border-radius: 50%;
-  background: rgba(67, 160, 71, 0.3);
+  background: rgba(22, 163, 74, 0.3);
   top: 0; left: 0;
   animation: pulse-ring 2s ease-out infinite;
 }
@@ -420,7 +410,7 @@ export default {
   padding: 10px 16px;
   font-size: 12px;
   color: rgb(var(--v-theme-on-surface-variant));
-  border-top: 1px solid rgba(92, 107, 192, 0.08);
+  border-top: 1px solid var(--border-color, rgba(0,0,0,0.06));
 }
 
 /* ── Stats ── */
@@ -428,17 +418,18 @@ export default {
 
 .stat-card {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.1);
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 16px;
   padding: 24px;
   text-align: center;
-  transition: transform 0.25s, box-shadow 0.25s;
+  transition: transform 0.22s, box-shadow 0.22s;
 }
-.stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(92,107,192,0.1); }
+.v-theme--light .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(79,70,229,0.1); }
+.v-theme--dark  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(129,140,248,0.15); }
 
-.stat-value { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; line-height: 1; }
+.stat-value  { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; line-height: 1; }
 .stat-suffix { font-size: 24px; }
-.stat-label { font-size: 13px; color: rgb(var(--v-theme-on-surface-variant)); margin-top: 6px; font-weight: 500; }
+.stat-label  { font-size: 13px; color: rgb(var(--v-theme-on-surface-variant)); margin-top: 6px; font-weight: 500; }
 
 /* ── Section headers ── */
 .hiw-section, .types-section { padding: 60px 0; }
@@ -446,12 +437,12 @@ export default {
 
 .section-header { text-align: center; margin-bottom: 8px; }
 .section-overline {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   color: rgb(var(--v-theme-primary));
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .section-title {
   font-family: 'Syne', sans-serif;
@@ -463,7 +454,7 @@ export default {
 /* ── Steps ── */
 .step-card {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.1);
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   padding: 32px 28px;
   position: relative;
@@ -475,7 +466,8 @@ export default {
   font-family: 'Syne', sans-serif;
   font-size: 56px;
   font-weight: 800;
-  color: rgba(92, 107, 192, 0.07);
+  color: rgb(var(--v-theme-primary));
+  opacity: 0.07;
   position: absolute;
   top: 12px;
   right: 20px;
@@ -491,11 +483,11 @@ export default {
   color: rgb(var(--v-theme-on-surface));
 }
 
-.step-desc { font-size: 14px; line-height: 1.7; color: rgb(var(--v-theme-on-surface-variant)); opacity: 0.8; }
+.step-desc { font-size: 14px; line-height: 1.7; color: rgb(var(--v-theme-on-surface-variant)); }
 
 /* ── Company CTA ── */
 .company-cta-card {
-  background: linear-gradient(135deg, rgb(var(--v-theme-secondary)), rgb(var(--v-theme-primary)));
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
   border-radius: 24px;
   padding: 48px;
   color: white;
@@ -504,14 +496,14 @@ export default {
 }
 
 .cta-content { position: relative; z-index: 1; max-width: 560px; }
-.cta-title { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700; margin-bottom: 12px; }
-.cta-desc { font-size: 15px; line-height: 1.7; opacity: 0.85; margin-bottom: 4px; }
+.cta-title { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+.cta-desc  { font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.85); margin-bottom: 4px; }
 
 .cta-orb {
   position: absolute;
   width: 300px; height: 300px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
   right: -60px; bottom: -80px;
   pointer-events: none;
 }
@@ -519,7 +511,7 @@ export default {
 /* ── Rental types ── */
 .type-card {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(92, 107, 192, 0.1);
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   padding: 36px;
   height: 100%;
@@ -533,7 +525,12 @@ export default {
   color: rgb(var(--v-theme-on-surface));
 }
 
-.type-desc { font-size: 14px; line-height: 1.7; color: rgb(var(--v-theme-on-surface-variant)); margin-bottom: 20px; opacity: 0.8; }
+.type-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgb(var(--v-theme-on-surface-variant));
+  margin-bottom: 20px;
+}
 
 .type-features { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .type-features li {
