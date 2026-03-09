@@ -111,6 +111,10 @@
         <v-icon>mdi-car-multiple</v-icon>
         <span>Fleet</span>
       </v-btn>
+      <v-btn to="/about" value="about">
+        <v-icon>mdi-information-outline</v-icon>
+        <span>About</span>
+      </v-btn>
       <v-btn v-if="currentUser?.role === 'CUSTOMER'" to="/rentals" value="rentals">
         <v-icon>mdi-clipboard-list</v-icon>
         <span>Rentals</span>
@@ -259,11 +263,11 @@ h1, h2, h3, h4, .font-display {
 /* Btn text */
 .v-theme--light .v-btn.v-btn--variant-text { color: #0f172a; }
 
-/* App bar */
-.v-theme--light .v-app-bar {
+/* App bar — base state (scoped .navbar-scrolled handles scroll state) */
+.v-theme--light .v-app-bar:not(.navbar-scrolled) {
   background-color: #ffffff !important;
   border-bottom: 1.5px solid #b8c4d4 !important;
-  box-shadow: 0 1px 4px rgba(15,23,42,0.07) !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.05) !important;
 }
 
 /* List items */
@@ -354,16 +358,8 @@ h1, h2, h3, h4, .font-display {
 .reveal-delay-3   { transition-delay: 0.21s; }
 .reveal-delay-4   { transition-delay: 0.28s; }
 
-/* Hover lift */
+/* Hover lift base */
 .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
-.v-theme--light .hover-lift:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 24px rgba(13,148,136,0.14) !important;
-}
-.v-theme--dark .hover-lift:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 24px rgba(45,212,191,0.16) !important;
-}
 
 /* Skeleton */
 @keyframes sk-pulse { 0%,100% { opacity:1 } 50% { opacity:0.45 } }
@@ -371,33 +367,44 @@ h1, h2, h3, h4, .font-display {
 .v-theme--light .skeleton { background: #e2e8f0 !important; }
 .v-theme--dark  .skeleton { background: #1e2a3a !important; }
 
-/* ── Shimmer effect for loading/highlight states ── */
+/* ── Shimmer — visible on both themes ── */
 @keyframes shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
 }
-.shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-  background-size: 400px 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
+/* Light shimmer: darker sweep so it shows on light bg */
+.v-theme--light .shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(13,148,136,0.12) 50%, transparent 100%);
+  background-size: 600px 100%;
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+.v-theme--dark .shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+  background-size: 600px 100%;
+  animation: shimmer 2.4s ease-in-out infinite;
 }
 
-/* ── Float animation for hero elements ── */
+/* ── Float ── */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50%       { transform: translateY(-8px); }
 }
-.float { animation: float 4s ease-in-out infinite; }
+.float      { animation: float 4s ease-in-out infinite; }
 .float-slow { animation: float 6s ease-in-out infinite; }
 
-/* ── Pulse glow for primary CTAs ── */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(13,148,136,0.4); }
-  50%       { box-shadow: 0 0 0 12px rgba(13,148,136,0); }
+/* ── Pulse glow — works on both themes ── */
+@keyframes pulse-glow-light {
+  0%, 100% { box-shadow: 0 4px 14px rgba(13,148,136,0.3); }
+  50%       { box-shadow: 0 4px 28px rgba(13,148,136,0.6), 0 0 0 8px rgba(13,148,136,0.08); }
 }
-.pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+@keyframes pulse-glow-dark {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45,212,191,0.5); }
+  50%       { box-shadow: 0 0 0 14px rgba(45,212,191,0); }
+}
+.v-theme--light .pulse-glow { animation: pulse-glow-light 2.5s ease-in-out infinite; }
+.v-theme--dark  .pulse-glow { animation: pulse-glow-dark  2.5s ease-in-out infinite; }
 
-/* ── Fade-up for staggered card grids (used by v-col children) ── */
+/* ── Fade-up for staggered grids ── */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -408,31 +415,42 @@ h1, h2, h3, h4, .font-display {
 .fade-up-3 { animation: fade-up 0.5s 0.15s ease both; }
 .fade-up-4 { animation: fade-up 0.5s 0.20s ease both; }
 
-/* ── Smooth chip hover ── */
+/* ── Chip hover ── */
 .v-chip { transition: transform 0.15s ease, box-shadow 0.15s ease !important; }
 .v-chip:hover { transform: translateY(-1px) !important; }
 
-/* ── Button press micro-interaction ── */
+/* ── Button press ── */
 .v-btn:active { transform: scale(0.97) !important; }
 
-/* ── Teal glow on primary buttons in dark mode ── */
-.v-theme--dark .v-btn--variant-elevated[class*="bg-primary"],
-.v-theme--dark .v-btn[color="primary"]:not([variant="text"]):not([variant="outlined"]):not([variant="tonal"]) {
-  box-shadow: 0 0 20px rgba(45,212,191,0.25) !important;
+/* ── Primary button glow in BOTH themes ── */
+.v-theme--light .v-btn--variant-flat[color="primary"],
+.v-theme--light .v-btn--variant-elevated[color="primary"] {
+  box-shadow: 0 4px 14px rgba(13,148,136,0.35) !important;
+}
+.v-theme--dark .v-btn--variant-flat[color="primary"],
+.v-theme--dark .v-btn--variant-elevated[color="primary"] {
+  box-shadow: 0 4px 20px rgba(45,212,191,0.3) !important;
 }
 
-/* ── Smooth v-card entrance ── */
-.v-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+/* ── v-card smooth transition ── */
+.v-card { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
+
+/* ── Hover lift shadow — stronger in light ── */
+.v-theme--light .hover-lift:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 32px rgba(13,148,136,0.22) !important;
+}
+.v-theme--dark .hover-lift:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 32px rgba(45,212,191,0.18) !important;
 }
 
-/* ── Input focus ring in teal ── */
-.v-theme--light .v-field--focused .v-field__outline {
-  color: #0d9488 !important;
-}
-.v-theme--dark .v-field--focused .v-field__outline {
-  color: #2dd4bf !important;
-}
+/* ── Input focus ring ── */
+.v-theme--light .v-field--focused .v-field__outline { color: #0d9488 !important; }
+.v-theme--dark  .v-field--focused .v-field__outline { color: #2dd4bf !important; }
+
+/* ── Selection highlight ── */
+::selection { background: rgba(13,148,136,0.2); }
 </style>
 
 <style scoped>
