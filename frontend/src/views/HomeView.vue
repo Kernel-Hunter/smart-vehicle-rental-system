@@ -279,15 +279,16 @@ export default {
 }
 
 .v-theme--light .hero-section {
-  background: linear-gradient(135deg, #e8eef6 0%, #f0f9ff 40%, #e6f7f5 80%, #e8eef6 100%);
+  /* More distinct stops so the animation is actually visible */
+  background: linear-gradient(135deg, #c8d6e5 0%, #ddf0ef 35%, #d0e8f4 65%, #c8d6e5 100%);
   background-size: 300% 300%;
-  animation: gradient-shift 12s ease infinite;
+  animation: gradient-shift 10s ease infinite;
 }
 
 .v-theme--dark .hero-section {
   background: linear-gradient(135deg, #0a0f1e 0%, #0d1a2e 40%, #061a1a 80%, #0a0f1e 100%);
   background-size: 300% 300%;
-  animation: gradient-shift 12s ease infinite;
+  animation: gradient-shift 10s ease infinite;
 }
 
 .hero-bg-orb {
@@ -299,12 +300,12 @@ export default {
 }
 .orb-1 {
   width: 500px; height: 500px;
-  background: rgba(13, 148, 136, 0.1);
+  background: radial-gradient(circle, rgba(13,148,136,0.22) 0%, rgba(13,148,136,0) 70%);
   top: -100px; right: -100px;
 }
 .orb-2 {
   width: 350px; height: 350px;
-  background: rgba(8, 145, 178, 0.07);
+  background: radial-gradient(circle, rgba(8,145,178,0.18) 0%, rgba(8,145,178,0) 70%);
   bottom: -50px; left: -50px;
 }
 
@@ -313,15 +314,21 @@ export default {
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(13, 148, 136, 0.25);
   color: rgb(var(--v-theme-primary));
-  background: rgba(13, 148, 136, 0.08);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.5px;
   margin-bottom: 20px;
+}
+.v-theme--light .hero-badge {
+  border: 1.5px solid #0d9488;
+  background: rgba(13,148,136,0.08);
+}
+.v-theme--dark .hero-badge {
+  border: 1px solid rgba(45,212,191,0.3);
+  background: rgba(45,212,136,0.08);
 }
 
 .hero-title {

@@ -579,13 +579,19 @@ export default {
 
 /* ── Sidebar ── */
 .map-sidebar {
-  background: rgb(var(--v-theme-surface));
-  border: 1.5px solid #b8c4d4;
   border-radius: 20px;
   overflow-y: auto;
   padding: 16px;
 }
-.v-theme--dark .map-sidebar { border-color: rgba(255,255,255,0.08); }
+.v-theme--light .map-sidebar {
+  background: #ffffff;
+  border: 1.5px solid #94a3b8;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.08);
+}
+.v-theme--dark .map-sidebar {
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(255,255,255,0.08);
+}
 
 .sidebar-title {
   font-family: 'Cabinet Grotesk', sans-serif;
@@ -646,12 +652,15 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(13, 148, 136, 0.06);
   border-radius: 12px;
   padding: 14px;
   margin-bottom: 16px;
 }
-.v-theme--dark .pricing-row { background: rgba(45,212,191,0.08); }
+.v-theme--light .pricing-row {
+  background: #e8f5f3;
+  border: 1.5px solid #94a3b8;
+}
+.v-theme--dark .pricing-row { background: rgba(45,212,191,0.08); border: 1px solid rgba(45,212,191,0.12); }
 .price-box    { display: flex; flex-direction: column; align-items: center; flex: 1; }
 .price-amount { font-family: 'Cabinet Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: rgb(var(--v-theme-primary)); }
 .price-unit   { font-size: 11px; color: rgb(var(--v-theme-on-surface-variant)); }
