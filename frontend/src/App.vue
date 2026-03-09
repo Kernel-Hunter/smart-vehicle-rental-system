@@ -92,6 +92,43 @@
       </div>
     </v-snackbar>
 
+    <!-- ── Mobile Bottom Navigation (visible only on small screens) ── -->
+    <v-bottom-navigation
+      v-model="mobileTab"
+      class="d-flex d-md-none mobile-nav"
+      :elevation="8"
+      color="primary"
+    >
+      <v-btn to="/" value="home">
+        <v-icon>mdi-home</v-icon>
+        <span>Home</span>
+      </v-btn>
+      <v-btn to="/map" value="map">
+        <v-icon>mdi-map-marker-radius</v-icon>
+        <span>Map</span>
+      </v-btn>
+      <v-btn to="/vehicles" value="vehicles">
+        <v-icon>mdi-car-multiple</v-icon>
+        <span>Fleet</span>
+      </v-btn>
+      <v-btn v-if="currentUser?.role === 'CUSTOMER'" to="/rentals" value="rentals">
+        <v-icon>mdi-clipboard-list</v-icon>
+        <span>Rentals</span>
+      </v-btn>
+      <v-btn v-if="currentUser?.role === 'COMPANY'" to="/company" value="company">
+        <v-icon>mdi-domain</v-icon>
+        <span>Dashboard</span>
+      </v-btn>
+      <v-btn v-if="!currentUser" to="/login" value="login">
+        <v-icon>mdi-login</v-icon>
+        <span>Login</span>
+      </v-btn>
+      <v-btn v-if="currentUser" value="logout" @click="logout">
+        <v-icon>mdi-logout</v-icon>
+        <span>Logout</span>
+      </v-btn>
+    </v-bottom-navigation>
+
   </v-app>
 </template>
 
@@ -106,7 +143,8 @@ export default {
       currentUser: getCurrentUser(),
       scrolled:    false,
       snackbar:    { show: false, text: '', color: 'success' },
-      transitionName: 'fade'
+      transitionName: 'fade',
+      mobileTab:   'home'
     }
   },
   mounted() {
@@ -159,6 +197,11 @@ export default {
 html, body {
   font-family: 'Instrument Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* On mobile, add bottom padding so content isn't hidden behind the bottom nav */
+@media (max-width: 960px) {
+  .v-main { padding-bottom: 56px !important; }
 }
 
 h1, h2, h3, h4, .font-display {
@@ -317,4 +360,8 @@ h1, h2, h3, h4, .font-display {
 .nav-links { display: flex; align-items: center; gap: 2px; }
 .nav-btn   { font-family: 'Instrument Sans', sans-serif; font-size: 13px; font-weight: 600; }
 .user-chip { font-size: 12px; }
+
+/* Mobile bottom nav */
+.mobile-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+.mobile-nav .v-btn { font-size: 10px !important; }
 </style>
