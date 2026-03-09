@@ -1,59 +1,49 @@
-// Entry point — sets up Vue app with Vuetify and Router
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/index.js'
 
-// Vuetify core + styles
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-
-// Material Design Icons (used by Vuetify for all icons)
 import '@mdi/font/css/materialdesignicons.css'
 
-// Create Vuetify instance with light and dark theme definitions
 const vuetify = createVuetify({
   components,
   directives,
   theme: {
-    defaultTheme: 'light', // App starts in light mode
+    defaultTheme: localStorage.getItem('sr_theme') || 'light',
     themes: {
-      // ── Light theme ──
       light: {
         dark: false,
         colors: {
-          primary:    '#5C6BC0', // Indigo
-          secondary:  '#7E57C2', // Purple
+          primary:    '#5C6BC0',
+          secondary:  '#7E57C2',
           accent:     '#9575CD',
-          background: '#F5F5F5',
+          background: '#F8F7FF',
           surface:    '#FFFFFF',
           error:      '#EF5350',
-          success:    '#66BB6A',
-          warning:    '#FFA726',
-          info:       '#42A5F5',
+          success:    '#43A047',
+          warning:    '#FB8C00',
+          info:       '#039BE5',
         }
       },
-      // ── Dark theme ──
       dark: {
         dark: true,
         colors: {
-          primary:    '#7986CB', // Lighter indigo for dark bg
+          primary:    '#7986CB',
           secondary:  '#9575CD',
           accent:     '#B39DDB',
-          background: '#121212',
-          surface:    '#1E1E1E',
+          background: '#0F0E17',
+          surface:    '#1A1825',
           error:      '#EF5350',
-          success:    '#66BB6A',
-          warning:    '#FFA726',
-          info:       '#42A5F5',
+          success:    '#43A047',
+          warning:    '#FB8C00',
+          info:       '#039BE5',
         }
       }
     }
   }
 })
 
-createApp(App)
-  .use(router)
-  .use(vuetify)
-  .mount('#app')
+createApp(App).use(router).use(vuetify).mount('#app')
