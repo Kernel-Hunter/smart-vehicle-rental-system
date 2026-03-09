@@ -33,7 +33,7 @@
                 rounded="xl"
                 to="/map"
                 prepend-icon="mdi-map-search"
-                class="hero-btn-primary"
+                class="hero-btn-primary pulse-glow"
                 elevation="0"
               >
                 Open Map
@@ -62,7 +62,7 @@
 
           <!-- Hero right: floating map preview card -->
           <v-col cols="12" md="5" class="d-none d-md-flex justify-center">
-            <div class="hero-map-card reveal reveal-delay-2">
+            <div class="hero-map-card reveal reveal-delay-2 float">
               <div class="map-card-header">
                 <v-icon size="14" color="success">mdi-circle</v-icon>
                 <span>{{ availableCount }} vehicles nearby</span>
@@ -80,6 +80,7 @@
                   <div class="marker-pulse" v-if="v.status === 'AVAILABLE'" />
                 </div>
                 <div class="map-grid-lines" />
+                <div class="map-shimmer" />
               </div>
               <div class="map-card-footer">
                 <span>Tap a marker to rent instantly</span>
@@ -97,7 +98,7 @@
     <section class="stats-section">
       <v-container style="max-width:1200px">
         <v-row>
-          <v-col v-for="(stat, i) in stats" :key="stat.label" cols="6" md="3">
+          <v-col v-for="(stat, i) in stats" :key="stat.label" cols="6" md="3" :class="`fade-up-${i+1}`">
             <div :class="['stat-card reveal', `reveal-delay-${i + 1}`]">
               <div class="stat-value" :style="`color: rgb(var(--v-theme-${stat.color}))`">
                 <span class="stat-number" :data-target="stat.raw">{{ stat.animated }}</span>
@@ -119,7 +120,7 @@
         </div>
 
         <v-row class="mt-6">
-          <v-col v-for="(step, i) in steps" :key="step.title" cols="12" md="4">
+          <v-col v-for="(step, i) in steps" :key="step.title" cols="12" md="4" :class="`fade-up-${i+1}`">
             <div :class="['step-card hover-lift reveal', `reveal-delay-${i + 1}`]">
               <div class="step-number">{{ String(i + 1).padStart(2, '0') }}</div>
               <v-icon :color="step.color" size="36" class="mb-3">{{ step.icon }}</v-icon>
@@ -265,10 +266,28 @@ export default {
 .home { overflow-x: hidden; }
 
 /* ── Hero ── */
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .hero-section {
   position: relative;
   padding: 80px 0 60px;
   overflow: hidden;
+}
+
+.v-theme--light .hero-section {
+  background: linear-gradient(135deg, #e8eef6 0%, #f0f9ff 40%, #e6f7f5 80%, #e8eef6 100%);
+  background-size: 300% 300%;
+  animation: gradient-shift 12s ease infinite;
+}
+
+.v-theme--dark .hero-section {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d1a2e 40%, #061a1a 80%, #0a0f1e 100%);
+  background-size: 300% 300%;
+  animation: gradient-shift 12s ease infinite;
 }
 
 .hero-bg-orb {
@@ -280,12 +299,12 @@ export default {
 }
 .orb-1 {
   width: 500px; height: 500px;
-  background: rgba(79, 70, 229, 0.1);
+  background: rgba(13, 148, 136, 0.1);
   top: -100px; right: -100px;
 }
 .orb-2 {
   width: 350px; height: 350px;
-  background: rgba(124, 58, 237, 0.07);
+  background: rgba(8, 145, 178, 0.07);
   bottom: -50px; left: -50px;
 }
 
@@ -294,9 +313,9 @@ export default {
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(79, 70, 229, 0.25);
+  border: 1px solid rgba(13, 148, 136, 0.25);
   color: rgb(var(--v-theme-primary));
-  background: rgba(79, 70, 229, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
@@ -306,7 +325,7 @@ export default {
 }
 
 .hero-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: clamp(36px, 5vw, 56px);
   font-weight: 800;
   line-height: 1.1;
@@ -338,12 +357,22 @@ export default {
 .hero-map-card {
   width: 320px;
   background: rgb(var(--v-theme-surface));
-  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(79, 70, 229, 0.1);
   position: relative;
   z-index: 1;
+  transition: box-shadow 0.3s ease;
+}
+.v-theme--light .hero-map-card {
+  border: 1.5px solid #94a3b8;
+  box-shadow: 0 20px 60px rgba(15,23,42,0.12), 0 0 0 1px rgba(13,148,136,0.08);
+}
+.v-theme--dark .hero-map-card {
+  border: 1px solid rgba(45,212,191,0.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(45,212,191,0.08);
+}
+.hero-map-card:hover {
+  box-shadow: 0 28px 80px rgba(13,148,136,0.18) !important;
 }
 
 .map-card-header {
@@ -353,14 +382,15 @@ export default {
   padding: 12px 16px;
   font-size: 12px;
   font-weight: 600;
-  border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.06));
   color: rgb(var(--v-theme-on-surface));
 }
+.v-theme--light .map-card-header { border-bottom: 1.5px solid #94a3b8; }
+.v-theme--dark  .map-card-header { border-bottom: 1px solid rgba(255,255,255,0.06); }
 
 .mini-map {
   position: relative;
   height: 200px;
-  background: rgba(79, 70, 229, 0.03);
+  background: rgba(13, 148, 136, 0.03);
   overflow: hidden;
 }
 
@@ -368,8 +398,8 @@ export default {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(79, 70, 229, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(13, 148, 136, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 148, 136, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
@@ -410,8 +440,9 @@ export default {
   padding: 10px 16px;
   font-size: 12px;
   color: rgb(var(--v-theme-on-surface-variant));
-  border-top: 1px solid var(--border-color, rgba(0,0,0,0.06));
 }
+.v-theme--light .map-card-footer { border-top: 1.5px solid #94a3b8; }
+.v-theme--dark  .map-card-footer { border-top: 1px solid rgba(255,255,255,0.06); }
 
 /* ── Stats ── */
 .stats-section { padding: 40px 0; }
@@ -424,10 +455,10 @@ export default {
   text-align: center;
   transition: transform 0.22s, box-shadow 0.22s;
 }
-.v-theme--light .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(79,70,229,0.1); }
-.v-theme--dark  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(129,140,248,0.15); }
+.v-theme--light .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(13,148,136,0.1); }
+.v-theme--dark  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(45,212,191,0.15); }
 
-.stat-value  { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; line-height: 1; }
+.stat-value  { font-family: 'Cabinet Grotesk', sans-serif; font-size: 36px; font-weight: 800; line-height: 1; }
 .stat-suffix { font-size: 24px; }
 .stat-label  { font-size: 13px; color: rgb(var(--v-theme-on-surface-variant)); margin-top: 6px; font-weight: 500; }
 
@@ -445,7 +476,7 @@ export default {
   margin-bottom: 10px;
 }
 .section-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 32px;
   font-weight: 700;
   color: rgb(var(--v-theme-on-background));
@@ -453,17 +484,26 @@ export default {
 
 /* ── Steps ── */
 .step-card {
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   padding: 32px 28px;
   position: relative;
   overflow: hidden;
   height: 100%;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
+.v-theme--light .step-card {
+  background: #ffffff;
+  border: 1.5px solid #94a3b8;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+}
+.v-theme--dark .step-card {
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(45,212,191,0.1);
+}
+.step-card:hover { transform: translateY(-3px); }
 
 .step-number {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 56px;
   font-weight: 800;
   color: rgb(var(--v-theme-primary));
@@ -476,7 +516,7 @@ export default {
 }
 
 .step-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 8px;
@@ -496,7 +536,7 @@ export default {
 }
 
 .cta-content { position: relative; z-index: 1; max-width: 560px; }
-.cta-title { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+.cta-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 30px; font-weight: 700; margin-bottom: 12px; color: #fff; }
 .cta-desc  { font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.85); margin-bottom: 4px; }
 
 .cta-orb {
@@ -510,15 +550,24 @@ export default {
 
 /* ── Rental types ── */
 .type-card {
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   padding: 36px;
   height: 100%;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
+.v-theme--light .type-card {
+  background: #ffffff;
+  border: 1.5px solid #94a3b8;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+}
+.v-theme--dark .type-card {
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(45,212,191,0.1);
+}
+.type-card:hover { transform: translateY(-3px); }
 
 .type-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 10px;

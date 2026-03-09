@@ -40,7 +40,7 @@
         :key="v.id"
         cols="12" sm="6" md="4" lg="3"
       >
-        <v-card :class="`hover-lift reveal reveal-delay-${(i % 4) + 1}`" rounded="xl" elevation="1" height="100%" class="d-flex flex-column">
+        <v-card :class="`hover-lift reveal reveal-delay-${(i % 4) + 1} fade-up-${(i % 4) + 1}`" rounded="xl" elevation="1" height="100%" class="d-flex flex-column">
           <v-card-item>
             <template v-slot:prepend>
               <v-avatar :color="v.color" size="36">
@@ -186,7 +186,7 @@ export default {
 </script>
 
 <style scoped>
-.page-title  { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; }
+.page-title  { font-family: 'Cabinet Grotesk', sans-serif; font-size: 24px; font-weight: 700; }
 .page-sub    { font-size: 13px; color: rgb(var(--v-theme-on-surface-variant)); margin-top: 2px; }
 .price-label { font-size: 11px; color: rgb(var(--v-theme-on-surface-variant)); margin-bottom: 2px; }
 .price-val   { font-size: 15px; font-weight: 700; }

@@ -240,7 +240,7 @@ export default {
 }
 
 .dash-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 24px;
   font-weight: 700;
   color: rgb(var(--v-theme-on-surface));
@@ -250,7 +250,7 @@ export default {
 /* KPI Cards */
 .kpi-card {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1.5px solid #b8c4d4;
   border-radius: 18px;
   padding: 20px;
 }
@@ -266,7 +266,7 @@ export default {
 }
 
 .kpi-value {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 32px;
   font-weight: 800;
   line-height: 1;
@@ -277,12 +277,12 @@ export default {
 
 /* Quick actions */
 .quick-action {
-  border: 1px solid rgba(0,0,0,0.08) !important;
+  border: 1.5px solid #b8c4d4 !important;
   height: 100%;
   text-decoration: none;
 }
 .v-theme--dark .quick-action { border-color: rgba(255,255,255,0.08) !important; }
-.qa-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: rgb(var(--v-theme-on-surface)); margin-bottom: 6px; }
+.qa-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: rgb(var(--v-theme-on-surface)); margin-bottom: 6px; }
 .qa-desc  { font-size: 13px; line-height: 1.6; color: rgb(var(--v-theme-on-surface-variant)); }
 
 /* Earnings card — always white text since it has gradient bg */
@@ -295,7 +295,7 @@ export default {
 }
 
 .earnings-label   { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 8px; }
-.earnings-amount  { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; color: #FFFFFF; }
+.earnings-amount  { font-family: 'Cabinet Grotesk', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; color: #FFFFFF; }
 .earnings-currency{ font-size: 16px; color: rgba(255,255,255,0.7); }
 .earnings-sub     { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 8px; }
 </style>

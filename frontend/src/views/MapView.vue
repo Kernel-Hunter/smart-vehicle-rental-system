@@ -420,28 +420,42 @@ export default {
 /* ── Map container ── */
 .map-container {
   position: relative;
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 20px;
   overflow: hidden;
+  border: 1.5px solid #b8c4d4;
 }
 
-.v-theme--dark .map-container { border-color: rgba(255,255,255,0.08); }
+/* Light: real slate-blue map background so everything inside is visible */
+.v-theme--light .map-container { background: #e8eef6; border-color: #94a3b8; }
+/* Dark: keep deep navy */
+.v-theme--dark  .map-container { background: #0d1526; border-color: rgba(255,255,255,0.1); }
 
 .map-svg { width: 100%; height: 100%; display: block; }
 
-.v-theme--light .city-block { fill: rgba(13,148,136,0.04); stroke: rgba(13,148,136,0.1); stroke-width: 0.3; }
-.v-theme--dark  .city-block { fill: rgba(45,212,191,0.06); stroke: rgba(45,212,191,0.12); stroke-width: 0.3; }
-.park-block { fill: rgba(22,163,74,0.1); stroke: rgba(22,163,74,0.2); stroke-width: 0.3; }
-.v-theme--light .road { stroke: rgba(13,148,136,0.07); stroke-width: 1.5; }
-.v-theme--dark  .road { stroke: rgba(45,212,191,0.08); stroke-width: 1.5; }
+/* Light map: city blocks are clearly visible slate tiles */
+.v-theme--light .city-block { fill: #d0daea; stroke: #94a3b8; stroke-width: 0.4; }
+/* Dark map: teal-tinted blocks */
+.v-theme--dark  .city-block { fill: rgba(45,212,191,0.07); stroke: rgba(45,212,191,0.18); stroke-width: 0.4; }
+/* Park is green in both */
+.park-block { fill: rgba(16,185,129,0.18); stroke: rgba(16,185,129,0.4); stroke-width: 0.4; }
+/* Roads: clearly visible in light, subtle in dark */
+.v-theme--light .road { stroke: #b0bec9; stroke-width: 1.8; }
+.v-theme--dark  .road { stroke: rgba(45,212,191,0.14); stroke-width: 1.8; }
 
 /* ── Markers ── */
+@keyframes marker-drop {
+  0%   { opacity: 0; transform: translate(-50%, -80%); }
+  60%  { transform: translate(-50%, -45%); }
+  80%  { transform: translate(-50%, -52%); }
+  100% { opacity: 1; transform: translate(-50%, -50%); }
+}
+
 .vehicle-marker {
   position: absolute;
   transform: translate(-50%, -50%);
   cursor: pointer;
   z-index: 10;
+  animation: marker-drop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
 }
 
 .marker-icon {
@@ -519,11 +533,12 @@ export default {
   font-weight: 700;
   color: rgb(var(--v-theme-primary));
   margin-top: 2px;
-  background: rgb(var(--v-theme-surface));
   padding: 1px 5px;
   border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
+.v-theme--light .you-label { background: #ffffff; border: 1px solid #94a3b8; }
+.v-theme--dark  .you-label { background: rgb(var(--v-theme-surface)); }
 
 /* ── Legend ── */
 .map-legend {
@@ -531,7 +546,7 @@ export default {
   top: 14px;
   left: 14px;
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1.5px solid #b8c4d4;
   border-radius: 10px;
   padding: 10px 14px;
   display: flex;
@@ -557,14 +572,15 @@ export default {
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: rgba(13, 148, 136, 0.3);
   z-index: 5;
 }
+.v-theme--light .city-label { color: rgba(71,85,105,0.6); }
+.v-theme--dark  .city-label { color: rgba(45,212,191,0.35); }
 
 /* ── Sidebar ── */
 .map-sidebar {
   background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1.5px solid #b8c4d4;
   border-radius: 20px;
   overflow-y: auto;
   padding: 16px;
@@ -588,7 +604,7 @@ export default {
   border-radius: 12px;
   cursor: pointer;
   margin-bottom: 8px;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1.5px solid #b8c4d4;
   transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
 }
 .v-theme--dark  .sidebar-vehicle-card { border-color: rgba(255,255,255,0.06); }
@@ -646,7 +662,7 @@ export default {
   align-items: center;
   gap: 10px;
   padding: 10px;
-  border: 1px solid rgba(0,0,0,0.07);
+  border: 1.5px solid #b8c4d4;
   border-radius: 10px;
   margin-bottom: 16px;
 }
