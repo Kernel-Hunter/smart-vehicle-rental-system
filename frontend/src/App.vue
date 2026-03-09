@@ -146,133 +146,138 @@ export default {
 </script>
 
 <style>
-/* ── Google Fonts ── */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Clash+Display:wght@600;700&display=swap');
-/* Fallback for Clash Display via Bunny Fonts */
-@import url('https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700|syne:600,700,800');
+/* ── Fonts: single clean import ── */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
 
-/* ── Global base ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Base reset ── */
+*, *::before, *::after { box-sizing: border-box; }
 
-body {
-  font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+html, body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  /* Vuetify handles the background color via theme */
 }
 
-/* ── Force correct text colors in both themes ── */
-/* Vuetify sets these but we reinforce them explicitly */
+/* =========================================================
+   LIGHT THEME — explicit, nothing left to chance
+   ========================================================= */
 .v-theme--light {
-  --text-primary:   #111827;
-  --text-secondary: #6B7280;
-  --text-accent:    #4F46E5;
-  --border-color:   rgba(0, 0, 0, 0.08);
-  --card-bg:        #FFFFFF;
-  --surface-bg:     #F9FAFB;
+  --sr-text:        #1a1a2e;   /* very dark navy — max contrast */
+  --sr-text-muted:  #4a5568;   /* medium gray — clearly visible */
+  --sr-border:      #e2e8f0;   /* light gray border */
+  --sr-surface:     #ffffff;
+  --sr-bg:          #f7f8fc;
 }
 
-.v-theme--dark {
-  --text-primary:   #F9FAFB;
-  --text-secondary: #9CA3AF;
-  --text-accent:    #818CF8;
-  --border-color:   rgba(255, 255, 255, 0.08);
-  --card-bg:        #18181F;
-  --surface-bg:     #0F0F14;
+/* Override Vuetify's opacity-based dimming on light theme */
+.v-theme--light .v-card-subtitle,
+.v-theme--light .v-list-item-subtitle {
+  opacity: 1 !important;
+  color: #4a5568 !important;
 }
-
-/* ── Ensure all text in cards is visible ── */
-.v-theme--light .v-card,
-.v-theme--light .v-card-text,
 .v-theme--light .v-card-title,
-.v-theme--light .v-card-subtitle {
-  color: #111827 !important;
+.v-theme--light .v-list-item-title {
+  color: #1a1a2e !important;
+}
+.v-theme--light .v-card-text {
+  color: #1a1a2e !important;
+}
+/* Vuetify applies --v-medium-emphasis-opacity (0.6) — kill it */
+.v-theme--light .text-medium-emphasis {
+  opacity: 1 !important;
+  color: #4a5568 !important;
+}
+.v-theme--light .v-data-table,
+.v-theme--light .v-data-table td,
+.v-theme--light .v-data-table th {
+  color: #1a1a2e !important;
 }
 
-.v-theme--dark .v-card,
-.v-theme--dark .v-card-text,
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+.v-theme--dark {
+  --sr-text:        #f0f0ff;
+  --sr-text-muted:  #94a3b8;
+  --sr-border:      rgba(255,255,255,0.09);
+  --sr-surface:     #16161f;
+  --sr-bg:          #0c0c14;
+}
+
+.v-theme--dark .v-card-subtitle,
+.v-theme--dark .v-list-item-subtitle {
+  opacity: 1 !important;
+  color: #94a3b8 !important;
+}
 .v-theme--dark .v-card-title,
-.v-theme--dark .v-card-subtitle {
-  color: #F9FAFB !important;
+.v-theme--dark .v-list-item-title {
+  color: #f0f0ff !important;
+}
+.v-theme--dark .v-card-text {
+  color: #f0f0ff !important;
+}
+.v-theme--dark .text-medium-emphasis {
+  opacity: 1 !important;
+  color: #94a3b8 !important;
+}
+.v-theme--dark .v-data-table,
+.v-theme--dark .v-data-table td,
+.v-theme--dark .v-data-table th {
+  color: #f0f0ff !important;
 }
 
-/* ── Vuetify medium-emphasis text fix ── */
-.v-theme--light .text-medium-emphasis { color: #6B7280 !important; opacity: 1 !important; }
-.v-theme--dark  .text-medium-emphasis { color: #9CA3AF !important; opacity: 1 !important; }
+/* =========================================================
+   SHARED UTILITIES
+   ========================================================= */
 
-/* ── List items text ── */
-.v-theme--light .v-list-item-title    { color: #111827 !important; }
-.v-theme--light .v-list-item-subtitle { color: #6B7280 !important; }
-.v-theme--dark  .v-list-item-title    { color: #F9FAFB !important; }
-.v-theme--dark  .v-list-item-subtitle { color: #9CA3AF !important; }
-
-/* ── Table text ── */
-.v-theme--light .v-data-table { color: #111827 !important; }
-.v-theme--dark  .v-data-table { color: #F9FAFB !important; }
-
-/* ── Chip text ── */
-.v-theme--light .v-chip { color: inherit; }
-
-/* ── Headings always use Syne ── */
-h1, h2, h3, .syne {
-  font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
+/* Headings */
+h1, h2, h3, h4, .font-display {
+  font-family: 'Syne', 'Nunito', sans-serif;
 }
 
-/* ── Page transition: fade ── */
-.fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
-.fade-enter-from, .fade-leave-to       { opacity: 0; }
-
-/* ── Page transition: slide left ── */
-.slide-left-enter-active, .slide-left-leave-active { transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
-.slide-left-enter-from  { opacity: 0; transform: translateX(24px); }
-.slide-left-leave-to    { opacity: 0; transform: translateX(-24px); }
-
-/* ── Page transition: slide right ── */
-.slide-right-enter-active, .slide-right-leave-active { transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
-.slide-right-enter-from  { opacity: 0; transform: translateX(-24px); }
-.slide-right-leave-to    { opacity: 0; transform: translateX(24px); }
-
-/* ── Scroll reveal ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: 0.08s; }
-.reveal-delay-2 { transition-delay: 0.16s; }
-.reveal-delay-3 { transition-delay: 0.24s; }
-.reveal-delay-4 { transition-delay: 0.32s; }
-
-/* ── Card hover lift ── */
-.hover-lift {
-  transition: transform 0.22s ease, box-shadow 0.22s ease !important;
-  cursor: pointer;
-}
-.v-theme--light .hover-lift:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 32px rgba(79, 70, 229, 0.13) !important;
-}
-.v-theme--dark .hover-lift:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 32px rgba(129, 140, 248, 0.18) !important;
-}
-
-/* ── Skeleton pulse ── */
-@keyframes skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.35; }
-}
-.v-theme--light .skeleton { animation: skeleton-pulse 1.6s ease-in-out infinite; background: #F3F4F6 !important; }
-.v-theme--dark  .skeleton { animation: skeleton-pulse 1.6s ease-in-out infinite; background: #23232E !important; }
-
-/* ── Gradient text ── */
+/* Gradient text */
 .gradient-text {
   background: linear-gradient(135deg, rgb(var(--v-theme-primary)), rgb(var(--v-theme-secondary)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Page transitions */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.22s ease; }
+.fade-enter-from,   .fade-leave-to     { opacity: 0; }
+
+.slide-left-enter-active,  .slide-left-leave-active  { transition: all 0.26s cubic-bezier(.4,0,.2,1); }
+.slide-left-enter-from  { opacity: 0; transform: translateX(20px); }
+.slide-left-leave-to    { opacity: 0; transform: translateX(-20px); }
+
+.slide-right-enter-active, .slide-right-leave-active { transition: all 0.26s cubic-bezier(.4,0,.2,1); }
+.slide-right-enter-from { opacity: 0; transform: translateX(-20px); }
+.slide-right-leave-to   { opacity: 0; transform: translateX(20px); }
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.visible     { opacity: 1; transform: translateY(0); }
+.reveal-delay-1     { transition-delay: 0.07s; }
+.reveal-delay-2     { transition-delay: 0.14s; }
+.reveal-delay-3     { transition-delay: 0.21s; }
+.reveal-delay-4     { transition-delay: 0.28s; }
+
+/* Hover lift */
+.hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
+.hover-lift:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 28px rgba(79,70,229,0.15) !important;
+}
+
+/* Skeleton loader */
+@keyframes sk-pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+.skeleton { animation: sk-pulse 1.5s ease-in-out infinite !important; }
+.v-theme--light .skeleton * { background: #e9ecf3 !important; color: transparent !important; }
+.v-theme--dark  .skeleton * { background: #1e1e2a !important; color: transparent !important; }
 </style>
 
 <style scoped>
@@ -286,28 +291,26 @@ h1, h2, h3, .syne {
 }
 
 .brand-icon-wrap {
-  width: 34px;
-  height: 34px;
+  width: 34px; height: 34px;
   border-radius: 10px;
-  background: rgba(92, 107, 192, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: rgba(79, 70, 229, 0.1);
+  display: flex; align-items: center; justify-content: center;
 }
+
+/* Brand text: explicit color per theme — never inherit */
+.v-theme--light .brand-text { color: #1a1a2e !important; }
+.v-theme--dark  .brand-text { color: #f0f0ff !important; }
 
 .brand-text {
   font-family: 'Syne', sans-serif;
   font-size: 19px;
-  font-weight: 700;
-  color: inherit;
-  letter-spacing: 0.5px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
 }
 
 .brand-accent { color: rgb(var(--v-theme-primary)); }
 
 .nav-links { display: flex; align-items: center; gap: 2px; }
-
-.nav-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: 0.2px; }
-
+.nav-btn   { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 600; }
 .user-chip { font-size: 12px; }
 </style>
