@@ -64,7 +64,7 @@
         <!-- Price column -->
         <template v-slot:item.totalPrice="{ item }">
           <span :class="item.totalPrice ? 'text-success font-weight-bold' : 'text-medium-emphasis'">
-            {{ item.totalPrice ? item.totalPrice + ' DZD' : '—' }}
+            {{ item.totalPrice ? item.totalPrice + ' TND' : '—' }}
           </span>
         </template>
 

@@ -22,8 +22,8 @@
           </v-card-item>
           <v-card-text>
             <v-row dense>
-              <v-col cols="6" md="3"><v-list-item prepend-icon="mdi-timer-outline" :subtitle="vehicle.pricePerMinute + ' DZD'" title="Per Minute" density="compact" /></v-col>
-              <v-col cols="6" md="3"><v-list-item prepend-icon="mdi-calendar-range" :subtitle="vehicle.pricePerDay + ' DZD'" title="Per Day" density="compact" /></v-col>
+              <v-col cols="6" md="3"><v-list-item prepend-icon="mdi-timer-outline" :subtitle="vehicle.pricePerMinute + ' TND'" title="Per Minute" density="compact" /></v-col>
+              <v-col cols="6" md="3"><v-list-item prepend-icon="mdi-calendar-range" :subtitle="vehicle.pricePerDay + ' TND'" title="Per Day" density="compact" /></v-col>
               <v-col cols="6" md="3"><v-list-item prepend-icon="mdi-map-marker" :subtitle="vehicle.city" title="Location" density="compact" /></v-col>
               <v-col cols="6" md="3"><v-list-item prepend-icon="mdi-domain" :subtitle="companyName" title="Company" density="compact" /></v-col>
             </v-row>
@@ -39,14 +39,14 @@
                 <p class="text-caption text-medium-emphasis mb-2">Instant Rental — {{ estMinutes }} minutes</p>
                 <v-slider v-model="estMinutes" :min="1" :max="480" color="warning" thumb-label hide-details class="mb-3" />
                 <v-alert color="warning" variant="tonal" density="compact" rounded="lg">
-                  Estimated: <strong>{{ (estMinutes * vehicle.pricePerMinute).toFixed(2) }} DZD</strong>
+                  Estimated: <strong>{{ (estMinutes * vehicle.pricePerMinute).toFixed(2) }} TND</strong>
                 </v-alert>
               </v-col>
               <v-col cols="12" md="6">
                 <p class="text-caption text-medium-emphasis mb-2">Contract Rental — {{ estDays }} day(s)</p>
                 <v-slider v-model="estDays" :min="1" :max="30" color="primary" thumb-label hide-details class="mb-3" />
                 <v-alert color="primary" variant="tonal" density="compact" rounded="lg">
-                  Estimated: <strong>{{ (estDays * vehicle.pricePerDay).toFixed(2) }} DZD</strong>
+                  Estimated: <strong>{{ (estDays * vehicle.pricePerDay).toFixed(2) }} TND</strong>
                 </v-alert>
               </v-col>
             </v-row>

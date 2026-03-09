@@ -58,11 +58,11 @@
             <v-row dense class="mb-2">
               <v-col cols="6">
                 <div class="price-label">Per Minute</div>
-                <div class="price-val" style="color: rgb(var(--v-theme-warning))">{{ v.pricePerMinute }} DZD</div>
+                <div class="price-val" style="color: rgb(var(--v-theme-warning))">{{ v.pricePerMinute }} TND</div>
               </v-col>
               <v-col cols="6">
                 <div class="price-label">Per Day</div>
-                <div class="price-val" style="color: rgb(var(--v-theme-primary))">{{ v.pricePerDay }} DZD</div>
+                <div class="price-val" style="color: rgb(var(--v-theme-primary))">{{ v.pricePerDay }} TND</div>
               </v-col>
             </v-row>
             <div class="d-flex align-center text-caption text-medium-emphasis">
@@ -113,7 +113,7 @@
             <v-col cols="12"><v-text-field v-model="form.location" label="Delivery Location" prepend-inner-icon="mdi-map-marker" variant="outlined" density="comfortable" rounded="lg" /></v-col>
           </v-row>
           <v-alert v-if="contractDays" color="primary" variant="tonal" density="compact" rounded="lg">
-            Estimated: <strong>{{ (contractDays * selectedVehicle?.pricePerDay).toFixed(2) }} DZD</strong> ({{ contractDays }} days)
+            Estimated: <strong>{{ (contractDays * selectedVehicle?.pricePerDay).toFixed(2) }} TND</strong> ({{ contractDays }} days)
           </v-alert>
         </v-card-text>
         <v-card-actions class="pa-4 pt-0">

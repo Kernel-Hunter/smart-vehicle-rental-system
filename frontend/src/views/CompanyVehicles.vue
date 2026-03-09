@@ -44,11 +44,11 @@
             <v-row dense class="mb-2">
               <v-col cols="6">
                 <div class="price-label">Per Minute</div>
-                <div class="price-val text-primary">{{ v.pricePerMinute }} DZD</div>
+                <div class="price-val text-primary">{{ v.pricePerMinute }} TND</div>
               </v-col>
               <v-col cols="6">
                 <div class="price-label">Per Day</div>
-                <div class="price-val text-secondary">{{ v.pricePerDay }} DZD</div>
+                <div class="price-val text-secondary">{{ v.pricePerDay }} TND</div>
               </v-col>
             </v-row>
           </v-card-text>
@@ -93,10 +93,10 @@
               <v-select v-model="form.status" label="Status" :items="['AVAILABLE', 'RENTED', 'MAINTENANCE']" variant="outlined" density="comfortable" rounded="lg" />
             </v-col>
             <v-col cols="6">
-              <v-text-field v-model.number="form.pricePerMinute" label="Price/Min (DZD)" type="number" variant="outlined" density="comfortable" rounded="lg" />
+              <v-text-field v-model.number="form.pricePerMinute" label="Price/Min (TND)" type="number" variant="outlined" density="comfortable" rounded="lg" />
             </v-col>
             <v-col cols="6">
-              <v-text-field v-model.number="form.pricePerDay" label="Price/Day (DZD)" type="number" variant="outlined" density="comfortable" rounded="lg" />
+              <v-text-field v-model.number="form.pricePerDay" label="Price/Day (TND)" type="number" variant="outlined" density="comfortable" rounded="lg" />
             </v-col>
             <v-col cols="12">
               <v-select v-model="form.city" label="City" :items="['Tunis', 'Sousse', 'Sfax', 'Bizerte', 'Monastir']" prepend-inner-icon="mdi-map-marker" variant="outlined" density="comfortable" rounded="lg" />
