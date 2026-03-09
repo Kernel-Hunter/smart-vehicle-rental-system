@@ -1,313 +1,126 @@
 <template>
   <div>
-    <router-link to="/rentals" class="back-link">← Back to My Rentals</router-link>
+    <v-btn variant="text" color="primary" prepend-icon="mdi-arrow-left" to="/rentals" class="mb-4">
+      Back to My Rentals
+    </v-btn>
 
-    <p v-if="loading" class="status-text">Loading contract...</p>
-    <p v-if="error" class="msg-error">{{ error }}</p>
+    <div v-if="!rental">
+      <v-alert type="error" variant="tonal">Contract not found.</v-alert>
+    </div>
 
-    <div v-if="rental" class="contract-layout">
-
+    <div v-else>
       <!-- Header -->
-      <div class="contract-header">
-        <div>
-          <p class="contract-id">CONTRACT #{{ rental.id }}</p>
-          <h2 class="contract-title">
-            {{ rental.vehicle?.brand }} {{ rental.vehicle?.model }}
-          </h2>
-        </div>
-        <!-- Combined status badges -->
-        <div class="badges">
-          <span :class="['status-badge', statusClass(rental.status)]">{{ rental.status }}</span>
-          <span class="type-badge">CONTRACT</span>
-        </div>
-      </div>
+      <v-card rounded="xl" elevation="1" class="mb-4">
+        <v-card-item>
+          <template v-slot:append>
+            <div class="d-flex gap-2">
+              <v-chip :color="statusColor(rental.status)" variant="tonal">{{ rental.status }}</v-chip>
+              <v-chip color="secondary" variant="tonal">CONTRACT</v-chip>
+            </div>
+          </template>
+          <v-card-subtitle>Contract #{{ rental.id }}</v-card-subtitle>
+          <v-card-title class="text-h5 font-weight-bold">
+            {{ vehicle?.brand }} {{ vehicle?.model }}
+          </v-card-title>
+        </v-card-item>
+      </v-card>
 
-      <!-- Details grid -->
-      <div class="details-grid">
-
+      <!-- Detail cards row -->
+      <v-row class="mb-4">
         <!-- Vehicle info -->
-        <div class="detail-card">
-          <p class="card-label">VEHICLE INFO</p>
-          <div class="detail-row">
-            <span class="dr-key">Brand</span>
-            <span class="dr-val">{{ rental.vehicle?.brand }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">Model</span>
-            <span class="dr-val">{{ rental.vehicle?.model }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">Type</span>
-            <span class="dr-val">{{ rental.vehicle?.type }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">Price/Day</span>
-            <span class="dr-val accent">{{ rental.vehicle?.pricePerDay }} DZD</span>
-          </div>
-        </div>
+        <v-col cols="12" md="4">
+          <v-card rounded="xl" elevation="1" height="100%">
+            <v-card-title class="pa-4 pb-2 text-body-1 font-weight-bold">Vehicle Info</v-card-title>
+            <v-list density="compact" class="px-2">
+              <v-list-item title="Brand"    :subtitle="vehicle?.brand" />
+              <v-list-item title="Model"    :subtitle="vehicle?.model" />
+              <v-list-item title="Type"     :subtitle="vehicle?.type" />
+              <v-list-item title="Rate"     :subtitle="vehicle?.pricePerDay + ' DZD/day'" />
+            </v-list>
+          </v-card>
+        </v-col>
 
         <!-- Contract dates -->
-        <div class="detail-card">
-          <p class="card-label">CONTRACT DATES</p>
-          <div class="detail-row">
-            <span class="dr-key">Start Date</span>
-            <span class="dr-val">{{ rental.contract?.startDate || '-' }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">End Date</span>
-            <span class="dr-val">{{ rental.contract?.endDate || '-' }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">Duration</span>
-            <span class="dr-val">{{ durationDays }} day(s)</span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">Delivery Location</span>
-            <span class="dr-val">{{ rental.contract?.deliveryLocation || 'Not specified' }}</span>
-          </div>
-        </div>
+        <v-col cols="12" md="4">
+          <v-card rounded="xl" elevation="1" height="100%">
+            <v-card-title class="pa-4 pb-2 text-body-1 font-weight-bold">Contract Dates</v-card-title>
+            <v-list density="compact" class="px-2">
+              <v-list-item title="Start Date"         :subtitle="rental.contract?.startDate || '—'" />
+              <v-list-item title="End Date"           :subtitle="rental.contract?.endDate || '—'" />
+              <v-list-item title="Duration"           :subtitle="durationDays + ' day(s)'" />
+              <v-list-item title="Delivery Location"  :subtitle="rental.contract?.deliveryLocation || 'Not specified'" />
+            </v-list>
+          </v-card>
+        </v-col>
 
-        <!-- Payment info -->
-        <div class="detail-card">
-          <p class="card-label">PAYMENT</p>
-          <div class="detail-row">
-            <span class="dr-key">Approval Status</span>
-            <!-- Green if approved, yellow if waiting -->
-            <span :class="rental.contract?.approved ? 'val-green' : 'val-yellow'">
-              {{ rental.contract?.approved ? 'Approved' : 'Pending Approval' }}
-            </span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">Rental Status</span>
-            <span class="dr-val">{{ rental.status }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="dr-key">Total Price</span>
-            <!-- Price shown in green once calculated, dash while pending -->
-            <span class="dr-val accent">
-              {{ rental.totalPrice != null ? rental.totalPrice + ' DZD' : 'To be calculated' }}
-            </span>
-          </div>
-        </div>
+        <!-- Payment -->
+        <v-col cols="12" md="4">
+          <v-card rounded="xl" elevation="1" height="100%">
+            <v-card-title class="pa-4 pb-2 text-body-1 font-weight-bold">Payment</v-card-title>
+            <v-list density="compact" class="px-2">
+              <v-list-item title="Approval">
+                <template v-slot:subtitle>
+                  <v-chip :color="rental.contract?.approved ? 'success' : 'warning'" variant="tonal" size="x-small">
+                    {{ rental.contract?.approved ? 'Approved' : 'Pending' }}
+                  </v-chip>
+                </template>
+              </v-list-item>
+              <v-list-item title="Rental Status" :subtitle="rental.status" />
+              <v-list-item title="Total Price"   :subtitle="rental.totalPrice ? rental.totalPrice + ' DZD' : 'To be calculated'" />
+            </v-list>
+          </v-card>
+        </v-col>
+      </v-row>
 
-      </div>
-
-      <!-- Status timeline: shows current stage of the contract -->
-      <div class="timeline">
-        <p class="timeline-title">Contract Progress</p>
-        <div class="timeline-steps">
-          <div :class="['tstep', 'active']">
-            <div class="tstep-dot"></div>
-            <p class="tstep-label">Submitted</p>
-          </div>
-          <div class="tstep-line"></div>
-          <div :class="['tstep', rental.contract?.approved ? 'active' : '']">
-            <div class="tstep-dot"></div>
-            <p class="tstep-label">Approved</p>
-          </div>
-          <div class="tstep-line"></div>
-          <div :class="['tstep', rental.status === 'ACTIVE' ? 'active' : '']">
-            <div class="tstep-dot"></div>
-            <p class="tstep-label">Active</p>
-          </div>
-          <div class="tstep-line"></div>
-          <div :class="['tstep', rental.status === 'COMPLETED' ? 'active' : '']">
-            <div class="tstep-dot"></div>
-            <p class="tstep-label">Completed</p>
-          </div>
-        </div>
-      </div>
-
+      <!-- Progress stepper -->
+      <v-card rounded="xl" elevation="1">
+        <v-card-title class="pa-4 pb-2 text-body-1 font-weight-bold">Contract Progress</v-card-title>
+        <v-card-text>
+          <v-stepper
+            :model-value="currentStep"
+            alt-labels
+            flat
+            :items="['Submitted', 'Approved', 'Active', 'Completed']"
+            color="primary"
+          />
+        </v-card-text>
+      </v-card>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { getRentalById, getVehicleById } from '../store/data.js'
 
 export default {
   name: 'ContractDetailView',
-
   data() {
-    return {
-      rental: null,   // Full rental object including nested contract and vehicle
-      loading: false,
-      error: ''
-    }
+    const rental  = getRentalById(this.$route.params.id)
+    const vehicle = rental ? getVehicleById(rental.vehicleId) : null
+    return { rental, vehicle }
   },
-
   computed: {
-    // Calculates number of days between contract start and end dates
     durationDays() {
-      if (!this.rental?.contract?.startDate || !this.rental?.contract?.endDate) return '-'
+      if (!this.rental?.contract?.startDate || !this.rental?.contract?.endDate) return '—'
       const start = new Date(this.rental.contract.startDate)
       const end   = new Date(this.rental.contract.endDate)
-      const diff  = Math.ceil((end - start) / (1000 * 60 * 60 * 24))
-      return diff > 0 ? diff : '-'
+      return Math.ceil((end - start) / (1000 * 60 * 60 * 24))
+    },
+    // Maps rental state to stepper step number
+    currentStep() {
+      if (this.rental?.status === 'COMPLETED') return 4
+      if (this.rental?.status === 'ACTIVE')    return 3
+      if (this.rental?.contract?.approved)     return 2
+      return 1
     }
   },
-
-  mounted() { this.fetchRental() },
-
   methods: {
-    auth() {
-      return { headers: { Authorization: 'Bearer ' + localStorage.getItem('token') } }
-    },
-
-    statusClass(status) {
-      if (status === 'ACTIVE')    return 'badge-green'
-      if (status === 'PENDING')   return 'badge-yellow'
-      if (status === 'COMPLETED') return 'badge-gray'
-      return 'badge-red'
-    },
-
-    // Fetches a specific rental by ID from the URL
-    async fetchRental() {
-      this.loading = true
-      try {
-        const id = this.$route.params.id
-        const res = await axios.get(`http://localhost:8080/api/rentals/${id}`, this.auth())
-        this.rental = res.data
-      } catch {
-        this.error = 'Contract not found.'
-      } finally {
-        this.loading = false
-      }
+    statusColor(status) {
+      if (status === 'ACTIVE')    return 'success'
+      if (status === 'PENDING')   return 'warning'
+      if (status === 'COMPLETED') return 'primary'
+      return 'error'
     }
   }
 }
 </script>
-
-<style scoped>
-.back-link {
-  display: inline-block;
-  color: #3b82f6;
-  font-size: 13px;
-  margin-bottom: 28px;
-  transition: opacity 0.2s;
-}
-.back-link:hover { opacity: 0.7; }
-
-.contract-layout { display: flex; flex-direction: column; gap: 24px; }
-
-/* Header */
-.contract-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 28px;
-}
-
-.contract-id { color: #3b82f6; font-size: 12px; letter-spacing: 2px; }
-
-.contract-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  color: #e2e8f0;
-  margin-top: 4px;
-}
-
-.badges { display: flex; gap: 8px; align-items: center; }
-
-.status-badge, .type-badge {
-  padding: 4px 12px;
-  border-radius: 3px;
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-.badge-green  { background: #052e16; color: #22c55e; border: 1px solid #166534; }
-.badge-yellow { background: #1c1500; color: #eab308; border: 1px solid #854d0e; }
-.badge-gray   { background: #1a1e2a; color: #64748b; border: 1px solid #2a3548; }
-.badge-red    { background: #1f0707; color: #ef4444; border: 1px solid #7f1d1d; }
-.type-badge   { background: #1a0c3a; color: #a78bfa; border: 1px solid #3b1f7f; }
-
-/* Details grid: 3 cards side by side */
-.details-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.detail-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.card-label { color: #475569; font-size: 11px; letter-spacing: 2px; }
-
-/* Each row inside a card: key on left, value on right */
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #1a1e2a;
-  padding-bottom: 10px;
-}
-.detail-row:last-child { border-bottom: none; padding-bottom: 0; }
-
-.dr-key  { color: #475569; font-size: 12px; }
-.dr-val  { color: #94a3b8; font-size: 13px; }
-.accent  { color: #3b82f6; font-weight: 500; }
-.val-green  { color: #22c55e; font-size: 13px; }
-.val-yellow { color: #eab308; font-size: 13px; }
-
-/* Progress timeline */
-.timeline {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 24px;
-}
-
-.timeline-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #e2e8f0;
-  margin-bottom: 20px;
-}
-
-.timeline-steps {
-  display: flex;
-  align-items: center;
-}
-
-.tstep { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-
-/* Dot: gray by default, blue when step is active */
-.tstep-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #2a3548;
-  border: 2px solid #2a3548;
-  transition: all 0.2s;
-}
-.tstep.active .tstep-dot {
-  background: #3b82f6;
-  border-color: #3b82f6;
-}
-
-.tstep-label { color: #475569; font-size: 11px; letter-spacing: 1px; white-space: nowrap; }
-.tstep.active .tstep-label { color: #3b82f6; }
-
-/* Horizontal line connecting steps */
-.tstep-line {
-  flex: 1;
-  height: 2px;
-  background: #1e2535;
-  margin-bottom: 20px;
-}
-
-.msg-error   { color: #ef4444; font-size: 13px; }
-.status-text { color: #475569; font-size: 13px; }
-</style>
