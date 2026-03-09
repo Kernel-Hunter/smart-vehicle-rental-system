@@ -1,225 +1,248 @@
 <template>
-  <div class="about">
+  <div>
+    <h2 class="text-h5 font-weight-bold mb-6">Admin Dashboard</h2>
 
-    <!-- ── Project header ── -->
-    <div class="about-header">
-      <p class="about-tag">◈ ACADEMIC PROJECT</p>
-      <h1 class="about-title">About SmartRent</h1>
-      <p class="about-sub">
-        Smart Vehicle Rental Management System — ISS Project<br />
-        South Mediterranean University · MedTech
-      </p>
+    <!-- ── SECTION 1: ALL RENTALS ── -->
+    <h3 class="text-h6 font-weight-medium mb-3">
+      <v-icon color="primary" class="mr-2">mdi-clipboard-list</v-icon>
+      All Rentals
+    </h3>
+
+    <v-card rounded="xl" elevation="1" class="mb-8">
+      <v-data-table :headers="rentalHeaders" :items="enrichedRentals" :items-per-page="10" rounded="xl">
+
+        <template v-slot:item.rentalType="{ item }">
+          <v-chip :color="item.rentalType === 'INSTANT' ? 'warning' : 'primary'" variant="tonal" size="small">
+            {{ item.rentalType }}
+          </v-chip>
+        </template>
+
+        <template v-slot:item.status="{ item }">
+          <v-chip :color="statusColor(item.status)" variant="tonal" size="small">
+            {{ item.status }}
+          </v-chip>
+        </template>
+
+        <template v-slot:item.totalPrice="{ item }">
+          <span :class="item.totalPrice ? 'text-success font-weight-bold' : 'text-medium-emphasis'">
+            {{ item.totalPrice ? item.totalPrice + ' DZD' : '—' }}
+          </span>
+        </template>
+
+        <!-- Approve button: only for PENDING CONTRACT rentals -->
+        <template v-slot:item.actions="{ item }">
+          <v-btn
+            v-if="item.status === 'PENDING' && item.rentalType === 'CONTRACT'"
+            color="success"
+            variant="tonal"
+            size="small"
+            rounded="lg"
+            prepend-icon="mdi-check"
+            @click="approve(item)"
+          >
+            Approve
+          </v-btn>
+          <span v-else class="text-medium-emphasis">—</span>
+        </template>
+      </v-data-table>
+    </v-card>
+
+    <!-- ── SECTION 2: VEHICLE LIST ── -->
+    <div class="d-flex align-center justify-space-between mb-3">
+      <h3 class="text-h6 font-weight-medium">
+        <v-icon color="primary" class="mr-2">mdi-car-multiple</v-icon>
+        Fleet Vehicles
+      </h3>
+      <v-btn color="primary" variant="tonal" prepend-icon="mdi-plus" @click="openAddVehicle" rounded="lg">
+        Add Vehicle
+      </v-btn>
     </div>
 
-    <!-- ── Project description ── -->
-    <div class="about-card">
-      <p class="card-label">THE PROJECT</p>
-      <p class="about-text">
-        SmartRent is a full-stack vehicle rental platform developed as part of the ISS
-        (Ingénierie des Systèmes et des Services) curriculum. It demonstrates real-world
-        software engineering concepts including REST API design, JWT authentication,
-        role-based access control, and a reactive frontend connected to a Spring Boot backend.
-      </p>
-      <p class="about-text">
-        The system supports two rental models: instant self-service rentals billed per minute,
-        and admin-approved contract rentals billed per day with optional vehicle delivery.
-      </p>
-    </div>
+    <v-card rounded="xl" elevation="1" class="mb-8">
+      <v-data-table :headers="vehicleHeaders" :items="vehicles" :items-per-page="10" rounded="xl">
 
-    <!-- ── Tech stack ── -->
-    <div class="tech-section">
-      <h2 class="section-title">Tech Stack</h2>
-      <div class="tech-grid">
-        <div class="tech-card" v-for="tech in techStack" :key="tech.name">
-          <p class="tech-icon">{{ tech.icon }}</p>
-          <p class="tech-name">{{ tech.name }}</p>
-          <p class="tech-desc">{{ tech.desc }}</p>
-        </div>
-      </div>
-    </div>
+        <template v-slot:item.status="{ item }">
+          <v-chip :color="vehicleStatusColor(item.status)" variant="tonal" size="small">
+            {{ item.status }}
+          </v-chip>
+        </template>
 
-    <!-- ── Team ── -->
-    <div class="team-section">
-      <h2 class="section-title">The Team</h2>
-      <div class="team-grid">
-        <div class="team-card" v-for="member in team" :key="member.name">
-          <!-- Avatar with initials -->
-          <div class="member-avatar">{{ member.initials }}</div>
-          <h3 class="member-name">{{ member.name }}</h3>
-          <p class="member-role">{{ member.role }}</p>
-        </div>
-      </div>
-    </div>
+        <template v-slot:item.actions="{ item }">
+          <div class="d-flex gap-1">
+            <v-btn color="primary" variant="tonal" size="small" rounded="lg" @click="openEditVehicle(item)" prepend-icon="mdi-pencil">
+              Edit
+            </v-btn>
+            <v-btn color="error" variant="tonal" size="small" rounded="lg" @click="removeVehicle(item.id)" prepend-icon="mdi-delete">
+              Delete
+            </v-btn>
+          </div>
+        </template>
+      </v-data-table>
+    </v-card>
 
-    <!-- ── University info ── -->
-    <div class="university-card">
-      <p class="card-label">INSTITUTION</p>
-      <p class="uni-name">South Mediterranean University — MedTech</p>
-      <p class="uni-program">Program: ISS — Ingénierie des Systèmes et des Services</p>
-    </div>
+    <!-- ── ADD/EDIT VEHICLE DIALOG ── -->
+    <v-dialog v-model="vehicleDialog" max-width="550" rounded="xl">
+      <v-card rounded="xl">
+        <v-card-title class="pa-6 pb-2">
+          {{ editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle' }}
+        </v-card-title>
+        <v-card-text class="pa-6">
+          <v-row dense>
+            <v-col cols="6">
+              <v-text-field v-model="vehicleForm.brand" label="Brand" variant="outlined" density="comfortable" required />
+            </v-col>
+            <v-col cols="6">
+              <v-text-field v-model="vehicleForm.model" label="Model" variant="outlined" density="comfortable" required />
+            </v-col>
+            <v-col cols="6">
+              <v-text-field v-model="vehicleForm.type" label="Type" variant="outlined" density="comfortable" required />
+            </v-col>
+            <v-col cols="6">
+              <v-select
+                v-model="vehicleForm.status"
+                label="Status"
+                :items="['AVAILABLE', 'RENTED', 'MAINTENANCE']"
+                variant="outlined"
+                density="comfortable"
+              />
+            </v-col>
+            <v-col cols="6">
+              <v-text-field v-model="vehicleForm.pricePerMinute" label="Price/Min (DZD)" type="number" variant="outlined" density="comfortable" />
+            </v-col>
+            <v-col cols="6">
+              <v-text-field v-model="vehicleForm.pricePerDay" label="Price/Day (DZD)" type="number" variant="outlined" density="comfortable" />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field v-model="vehicleForm.location" label="Location" prepend-inner-icon="mdi-map-marker" variant="outlined" density="comfortable" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions class="pa-4 pt-0">
+          <v-spacer />
+          <v-btn variant="text" @click="vehicleDialog = false">Cancel</v-btn>
+          <v-btn color="primary" variant="tonal" @click="saveVehicle" rounded="lg">
+            {{ editingVehicle ? 'Update' : 'Add' }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
+      {{ snackbar.text }}
+    </v-snackbar>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'AboutView',
+import {
+  getRentals, getVehicles, getVehicleById, getUserById,
+  approveContract, addVehicle, updateVehicle, deleteVehicle
+} from '../store/data.js'
 
+export default {
+  name: 'AdminView',
   data() {
     return {
-      // Tech stack used in the project
-      techStack: [
-        { icon: '☕', name: 'Spring Boot',  desc: 'Java backend with REST API' },
-        { icon: '💚', name: 'Vue 3',        desc: 'Reactive frontend with Vite' },
-        { icon: '🐬', name: 'MySQL',        desc: 'Relational database with JPA' },
-        { icon: '🔐', name: 'JWT',          desc: 'Stateless authentication tokens' },
-        { icon: '📡', name: 'Axios',        desc: 'HTTP client for API calls' },
-        { icon: '🐳', name: 'Docker',       desc: 'Containerized deployment' }
+      rentals:        [],
+      vehicles:       [],
+      vehicleDialog:  false,
+      editingVehicle: null,
+      vehicleForm: { brand: '', model: '', type: '', status: 'AVAILABLE', pricePerMinute: 0, pricePerDay: 0, location: '' },
+      snackbar: { show: false, text: '', color: 'success' },
+      rentalHeaders: [
+        { title: 'ID',       key: 'id',          width: '60px' },
+        { title: 'User',     key: 'username'     },
+        { title: 'Vehicle',  key: 'vehicleName'  },
+        { title: 'Type',     key: 'rentalType'   },
+        { title: 'Status',   key: 'status'       },
+        { title: 'Total',    key: 'totalPrice'   },
+        { title: 'Action',   key: 'actions', sortable: false },
       ],
-
-      // Team members
-      team: [
-        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer' },
-        { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer' },
-        { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer' },
-        { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer' }
+      vehicleHeaders: [
+        { title: 'ID',        key: 'id',             width: '60px' },
+        { title: 'Brand',     key: 'brand'           },
+        { title: 'Model',     key: 'model'           },
+        { title: 'Type',      key: 'type'            },
+        { title: 'Status',    key: 'status'          },
+        { title: 'Price/Min', key: 'pricePerMinute'  },
+        { title: 'Price/Day', key: 'pricePerDay'     },
+        { title: 'Location',  key: 'location'        },
+        { title: 'Actions',   key: 'actions', sortable: false },
       ]
+    }
+  },
+
+  computed: {
+    // Enrich rentals with username and vehicle name for display
+    enrichedRentals() {
+      return this.rentals.map(r => {
+        const user    = getUserById(r.userId)
+        const vehicle = getVehicleById(r.vehicleId)
+        return {
+          ...r,
+          username:    user    ? user.username                       : '—',
+          vehicleName: vehicle ? `${vehicle.brand} ${vehicle.model}` : '—'
+        }
+      })
+    }
+  },
+
+  mounted() {
+    this.rentals  = getRentals()
+    this.vehicles = getVehicles()
+  },
+
+  methods: {
+    statusColor(status) {
+      if (status === 'ACTIVE')    return 'success'
+      if (status === 'PENDING')   return 'warning'
+      if (status === 'COMPLETED') return 'primary'
+      return 'error'
+    },
+
+    vehicleStatusColor(status) {
+      if (status === 'AVAILABLE')   return 'success'
+      if (status === 'RENTED')      return 'primary'
+      return 'warning'
+    },
+
+    // Approve a pending contract rental
+    approve(rental) {
+      approveContract(rental.id)
+      this.rentals  = getRentals()
+      this.vehicles = getVehicles()
+      this.snackbar = { show: true, text: 'Contract approved successfully!', color: 'success' }
+    },
+
+    openAddVehicle() {
+      this.editingVehicle = null
+      this.vehicleForm    = { brand: '', model: '', type: '', status: 'AVAILABLE', pricePerMinute: 0, pricePerDay: 0, location: '' }
+      this.vehicleDialog  = true
+    },
+
+    openEditVehicle(vehicle) {
+      this.editingVehicle = vehicle
+      this.vehicleForm    = { ...vehicle }
+      this.vehicleDialog  = true
+    },
+
+    saveVehicle() {
+      if (this.editingVehicle) {
+        updateVehicle({ ...this.vehicleForm, id: this.editingVehicle.id })
+        this.snackbar = { show: true, text: 'Vehicle updated.', color: 'success' }
+      } else {
+        addVehicle({ ...this.vehicleForm })
+        this.snackbar = { show: true, text: 'Vehicle added.', color: 'success' }
+      }
+      this.vehicleDialog = false
+      this.vehicles = getVehicles()
+    },
+
+    removeVehicle(id) {
+      deleteVehicle(id)
+      this.vehicles = getVehicles()
+      this.snackbar = { show: true, text: 'Vehicle deleted.', color: 'error' }
     }
   }
 }
 </script>
-
-<style scoped>
-.about { display: flex; flex-direction: column; gap: 40px; }
-
-/* Header */
-.about-header { text-align: center; padding: 40px 0 20px; }
-.about-tag { color: #3b82f6; font-size: 12px; letter-spacing: 3px; margin-bottom: 12px; }
-.about-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 44px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 2px;
-}
-.about-sub { color: #475569; font-size: 14px; margin-top: 10px; line-height: 1.7; }
-
-/* Description card */
-.about-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.card-label { color: #3b82f6; font-size: 11px; letter-spacing: 3px; }
-.about-text { color: #94a3b8; font-size: 14px; line-height: 1.8; }
-
-/* Tech stack */
-.tech-section { display: flex; flex-direction: column; gap: 20px; }
-.section-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 2px;
-}
-
-.tech-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.tech-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: border-color 0.2s;
-}
-.tech-card:hover { border-color: #2a4a7f; }
-
-.tech-icon { font-size: 28px; }
-.tech-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 1px;
-}
-.tech-desc { color: #475569; font-size: 12px; }
-
-/* Team */
-.team-section { display: flex; flex-direction: column; gap: 20px; }
-
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-
-.team-card {
-  background: #13161e;
-  border: 1px solid #1e2535;
-  border-radius: 8px;
-  padding: 28px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  text-align: center;
-  transition: border-color 0.2s;
-}
-.team-card:hover { border-color: #2a4a7f; }
-
-/* Avatar circle with initials */
-.member-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #0f1a2e;
-  border: 2px solid #3b82f6;
-  color: #3b82f6;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.member-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 1px;
-}
-.member-role { color: #475569; font-size: 12px; }
-
-/* University card */
-.university-card {
-  background: #13161e;
-  border: 1px solid #1e3a5f;
-  border-radius: 8px;
-  padding: 28px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.uni-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #e2e8f0;
-  letter-spacing: 1px;
-}
-.uni-program { color: #475569; font-size: 13px; }
-</style>
