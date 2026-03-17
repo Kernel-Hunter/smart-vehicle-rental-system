@@ -24,11 +24,11 @@ SmartRent connects rental companies with customers through an interactive map in
 
 ### Core Functionality
 
-- **Interactive Map** — fake SVG city grid with live vehicle markers, pulse animations, city filter (Tunis / Sousse / Sfax), and a sidebar detail panel
-- **Two Rental Modes** — Instant Rental (pay by the minute) and Contract Rental (multi-day, requires company approval)
-- **Company Dashboard** — KPI cards, animated earnings tracker, fleet management, rental approvals
-- **Light / Dark Mode** — full theme toggle with glassmorphism navbar blur on scroll
-- **Mobile Responsive** — bottom navigation bar on mobile with all routes including About
+- **Interactive Map** : fake SVG city grid with live vehicle markers, pulse animations, city filter (Tunis / Sousse / Sfax), and a sidebar detail panel
+- **Two Rental Modes** : Instant Rental (pay by the minute) and Contract Rental (multi-day, requires company approval)
+- **Company Dashboard** : KPI cards, animated earnings tracker, fleet management, rental approvals
+- **Light / Dark Mode** : full theme toggle with glassmorphism navbar blur on scroll
+- **Mobile Responsive** : bottom navigation bar on mobile with all routes including About
 
 ### UI & Animations
 
