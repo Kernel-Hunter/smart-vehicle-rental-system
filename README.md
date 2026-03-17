@@ -1,6 +1,6 @@
 # SmartRent 🚗
 
-A two-sided vehicle rental marketplace built with Vue 3, Vuetify 3, and localStorage. No backend required — fully client-side.
+A modern two-sided vehicle rental marketplace connecting companies and customers through an interactive map experience. Built with Vuetify 3.
 
 **Live demo:** [smart-vehicle-rental-system.vercel.app](https://smart-vehicle-rental-system.vercel.app)
 
