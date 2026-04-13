@@ -1,6 +1,6 @@
 <template>
-  <!-- v-app wraps everything and applies the Vuetify theme -->
-  <v-app :theme="theme">
+  <!-- v-app: theme is managed entirely by this.$vuetify.theme.global.name -->
+  <v-app>
 
     <!-- ── Navigation Bar ── -->
     <v-app-bar flat :elevation="scrolled ? 3 : 0" :class="['navbar', { 'navbar-scrolled': scrolled }]">
@@ -170,10 +170,11 @@ export default {
   },
   methods: {
     toggleTheme() {
-      this.theme = this.theme === 'light' ? 'dark' : 'light'
-      localStorage.setItem('sr_theme', this.theme)
-      // Update Vuetify theme globally
-      this.$vuetify.theme.global.name = this.theme
+      // Let Vuetify own the theme state — it updates all CSS variables atomically
+      const next = this.$vuetify.theme.global.name === 'light' ? 'dark' : 'light'
+      this.$vuetify.theme.global.name = next
+      this.theme = next  // keep local ref in sync for the icon only
+      localStorage.setItem('sr_theme', next)
     },
     logout() {
       clearCurrentUser()
