@@ -1,28 +1,28 @@
 <template>
   <div style="max-width:900px; margin:0 auto; padding:28px 32px;">
-    <h2 class="reveal mb-6" style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;">My Profile</h2>
+    <h2 class="mb-6" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:24px;font-weight:700;">My Profile</h2>
     <v-row>
       <!-- Profile card -->
       <v-col cols="12" md="4">
-        <v-card rounded="xl" elevation="1" class="text-center pa-6 reveal">
+        <v-card rounded="xl" elevation="1" class="text-center pa-6">
           <v-avatar color="primary" size="72" class="mb-4">
             <span style="font-size:28px;font-weight:700;color:white;">{{ initials }}</span>
           </v-avatar>
-          <h3 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;">{{ profile.username }}</h3>
+          <h3 style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:18px;font-weight:700;">{{ profile.username }}</h3>
           <p style="font-size:13px;color:rgb(var(--v-theme-on-surface-variant));margin-top:4px;">{{ profile.email }}</p>
           <v-chip color="primary" variant="tonal" size="small" class="mt-3">{{ profile.role }}</v-chip>
           <v-divider class="my-4" />
           <v-row dense>
             <v-col cols="4">
-              <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:rgb(var(--v-theme-primary));">{{ total }}</div>
+              <div style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:24px;font-weight:700;color:rgb(var(--v-theme-primary));">{{ total }}</div>
               <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));">Total</div>
             </v-col>
             <v-col cols="4">
-              <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:rgb(var(--v-theme-success));">{{ active }}</div>
+              <div style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:24px;font-weight:700;color:rgb(var(--v-theme-success));">{{ active }}</div>
               <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));">Active</div>
             </v-col>
             <v-col cols="4">
-              <div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:rgb(var(--v-theme-secondary));">{{ done }}</div>
+              <div style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:24px;font-weight:700;color:rgb(var(--v-theme-secondary));">{{ done }}</div>
               <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));">Done</div>
             </v-col>
           </v-row>
@@ -30,7 +30,7 @@
       </v-col>
       <!-- Edit form -->
       <v-col cols="12" md="8">
-        <v-card rounded="xl" elevation="1" class="reveal reveal-delay-1">
+        <v-card rounded="xl" elevation="1" class="">
           <v-card-title class="pa-6 pb-3 text-body-1 font-weight-bold">Edit Account</v-card-title>
           <v-card-text class="px-6 pb-6">
             <v-form @submit.prevent="save">
@@ -52,10 +52,8 @@
 
 <script>
 import { getCurrentUser, setCurrentUser, updateCustomer, getRentalsByCustomer } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 export default {
   name: 'ProfileView',
-  setup() { return useReveal() },
   data() {
     const u = getCurrentUser()
     const rentals = getRentalsByCustomer(u.id)
@@ -71,7 +69,7 @@ export default {
     active() { return this.rentals.filter(r => r.status === 'ACTIVE').length },
     done()   { return this.rentals.filter(r => r.status === 'COMPLETED').length }
   },
-  mounted() { this.setupReveal() },
+  mounted() { },
   methods: {
     save() {
       this.msg = ''

@@ -2,7 +2,7 @@
   <div style="max-width:1280px; margin:0 auto; padding:28px 32px;">
 
     <!-- Header -->
-    <div class="d-flex align-center justify-space-between mb-6 reveal">
+    <div class="d-flex align-center justify-space-between mb-6">
       <div>
         <h2 class="page-title">Vehicle Fleet</h2>
         <p class="page-sub">{{ filteredVehicles.length }} vehicles available to rent</p>
@@ -40,7 +40,7 @@
         :key="v.id"
         cols="12" sm="6" md="4" lg="3"
       >
-        <v-card :class="`hover-lift reveal reveal-delay-${(i % 4) + 1} fade-up-${(i % 4) + 1}`" rounded="xl" elevation="1" height="100%" class="d-flex flex-column">
+        <v-card :class="`hover-lift -delay-${(i % 4) + 1}`" rounded="xl" elevation="1" height="100%" class="d-flex flex-column">
           <v-card-item>
             <template v-slot:prepend>
               <v-avatar :color="v.color" size="36">
@@ -130,11 +130,9 @@
 
 <script>
 import { getVehicles, getCompanyById, startInstantRental, submitContractRental, getCurrentUser } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 
 export default {
   name: 'VehiclesView',
-  setup() { return useReveal() },
   data() {
     return {
       vehicles: [], loading: true, currentUser: getCurrentUser(),
@@ -161,7 +159,6 @@ export default {
     setTimeout(() => {
       this.vehicles = getVehicles()
       this.loading  = false
-      this.$nextTick(() => this.setupReveal())
     }, 500)
   },
   methods: {

@@ -1,13 +1,13 @@
 <!-- VehicleDetailView.vue -->
 <template>
   <div style="max-width:1100px; margin:0 auto; padding:28px 32px;">
-    <v-btn variant="text" color="primary" prepend-icon="mdi-arrow-left" to="/vehicles" class="mb-4 reveal">Back to Fleet</v-btn>
+    <v-btn variant="text" color="primary" prepend-icon="mdi-arrow-left" to="/vehicles" class="mb-4">Back to Fleet</v-btn>
 
     <div v-if="!vehicle"><v-alert type="error" variant="tonal" rounded="xl">Vehicle not found.</v-alert></div>
 
     <v-row v-else>
       <v-col cols="12" md="8">
-        <v-card rounded="xl" elevation="1" class="mb-4 reveal">
+        <v-card rounded="xl" elevation="1" class="mb-4">
           <v-card-item>
             <template v-slot:prepend>
               <v-avatar :color="vehicle.color" size="48">
@@ -18,7 +18,7 @@
               <v-chip :color="statusColor(vehicle.status)" variant="tonal">{{ vehicle.status }}</v-chip>
             </template>
             <v-card-subtitle>#{{ vehicle.id }} · {{ vehicle.type }} · {{ vehicle.city }}</v-card-subtitle>
-            <v-card-title class="text-h4 font-weight-bold" style="font-family:'Syne',sans-serif;">{{ vehicle.brand }} {{ vehicle.model }}</v-card-title>
+            <v-card-title class="text-h4 font-weight-bold" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;">{{ vehicle.brand }} {{ vehicle.model }}</v-card-title>
           </v-card-item>
           <v-card-text>
             <v-row dense>
@@ -31,7 +31,7 @@
         </v-card>
 
         <!-- Price estimator -->
-        <v-card rounded="xl" elevation="1" class="reveal reveal-delay-1">
+        <v-card rounded="xl" elevation="1" class="">
           <v-card-title class="pa-5 pb-3"><v-icon color="primary" class="mr-2">mdi-calculator</v-icon>Price Estimator</v-card-title>
           <v-card-text class="px-5 pb-5">
             <v-row>
@@ -56,7 +56,7 @@
 
       <!-- Action panel -->
       <v-col cols="12" md="4">
-        <v-card rounded="xl" elevation="1" class="position-sticky reveal reveal-delay-2" style="top:80px;">
+        <v-card rounded="xl" elevation="1" class="position-sticky" style="top:80px;">
           <v-card-title class="pa-5 pb-3 text-body-1 font-weight-bold">Rent This Vehicle</v-card-title>
           <v-card-text class="px-5 pb-5">
             <div v-if="!currentUser">
@@ -89,10 +89,8 @@
 
 <script>
 import { getVehicleById, getCompanyById, startInstantRental, submitContractRental, getCurrentUser } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 export default {
   name: 'VehicleDetailView',
-  setup() { return useReveal() },
   data() {
     const v = getVehicleById(this.$route.params.id)
     return {
@@ -105,7 +103,7 @@ export default {
   computed: {
     companyName() { return getCompanyById(this.vehicle?.companyId)?.companyName || '—' },
   },
-  mounted() { this.setupReveal() },
+  mounted() { },
   methods: {
     statusColor(s) { return s === 'AVAILABLE' ? 'success' : s === 'RENTED' ? 'primary' : 'warning' },
     startInstant() {

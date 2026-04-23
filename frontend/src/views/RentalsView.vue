@@ -3,9 +3,9 @@
      ============================================================ -->
 <template>
   <div style="max-width:1100px; margin:0 auto; padding:28px 32px;">
-    <div class="d-flex align-center justify-space-between mb-6 reveal">
+    <div class="d-flex align-center justify-space-between mb-6">
       <div>
-        <h2 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;">My Rentals</h2>
+        <h2 style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:24px;font-weight:700;">My Rentals</h2>
         <p style="font-size:13px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">Your complete rental history</p>
       </div>
       <v-btn variant="tonal" color="primary" prepend-icon="mdi-refresh" @click="load" rounded="lg">Refresh</v-btn>
@@ -18,7 +18,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card v-else rounded="xl" elevation="1" class="reveal reveal-delay-1">
+    <v-card v-else rounded="xl" elevation="1" class="">
       <v-data-table :headers="headers" :items="enriched" :items-per-page="10" rounded="xl">
         <template v-slot:item.rentalType="{ item }">
           <v-chip :color="item.rentalType==='INSTANT'?'warning':'primary'" variant="tonal" size="small">
@@ -50,10 +50,8 @@
 
 <script>
 import { getRentalsByCustomer, getVehicleById, endInstantRental, getCurrentUser } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 export default {
   name: 'RentalsView',
-  setup() { return useReveal() },
   data() {
     return {
       rentals: [], loading: true, currentUser: getCurrentUser(),
@@ -74,7 +72,7 @@ export default {
       })
     }
   },
-  mounted() { setTimeout(() => { this.load(); this.$nextTick(() => this.setupReveal()) }, 400) },
+  mounted() { setTimeout(() => { this.load(); }, 400) },
   methods: {
     load() { this.rentals = getRentalsByCustomer(this.currentUser.id); this.loading = false },
     sc(s) { return s==='ACTIVE'?'success':s==='PENDING'?'warning':s==='COMPLETED'?'primary':'error' },

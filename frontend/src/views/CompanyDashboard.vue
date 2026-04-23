@@ -2,7 +2,7 @@
   <div class="company-dash" style="max-width:1200px; margin:0 auto; padding:28px 32px;">
 
     <!-- Header -->
-    <div class="dash-header reveal">
+    <div class="dash-header">
       <div class="d-flex align-center gap-3">
         <v-avatar color="secondary" size="52">
           <span class="text-h6 font-weight-bold text-white">{{ company?.logo }}</span>
@@ -18,7 +18,7 @@
     <!-- KPI cards with animated counters -->
     <v-row class="mt-6">
       <v-col v-for="(kpi, i) in kpis" :key="kpi.label" cols="6" md="3">
-        <div :class="['kpi-card hover-lift reveal', `reveal-delay-${i+1}`]">
+        <div :class="['kpi-card hover-lift ', `-delay-${i+1}`]">
           <div class="kpi-icon-wrap" :style="`background: rgba(var(--v-theme-${kpi.color}-rgb, 92,107,192), 0.1)`">
             <v-icon :color="kpi.color" size="22">{{ kpi.icon }}</v-icon>
           </div>
@@ -34,7 +34,7 @@
     <v-row class="mt-6">
       <v-col cols="12" md="4">
         <v-card
-          class="quick-action hover-lift reveal reveal-delay-1"
+          class="quick-action hover-lift"
           rounded="xl"
           elevation="0"
           to="/company/vehicles"
@@ -49,7 +49,7 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-card
-          class="quick-action hover-lift reveal reveal-delay-2"
+          class="quick-action hover-lift"
           rounded="xl"
           elevation="0"
           to="/company/rentals"
@@ -63,7 +63,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="4">
-        <div class="earnings-card hover-lift reveal reveal-delay-3">
+        <div class="earnings-card hover-lift">
           <div class="earnings-label">Total Earnings</div>
           <div class="earnings-amount">{{ animatedEarnings }} <span class="earnings-currency">TND</span></div>
           <v-progress-linear
@@ -82,7 +82,7 @@
     <!-- Fleet status breakdown -->
     <v-row class="mt-4">
       <v-col cols="12" md="6">
-        <v-card rounded="xl" elevation="1" class="reveal reveal-delay-1">
+        <v-card rounded="xl" elevation="1" class="">
           <v-card-title class="pa-5 pb-3 text-body-1 font-weight-bold">Fleet Status</v-card-title>
           <v-card-text class="px-5 pb-5">
             <div v-for="item in fleetBreakdown" :key="item.label" class="mb-4">
@@ -103,7 +103,7 @@
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-card rounded="xl" elevation="1" class="reveal reveal-delay-2">
+        <v-card rounded="xl" elevation="1" class="">
           <v-card-title class="pa-5 pb-3 text-body-1 font-weight-bold">Recent Rentals</v-card-title>
           <v-list density="compact" class="px-2 pb-3">
             <v-list-item
@@ -135,11 +135,9 @@
 
 <script>
 import { getCurrentUser, getVehiclesByCompany, getRentalsByCompany, getVehicleById } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 
 export default {
   name: 'CompanyDashboard',
-  setup() { return useReveal() },
   data() {
     const company    = getCurrentUser()
     const vehicles   = getVehiclesByCompany(company.id)
@@ -177,7 +175,6 @@ export default {
   },
 
   mounted() {
-    this.setupReveal()
     this.animateAll()
   },
 
@@ -250,7 +247,7 @@ export default {
 /* KPI Cards */
 .kpi-card {
   background: rgb(var(--v-theme-surface));
-  border: 1.5px solid #b8c4d4;
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 18px;
   padding: 20px;
 }
@@ -277,7 +274,7 @@ export default {
 
 /* Quick actions */
 .quick-action {
-  border: 1.5px solid #b8c4d4 !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
   height: 100%;
   text-decoration: none;
 }

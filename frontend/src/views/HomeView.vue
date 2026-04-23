@@ -10,30 +10,30 @@
         <v-row align="center" justify="center">
           <v-col cols="12" md="7" class="hero-left">
 
-            <div class="hero-badge reveal">
+            <div class="hero-badge">
               <v-icon size="14" color="primary" class="mr-1">mdi-map-marker-radius</v-icon>
               <span>Vehicle Rental Marketplace</span>
             </div>
 
-            <h1 class="hero-title reveal reveal-delay-1">
+            <h1 class="hero-title">
               Find & Rent<br />
               <span class="gradient-text">Any Vehicle</span><br />
               Near You
             </h1>
 
-            <p class="hero-sub reveal reveal-delay-2">
+            <p class="hero-sub">
               Companies list their vehicles. Customers find them on the map.
               Instant pickup or scheduled contract — your choice.
             </p>
 
-            <div class="hero-actions reveal reveal-delay-3">
+            <div class="hero-actions">
               <v-btn
                 color="primary"
                 size="large"
                 rounded="xl"
                 to="/map"
                 prepend-icon="mdi-map-search"
-                class="hero-btn-primary pulse-glow"
+                class="hero-btn-primary"
                 elevation="0"
               >
                 Open Map
@@ -51,7 +51,7 @@
             </div>
 
             <!-- Trust badges -->
-            <div class="trust-row reveal reveal-delay-4">
+            <div class="trust-row">
               <div v-for="t in trust" :key="t.text" class="trust-item">
                 <v-icon :color="t.color" size="16">{{ t.icon }}</v-icon>
                 <span>{{ t.text }}</span>
@@ -62,7 +62,7 @@
 
           <!-- Hero right: floating map preview card -->
           <v-col cols="12" md="5" class="d-none d-md-flex justify-center">
-            <div class="hero-map-card reveal reveal-delay-2 float">
+            <div class="hero-map-card">
               <div class="map-card-header">
                 <v-icon size="14" color="success">mdi-circle</v-icon>
                 <span>{{ availableCount }} vehicles nearby</span>
@@ -80,7 +80,6 @@
                   <div class="marker-pulse" v-if="v.status === 'AVAILABLE'" />
                 </div>
                 <div class="map-grid-lines" />
-                <div class="map-shimmer" />
               </div>
               <div class="map-card-footer">
                 <span>Tap a marker to rent instantly</span>
@@ -98,8 +97,8 @@
     <section class="stats-section">
       <v-container style="max-width:1200px">
         <v-row>
-          <v-col v-for="(stat, i) in stats" :key="stat.label" cols="6" md="3" :class="`fade-up-${i+1}`">
-            <div :class="['stat-card reveal', `reveal-delay-${i + 1}`]">
+          <v-col v-for="(stat, i) in stats" :key="stat.label" cols="6" md="3">
+            <div :class="['stat-card ', `-delay-${i + 1}`]">
               <div class="stat-value" :style="`color: rgb(var(--v-theme-${stat.color}))`">
                 <span class="stat-number" :data-target="stat.raw">{{ stat.animated }}</span>
                 <span class="stat-suffix">{{ stat.suffix }}</span>
@@ -114,14 +113,14 @@
     <!-- ── HOW IT WORKS ── -->
     <section class="hiw-section">
       <v-container style="max-width:1200px">
-        <div class="section-header reveal">
+        <div class="section-header">
           <p class="section-overline">Simple Process</p>
           <h2 class="section-title">How SmartRent Works</h2>
         </div>
 
         <v-row class="mt-6">
-          <v-col v-for="(step, i) in steps" :key="step.title" cols="12" md="4" :class="`fade-up-${i+1}`">
-            <div :class="['step-card hover-lift reveal', `reveal-delay-${i + 1}`]">
+          <v-col v-for="(step, i) in steps" :key="step.title" cols="12" md="4">
+            <div :class="['step-card hover-lift ', `-delay-${i + 1}`]">
               <div class="step-number">{{ String(i + 1).padStart(2, '0') }}</div>
               <v-icon :color="step.color" size="36" class="mb-3">{{ step.icon }}</v-icon>
               <h3 class="step-title">{{ step.title }}</h3>
@@ -135,7 +134,7 @@
     <!-- ── FOR COMPANIES CTA ── -->
     <section class="company-cta-section">
       <v-container style="max-width:1200px">
-        <div class="company-cta-card reveal">
+        <div class="company-cta-card">
           <div class="cta-content">
             <v-chip color="secondary" variant="tonal" size="small" class="mb-3">For Companies</v-chip>
             <h2 class="cta-title">List Your Fleet on SmartRent</h2>
@@ -163,13 +162,13 @@
     <!-- ── RENTAL TYPES ── -->
     <section class="types-section">
       <v-container style="max-width:1200px">
-        <div class="section-header reveal">
+        <div class="section-header">
           <p class="section-overline">Two Ways to Rent</p>
           <h2 class="section-title">Choose Your Style</h2>
         </div>
         <v-row class="mt-6">
           <v-col cols="12" md="6">
-            <div class="type-card type-instant hover-lift reveal reveal-delay-1">
+            <div class="type-card type-instant hover-lift">
               <v-icon color="warning" size="40" class="mb-3">mdi-lightning-bolt</v-icon>
               <h3 class="type-title">Instant Rental</h3>
               <p class="type-desc">See a vehicle on the map, walk up, and start renting immediately. Billed per minute. End anywhere.</p>
@@ -181,7 +180,7 @@
             </div>
           </v-col>
           <v-col cols="12" md="6">
-            <div class="type-card type-contract hover-lift reveal reveal-delay-2">
+            <div class="type-card type-contract hover-lift">
               <v-icon color="primary" size="40" class="mb-3">mdi-file-sign</v-icon>
               <h3 class="type-title">Contract Rental</h3>
               <p class="type-desc">Plan ahead. Choose your dates, request a vehicle, get company approval and vehicle delivery.</p>
@@ -201,13 +200,9 @@
 
 <script>
 import { getPlatformStats, getVehicles, getCurrentUser } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 
 export default {
   name: 'HomeView',
-  setup() {
-    return useReveal()
-  },
   data() {
     const platformStats = getPlatformStats()
     const vehicles = getVehicles()
@@ -237,7 +232,6 @@ export default {
   },
 
   mounted() {
-    this.setupReveal()
     this.animateCounters()
   },
 
@@ -266,29 +260,10 @@ export default {
 .home { overflow-x: hidden; }
 
 /* ── Hero ── */
-@keyframes gradient-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 .hero-section {
   position: relative;
   padding: 80px 0 60px;
   overflow: hidden;
-}
-
-.v-theme--light .hero-section {
-  /* More distinct stops so the animation is actually visible */
-  background: linear-gradient(135deg, #c8d6e5 0%, #ddf0ef 35%, #d0e8f4 65%, #c8d6e5 100%);
-  background-size: 300% 300%;
-  animation: gradient-shift 10s ease infinite;
-}
-
-.v-theme--dark .hero-section {
-  background: linear-gradient(135deg, #0a0f1e 0%, #0d1a2e 40%, #061a1a 80%, #0a0f1e 100%);
-  background-size: 300% 300%;
-  animation: gradient-shift 10s ease infinite;
 }
 
 .hero-bg-orb {
@@ -300,12 +275,12 @@ export default {
 }
 .orb-1 {
   width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(13,148,136,0.22) 0%, rgba(13,148,136,0) 70%);
+  background: rgba(13, 148, 136, 0.1);
   top: -100px; right: -100px;
 }
 .orb-2 {
   width: 350px; height: 350px;
-  background: radial-gradient(circle, rgba(8,145,178,0.18) 0%, rgba(8,145,178,0) 70%);
+  background: rgba(8, 145, 178, 0.07);
   bottom: -50px; left: -50px;
 }
 
@@ -314,21 +289,15 @@ export default {
 .hero-badge {
   display: inline-flex;
   align-items: center;
+  border: 1px solid rgba(13, 148, 136, 0.25);
   color: rgb(var(--v-theme-primary));
+  background: rgba(13, 148, 136, 0.08);
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.5px;
   margin-bottom: 20px;
-}
-.v-theme--light .hero-badge {
-  border: 1.5px solid #0d9488;
-  background: rgba(13,148,136,0.08);
-}
-.v-theme--dark .hero-badge {
-  border: 1px solid rgba(45,212,191,0.3);
-  background: rgba(45,212,136,0.08);
 }
 
 .hero-title {
@@ -364,22 +333,12 @@ export default {
 .hero-map-card {
   width: 320px;
   background: rgb(var(--v-theme-surface));
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 20px 60px rgba(13, 148, 136, 0.1);
   position: relative;
   z-index: 1;
-  transition: box-shadow 0.3s ease;
-}
-.v-theme--light .hero-map-card {
-  border: 1.5px solid #94a3b8;
-  box-shadow: 0 20px 60px rgba(15,23,42,0.12), 0 0 0 1px rgba(13,148,136,0.08);
-}
-.v-theme--dark .hero-map-card {
-  border: 1px solid rgba(45,212,191,0.2);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(45,212,191,0.08);
-}
-.hero-map-card:hover {
-  box-shadow: 0 28px 80px rgba(13,148,136,0.18) !important;
 }
 
 .map-card-header {
@@ -389,10 +348,9 @@ export default {
   padding: 12px 16px;
   font-size: 12px;
   font-weight: 600;
+  border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.06));
   color: rgb(var(--v-theme-on-surface));
 }
-.v-theme--light .map-card-header { border-bottom: 1.5px solid #94a3b8; }
-.v-theme--dark  .map-card-header { border-bottom: 1px solid rgba(255,255,255,0.06); }
 
 .mini-map {
   position: relative;
@@ -447,9 +405,8 @@ export default {
   padding: 10px 16px;
   font-size: 12px;
   color: rgb(var(--v-theme-on-surface-variant));
+  border-top: 1px solid var(--border-color, rgba(0,0,0,0.06));
 }
-.v-theme--light .map-card-footer { border-top: 1.5px solid #94a3b8; }
-.v-theme--dark  .map-card-footer { border-top: 1px solid rgba(255,255,255,0.06); }
 
 /* ── Stats ── */
 .stats-section { padding: 40px 0; }
@@ -491,23 +448,14 @@ export default {
 
 /* ── Steps ── */
 .step-card {
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   padding: 32px 28px;
   position: relative;
   overflow: hidden;
   height: 100%;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
-.v-theme--light .step-card {
-  background: #ffffff;
-  border: 1.5px solid #94a3b8;
-  box-shadow: 0 2px 8px rgba(15,23,42,0.06);
-}
-.v-theme--dark .step-card {
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(45,212,191,0.1);
-}
-.step-card:hover { transform: translateY(-3px); }
 
 .step-number {
   font-family: 'Cabinet Grotesk', sans-serif;
@@ -557,21 +505,12 @@ export default {
 
 /* ── Rental types ── */
 .type-card {
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
   border-radius: 20px;
   padding: 36px;
   height: 100%;
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
-.v-theme--light .type-card {
-  background: #ffffff;
-  border: 1.5px solid #94a3b8;
-  box-shadow: 0 2px 8px rgba(15,23,42,0.06);
-}
-.v-theme--dark .type-card {
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(45,212,191,0.1);
-}
-.type-card:hover { transform: translateY(-3px); }
 
 .type-title {
   font-family: 'Cabinet Grotesk', sans-serif;

@@ -5,7 +5,7 @@
     <v-row justify="center" align="center" class="min-h-screen">
       <v-col cols="12" sm="9" md="6" lg="4">
 
-        <div class="login-card reveal">
+        <div class="login-card">
           <!-- Header -->
           <div class="login-header">
             <div class="login-logo">
@@ -170,11 +170,9 @@
 
 <script>
 import { loginUser, setCurrentUser, registerCustomer, registerCompany } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 
 export default {
   name: 'LoginView',
-  setup() { return useReveal() },
   data() {
     return {
       activeTab:  'customer',
@@ -200,7 +198,7 @@ export default {
       ]
     }
   },
-  mounted() { this.setupReveal() },
+  mounted() { },
   methods: {
     fillCustomer(d) { this.loginForm.username = d.user; this.loginForm.password = d.pass },
     fillCompany(d)  { this.companyLoginForm.username = d.user; this.companyLoginForm.password = d.pass },
@@ -254,7 +252,7 @@ export default {
   position: absolute;
   width: 600px; height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.08), transparent 70%);
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.08), transparent 70%);
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -265,7 +263,7 @@ export default {
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 24px;
   padding: 36px;
-  box-shadow: 0 20px 60px rgba(79, 70, 229, 0.07);
+  box-shadow: 0 20px 60px rgba(13, 148, 136, 0.07);
 }
 .v-theme--dark .login-card {
   border-color: rgba(255,255,255,0.08);
@@ -277,7 +275,7 @@ export default {
 .login-logo {
   width: 56px; height: 56px;
   border-radius: 16px;
-  background: rgba(79, 70, 229, 0.1);
+  background: rgba(13, 148, 136, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -285,7 +283,7 @@ export default {
 }
 
 .login-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Cabinet Grotesk', sans-serif;
   font-size: 24px;
   font-weight: 700;
   color: rgb(var(--v-theme-on-surface));
@@ -307,17 +305,17 @@ export default {
   transition: background 0.15s;
   color: rgb(var(--v-theme-on-surface));
 }
-.v-theme--light .demo-item:hover { background: rgba(79,70,229,0.08); }
-.v-theme--dark  .demo-item:hover { background: rgba(129,140,248,0.1); }
+.v-theme--light .demo-item:hover { background: rgba(13,148,136,0.08); }
+.v-theme--dark  .demo-item:hover { background: rgba(45,212,191,0.1); }
 
 /* Register toggle */
 .register-toggle {
   display: flex;
-  background: rgba(79,70,229,0.06);
+  background: rgba(13,148,136,0.06);
   border-radius: 12px;
   padding: 4px;
 }
-.v-theme--dark .register-toggle { background: rgba(129,140,248,0.08); }
+.v-theme--dark .register-toggle { background: rgba(45,212,191,0.08); }
 .toggle-option {
   flex: 1;
   display: flex;

@@ -1,11 +1,11 @@
 <template>
   <div style="max-width:900px; margin:0 auto; padding:28px 32px;">
-    <v-btn variant="text" color="primary" prepend-icon="mdi-arrow-left" to="/rentals" class="mb-4 reveal">Back to Rentals</v-btn>
+    <v-btn variant="text" color="primary" prepend-icon="mdi-arrow-left" to="/rentals" class="mb-4">Back to Rentals</v-btn>
 
     <div v-if="!rental"><v-alert type="error" variant="tonal" rounded="xl">Contract not found.</v-alert></div>
 
     <div v-else>
-      <v-card rounded="xl" elevation="1" class="mb-4 reveal">
+      <v-card rounded="xl" elevation="1" class="mb-4">
         <v-card-item>
           <template v-slot:append>
             <div class="d-flex gap-2">
@@ -14,23 +14,23 @@
             </div>
           </template>
           <v-card-subtitle>Contract #{{ rental.id }}</v-card-subtitle>
-          <v-card-title class="text-h5 font-weight-bold" style="font-family:'Syne',sans-serif;">{{ vehicle?.brand }} {{ vehicle?.model }}</v-card-title>
+          <v-card-title class="text-h5 font-weight-bold" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;">{{ vehicle?.brand }} {{ vehicle?.model }}</v-card-title>
         </v-card-item>
       </v-card>
 
       <v-row class="mb-4">
         <v-col cols="12" md="4">
-          <v-card rounded="xl" elevation="1" height="100%" class="reveal reveal-delay-1">
+          <v-card rounded="xl" elevation="1" height="100%" class="">
             <v-card-title class="pa-4 pb-2 text-body-2 font-weight-bold">Vehicle Info</v-card-title>
             <v-list density="compact" class="px-2">
               <v-list-item title="Brand" :subtitle="vehicle?.brand" />
               <v-list-item title="Model" :subtitle="vehicle?.model" />
-              <v-list-item title="Rate"  :subtitle="vehicle?.pricePerDay+' DZD/day'" />
+              <v-list-item title="Rate"  :subtitle="vehicle?.pricePerDay+' TND/day'" />
             </v-list>
           </v-card>
         </v-col>
         <v-col cols="12" md="4">
-          <v-card rounded="xl" elevation="1" height="100%" class="reveal reveal-delay-2">
+          <v-card rounded="xl" elevation="1" height="100%" class="">
             <v-card-title class="pa-4 pb-2 text-body-2 font-weight-bold">Contract Dates</v-card-title>
             <v-list density="compact" class="px-2">
               <v-list-item title="Start"    :subtitle="rental.contract?.startDate||'—'" />
@@ -41,7 +41,7 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="4">
-          <v-card rounded="xl" elevation="1" height="100%" class="reveal reveal-delay-3">
+          <v-card rounded="xl" elevation="1" height="100%" class="">
             <v-card-title class="pa-4 pb-2 text-body-2 font-weight-bold">Payment</v-card-title>
             <v-list density="compact" class="px-2">
               <v-list-item title="Approval">
@@ -52,13 +52,13 @@
                 </template>
               </v-list-item>
               <v-list-item title="Status" :subtitle="rental.status" />
-              <v-list-item title="Total"  :subtitle="rental.totalPrice ? rental.totalPrice+' DZD' : 'Pending'" />
+              <v-list-item title="Total"  :subtitle="rental.totalPrice ? rental.totalPrice+' TND' : 'Pending'" />
             </v-list>
           </v-card>
         </v-col>
       </v-row>
 
-      <v-card rounded="xl" elevation="1" class="reveal reveal-delay-4">
+      <v-card rounded="xl" elevation="1" class="">
         <v-card-title class="pa-5 pb-3 text-body-2 font-weight-bold">Contract Progress</v-card-title>
         <v-card-text class="pb-5">
           <v-stepper :model-value="step" alt-labels flat :items="['Submitted','Approved','Active','Completed']" color="primary" />
@@ -70,10 +70,8 @@
 
 <script>
 import { getRentalById, getVehicleById } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 export default {
   name: 'ContractDetailView',
-  setup() { return useReveal() },
   data() {
     const r = getRentalById(this.$route.params.id)
     return { rental: r, vehicle: r ? getVehicleById(r.vehicleId) : null }
@@ -90,7 +88,7 @@ export default {
       return 1
     }
   },
-  mounted() { this.setupReveal() },
+  mounted() { },
   methods: { sc(s) { return s==='ACTIVE'?'success':s==='PENDING'?'warning':s==='COMPLETED'?'primary':'error' } }
 }
 </script>

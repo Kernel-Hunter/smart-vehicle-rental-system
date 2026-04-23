@@ -1,7 +1,7 @@
 <template>
   <div style="max-width:1200px; margin:0 auto; padding:28px 32px;">
 
-    <div class="d-flex align-center justify-space-between mb-6 reveal">
+    <div class="d-flex align-center justify-space-between mb-6">
       <div>
         <h2 class="page-title">Vehicle Rentals</h2>
         <p class="page-sub">All rentals for your fleet</p>
@@ -31,7 +31,7 @@
     </v-card>
 
     <!-- Rentals table -->
-    <v-card v-else rounded="xl" elevation="1" class="reveal reveal-delay-1">
+    <v-card v-else rounded="xl" elevation="1" class="">
       <v-data-table
         :headers="headers"
         :items="filteredRentals"
@@ -94,11 +94,9 @@
 
 <script>
 import { getCurrentUser, getRentalsByCompany, getVehicleById, getCustomerById, approveContract } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 
 export default {
   name: 'CompanyRentals',
-  setup() { return useReveal() },
   data() {
     return {
       company:      getCurrentUser(),
@@ -150,7 +148,6 @@ export default {
     setTimeout(() => {
       this.rentals = getRentalsByCompany(this.company.id)
       this.loading = false
-      this.$nextTick(() => this.setupReveal())
     }, 500)
   },
 
@@ -171,6 +168,6 @@ export default {
 </script>
 
 <style scoped>
-.page-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: rgb(var(--v-theme-on-surface)); }
+.page-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: rgb(var(--v-theme-on-surface)); }
 .page-sub   { font-size: 13px; color: rgb(var(--v-theme-on-surface-variant)); margin-top: 2px; }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div style="max-width:1200px; margin:0 auto; padding:28px 32px;">
 
-    <div class="d-flex align-center justify-space-between mb-6 reveal">
+    <div class="d-flex align-center justify-space-between mb-6">
       <div>
         <h2 class="page-title">My Fleet</h2>
         <p class="page-sub">Manage vehicles listed under your company</p>
@@ -27,7 +27,7 @@
     <!-- Vehicle grid -->
     <v-row v-else>
       <v-col v-for="(v, i) in myVehicles" :key="v.id" cols="12" sm="6" md="4">
-        <v-card :class="`hover-lift reveal reveal-delay-${(i % 4) + 1}`" rounded="xl" elevation="1" height="100%">
+        <v-card :class="`hover-lift -delay-${(i % 4) + 1}`" rounded="xl" elevation="1" height="100%">
           <v-card-item>
             <template v-slot:prepend>
               <v-avatar :color="v.color" size="38">
@@ -139,11 +139,9 @@
 
 <script>
 import { getCurrentUser, getVehiclesByCompany, addVehicle, updateVehicle, deleteVehicle } from '../store/data.js'
-import { useReveal } from '../composables/useReveal.js'
 
 export default {
   name: 'CompanyVehicles',
-  setup() { return useReveal() },
   data() {
     const company = getCurrentUser()
     return {
@@ -164,7 +162,6 @@ export default {
     setTimeout(() => {
       this.myVehicles = getVehiclesByCompany(this.company.id)
       this.loading = false
-      this.$nextTick(() => this.setupReveal())
     }, 600)
   },
 
@@ -210,7 +207,7 @@ export default {
 </script>
 
 <style scoped>
-.page-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: rgb(var(--v-theme-on-surface)); }
+.page-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: rgb(var(--v-theme-on-surface)); }
 .page-sub   { font-size: 13px; color: rgb(var(--v-theme-on-surface-variant)); margin-top: 2px; }
 .price-label { font-size: 11px; color: rgb(var(--v-theme-on-surface-variant)); margin-bottom: 2px; }
 .price-val   { font-size: 15px; font-weight: 700; }
