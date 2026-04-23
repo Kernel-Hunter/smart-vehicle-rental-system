@@ -1,23 +1,6 @@
-// composables/useReveal.js
-// Adds scroll-triggered reveal animation to elements with class "reveal"
-// Usage: call setupReveal() in mounted()
-
+// useReveal.js
+// Scroll-reveal is now handled purely via CSS @keyframes (fade-up-1..4 classes).
+// This file is kept as a no-op so any remaining import doesn't break the build.
 export function useReveal() {
-  function setupReveal() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible')
-            observer.unobserve(entry.target) // Only animate once
-          }
-        })
-      },
-      { threshold: 0.12 }
-    )
-    // Observe all elements with class "reveal"
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-    return observer
-  }
-  return { setupReveal }
+  return { setupReveal: () => {} }
 }
