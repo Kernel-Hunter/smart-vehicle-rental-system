@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getCurrentUser } from '../store/data.js'
+import { getCurrentUser } from '../store/index.js'
 
 import HomeView           from '../views/HomeView.vue'
 import LoginView          from '../views/LoginView.vue'
