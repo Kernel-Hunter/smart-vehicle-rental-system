@@ -92,8 +92,10 @@
       </div>
     </v-snackbar>
 
-    <!-- ── Mobile Bottom Navigation (visible only on small screens) ── -->
+    <!-- ── Mobile Bottom Navigation ── -->
+    <!-- Visitor nav (not logged in) -->
     <v-bottom-navigation
+      v-if="!currentUser"
       v-model="mobileTab"
       class="d-flex d-md-none mobile-nav"
       :elevation="8"
@@ -107,7 +109,7 @@
         <v-icon>mdi-map-marker-radius</v-icon>
         <span>Map</span>
       </v-btn>
-      <v-btn to="/vehicles" value="vehicles">
+      <v-btn to="/vehicles" value="fleet">
         <v-icon>mdi-car-multiple</v-icon>
         <span>Fleet</span>
       </v-btn>
@@ -115,19 +117,67 @@
         <v-icon>mdi-information-outline</v-icon>
         <span>About</span>
       </v-btn>
-      <v-btn v-if="currentUser?.role === 'CUSTOMER'" to="/rentals" value="rentals">
-        <v-icon>mdi-clipboard-list</v-icon>
-        <span>Rentals</span>
-      </v-btn>
-      <v-btn v-if="currentUser?.role === 'COMPANY'" to="/company" value="company">
-        <v-icon>mdi-domain</v-icon>
-        <span>Dashboard</span>
-      </v-btn>
-      <v-btn v-if="!currentUser" to="/login" value="login">
+      <v-btn to="/login" value="login">
         <v-icon>mdi-login</v-icon>
         <span>Login</span>
       </v-btn>
-      <v-btn v-if="currentUser" value="logout" @click="logout">
+    </v-bottom-navigation>
+
+    <!-- Customer nav -->
+    <v-bottom-navigation
+      v-if="currentUser?.role === 'CUSTOMER'"
+      v-model="mobileTab"
+      class="d-flex d-md-none mobile-nav"
+      :elevation="8"
+      color="primary"
+    >
+      <v-btn to="/" value="home">
+        <v-icon>mdi-home</v-icon>
+        <span>Home</span>
+      </v-btn>
+      <v-btn to="/map" value="map">
+        <v-icon>mdi-map-marker-radius</v-icon>
+        <span>Map</span>
+      </v-btn>
+      <v-btn to="/vehicles" value="fleet">
+        <v-icon>mdi-car-multiple</v-icon>
+        <span>Fleet</span>
+      </v-btn>
+      <v-btn to="/rentals" value="rentals">
+        <v-icon>mdi-clipboard-list</v-icon>
+        <span>Rentals</span>
+      </v-btn>
+      <v-btn to="/profile" value="profile">
+        <v-icon>mdi-account-circle</v-icon>
+        <span>Profile</span>
+      </v-btn>
+    </v-bottom-navigation>
+
+    <!-- Company nav -->
+    <v-bottom-navigation
+      v-if="currentUser?.role === 'COMPANY'"
+      v-model="mobileTab"
+      class="d-flex d-md-none mobile-nav"
+      :elevation="8"
+      color="secondary"
+    >
+      <v-btn to="/company" value="dashboard">
+        <v-icon>mdi-view-dashboard</v-icon>
+        <span>Dashboard</span>
+      </v-btn>
+      <v-btn to="/company/vehicles" value="fleet">
+        <v-icon>mdi-car-multiple</v-icon>
+        <span>My Fleet</span>
+      </v-btn>
+      <v-btn to="/company/rentals" value="rentals">
+        <v-icon>mdi-clipboard-list</v-icon>
+        <span>Rentals</span>
+      </v-btn>
+      <v-btn to="/map" value="map">
+        <v-icon>mdi-map-marker-radius</v-icon>
+        <span>Map</span>
+      </v-btn>
+      <v-btn value="logout" @click="logout">
         <v-icon>mdi-logout</v-icon>
         <span>Logout</span>
       </v-btn>
@@ -347,17 +397,27 @@ h1, h2, h3, h4, .font-display {
 .slide-right-enter-from { opacity: 0; transform: translateX(-18px); }
 .slide-right-leave-to   { opacity: 0; transform: translateX(18px); }
 
-/* Scroll reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.48s ease, transform 0.48s ease;
+/* ── Pure CSS entrance animations — no JS, no IntersectionObserver ──
+   These replay automatically whenever the component mounts or re-renders,
+   which means theme switches and logins never leave anything invisible. */
+@keyframes enter-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.reveal.visible   { opacity: 1; transform: translateY(0); }
-.reveal-delay-1   { transition-delay: 0.07s; }
-.reveal-delay-2   { transition-delay: 0.14s; }
-.reveal-delay-3   { transition-delay: 0.21s; }
-.reveal-delay-4   { transition-delay: 0.28s; }
+
+/* Generic entrance — used by cards, sections, any block element */
+.fade-up   { animation: enter-up 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.fade-up-1 { animation: enter-up 0.45s 0.05s cubic-bezier(0.22,1,0.36,1) both; }
+.fade-up-2 { animation: enter-up 0.45s 0.10s cubic-bezier(0.22,1,0.36,1) both; }
+.fade-up-3 { animation: enter-up 0.45s 0.15s cubic-bezier(0.22,1,0.36,1) both; }
+.fade-up-4 { animation: enter-up 0.45s 0.20s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* Aliases — old 'reveal' class names still work for backwards compat */
+.reveal           { animation: enter-up 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.reveal-delay-1   { animation: enter-up 0.45s 0.07s cubic-bezier(0.22,1,0.36,1) both; }
+.reveal-delay-2   { animation: enter-up 0.45s 0.14s cubic-bezier(0.22,1,0.36,1) both; }
+.reveal-delay-3   { animation: enter-up 0.45s 0.21s cubic-bezier(0.22,1,0.36,1) both; }
+.reveal-delay-4   { animation: enter-up 0.45s 0.28s cubic-bezier(0.22,1,0.36,1) both; }
 
 /* Hover lift base */
 .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
@@ -405,16 +465,7 @@ h1, h2, h3, h4, .font-display {
 .v-theme--light .pulse-glow { animation: pulse-glow-light 2.5s ease-in-out infinite; }
 .v-theme--dark  .pulse-glow { animation: pulse-glow-dark  2.5s ease-in-out infinite; }
 
-/* ── Fade-up for staggered grids ── */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.fade-up   { animation: fade-up 0.5s ease both; }
-.fade-up-1 { animation: fade-up 0.5s 0.05s ease both; }
-.fade-up-2 { animation: fade-up 0.5s 0.10s ease both; }
-.fade-up-3 { animation: fade-up 0.5s 0.15s ease both; }
-.fade-up-4 { animation: fade-up 0.5s 0.20s ease both; }
+/* fade-up defined in the reveal section above */
 
 /* ── Chip hover ── */
 .v-chip { transition: transform 0.15s ease, box-shadow 0.15s ease !important; }
