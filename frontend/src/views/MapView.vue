@@ -13,16 +13,14 @@
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <!-- User location -->
         <l-marker :lat-lng="userLocation">
           <l-popup>
-            Your current location
+            Your Current Location
           </l-popup>
         </l-marker>
 
-        <!-- Vehicles -->
         <l-marker
-          v-for="vehicle in vehicles"
+          v-for="vehicle in availableVehicles"
           :key="vehicle.id"
           :lat-lng="[vehicle.latitude, vehicle.longitude]"
         >
@@ -32,7 +30,7 @@
 
               <p>Type: {{ vehicle.type }}</p>
               <p>Status: {{ vehicle.status }}</p>
-              <p>Price/minute: {{ vehicle.pricePerMinute }}</p>
+              <p>Price/Minute: {{ vehicle.pricePerMinute }} DT</p>
 
               <button @click="rentVehicle(vehicle.id)">
                 Rent Vehicle
@@ -46,8 +44,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 import {
   LMap,
   LTileLayer,
@@ -77,22 +73,74 @@ export default {
     }
   },
 
-  async mounted() {
-    this.getUserLocation()
+  computed: {
+    availableVehicles() {
+      return this.vehicles.filter(
+        vehicle => vehicle.status === 'AVAILABLE'
+      )
+    }
+  },
 
-    await this.loadVehicles()
+  mounted() {
+    this.initializeVehicles()
+
+    this.getUserLocation()
   },
 
   methods: {
-    async loadVehicles() {
-      try {
-        const response = await axios.get(
-          'http://localhost:8080/vehicles/available'
-        )
+    initializeVehicles() {
+      const savedVehicles = localStorage.getItem('vehicles')
 
-        this.vehicles = response.data
-      } catch (error) {
-        console.error(error)
+      if (savedVehicles) {
+        this.vehicles = JSON.parse(savedVehicles)
+      } else {
+        this.vehicles = [
+          {
+            id: 1,
+            brand: 'Toyota',
+            model: 'Yaris',
+            type: 'Car',
+            status: 'AVAILABLE',
+            pricePerMinute: 0.5,
+            latitude: 36.8065,
+            longitude: 10.1815
+          },
+          {
+            id: 2,
+            brand: 'Honda',
+            model: 'PCX',
+            type: 'Scooter',
+            status: 'AVAILABLE',
+            pricePerMinute: 0.3,
+            latitude: 36.8080,
+            longitude: 10.1840
+          },
+          {
+            id: 3,
+            brand: 'Yamaha',
+            model: 'R1',
+            type: 'Motorcycle',
+            status: 'AVAILABLE',
+            pricePerMinute: 0.7,
+            latitude: 36.8040,
+            longitude: 10.1780
+          },
+          {
+            id: 4,
+            brand: 'BMW',
+            model: 'X1',
+            type: 'Car',
+            status: 'AVAILABLE',
+            pricePerMinute: 0.9,
+            latitude: 36.8100,
+            longitude: 10.1880
+          }
+        ]
+
+        localStorage.setItem(
+          'vehicles',
+          JSON.stringify(this.vehicles)
+        )
       }
     },
 
@@ -111,28 +159,20 @@ export default {
       )
     },
 
-    async rentVehicle(vehicleId) {
-      try {
-        const token = localStorage.getItem('token')
+    rentVehicle(vehicleId) {
+      const vehicle = this.vehicles.find(
+        vehicle => vehicle.id === vehicleId
+      )
 
-        await axios.post(
-          'http://localhost:8080/rentals/instant',
-          {
-            vehicleId: vehicleId
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+      if (vehicle) {
+        vehicle.status = 'RENTED'
+
+        localStorage.setItem(
+          'vehicles',
+          JSON.stringify(this.vehicles)
         )
 
         alert('Vehicle rented successfully')
-
-        await this.loadVehicles()
-      } catch (error) {
-        console.error(error)
-        alert('Rental failed')
       }
     }
   }
