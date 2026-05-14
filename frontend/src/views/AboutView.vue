@@ -27,7 +27,12 @@
     <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">Tech Stack</h2>
     <v-row class="mb-8">
       <v-col v-for="(t, i) in tech" :key="t.name" cols="6" md="4" lg="2">
-        <v-card :class="`hover-lift about-card fade-up-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4">
+        <v-card
+          :class="`fade-up-${(i%4)+1}`"
+          rounded="xl" elevation="1" class="text-center pa-4 about-card"
+          @mouseenter="e => e.currentTarget.style.cssText += ';transform:translateY(-8px);box-shadow:0 16px 40px rgba(13,148,136,0.22);'"
+          @mouseleave="e => e.currentTarget.style.cssText += ';transform:translateY(0);box-shadow:0 2px 8px rgba(15,23,42,0.08);'"
+        >
           <v-icon :color="t.color" size="32" class="mb-2">{{ t.icon }}</v-icon>
           <div style="font-size:13px;font-weight:700;">{{ t.name }}</div>
           <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">{{ t.desc }}</div>
@@ -40,7 +45,7 @@
     <v-row class="mb-8">
       <v-col v-for="(m, i) in team" :key="m.name" cols="6" md="3">
         <v-card
-          :class="`hover-lift about-card fade-up-${i+1}${m.link ? ' member-clickable' : ''}`"
+          :class="`about-card fade-up-${i+1}${m.link ? ' member-clickable' : ''}`"
           rounded="xl"
           elevation="1"
           class="text-center pa-6"
@@ -99,6 +104,13 @@ export default {
 </script>
 
 <style scoped>
+/* transition on the card element itself — inline style handles the values */
+.about-card {
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.45s ease !important;
+  will-change: transform;
+}
+
 /* The only class on these cards is .about-card — no global interference */
 .about-card {
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
