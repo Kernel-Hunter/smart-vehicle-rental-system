@@ -27,7 +27,7 @@
     <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">Tech Stack</h2>
     <v-row class="mb-8">
       <v-col v-for="(t, i) in tech" :key="t.name" cols="6" md="4" lg="2">
-        <v-card :class="`hover-lift fade-up-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4">
+        <v-card :class="`about-card fade-up-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4">
           <v-icon :color="t.color" size="32" class="mb-2">{{ t.icon }}</v-icon>
           <div style="font-size:13px;font-weight:700;">{{ t.name }}</div>
           <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">{{ t.desc }}</div>
@@ -40,10 +40,10 @@
     <v-row class="mb-8">
       <v-col v-for="(m, i) in team" :key="m.name" cols="6" md="3">
         <v-card
-          :class="`hover-lift fade-up-${i+1}${m.link ? ' member-clickable' : ''}`"
+          :class="`about-card fade-up-${i+1}${m.link ? ' member-clickable' : ''}`"
           rounded="xl"
           elevation="1"
-          class="team-card text-center pa-6"
+          class="text-center pa-6"
           @click="m.link && openLink(m.link)"
         >
           <div class="member-avatar-wrap">
@@ -59,7 +59,7 @@
     </v-row>
 
     <!-- University -->
-    <v-card color="primary" variant="tonal" rounded="xl" elevation="0" class="">
+    <v-card color="primary" variant="tonal" rounded="xl" elevation="0">
       <v-card-text class="pa-6">
         <p class="text-overline mb-1">Institution</p>
         <p style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:20px;font-weight:700;">South Mediterranean University — MedTech</p>
@@ -83,14 +83,13 @@ export default {
         { icon: 'mdi-docker',      color: 'primary',   name: 'Docker',      desc: 'Deployment'    },
       ],
       team: [
-        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer', link: 'https://karimmasmoudi.vercel.app/', icon: 'mdi-code-braces',     color: 'primary'   },
-        { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer', link: null,                                 icon: 'mdi-laptop',          color: 'secondary' },
-        { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer', link: null,                                 icon: 'mdi-palette-outline', color: 'success'   },
-        { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer', link: null,                                 icon: 'mdi-cog-outline',     color: 'warning'   },
+        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer', link: 'https://karimmasmoudi.vercel.app/' },
+        { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer', link: null },
+        { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer', link: null },
+        { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer', link: null },
       ]
     }
   },
-  mounted() { },
   methods: {
     openLink(url) {
       window.open(url, '_blank', 'noopener')
@@ -100,31 +99,23 @@ export default {
 </script>
 
 <style scoped>
-/* ── Smooth hover for BOTH tech stack and team cards ── */
-/* Override Vuetify's v-card transition so the lift is smooth not instant */
-:deep(.v-card) {
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.28s ease !important;
-  will-change: transform;
+/* The only class on these cards is .about-card — no global interference */
+.about-card {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s ease;
+  cursor: default;
 }
 
-.v-theme--light :deep(.v-card:hover) {
-  transform: translateY(-6px) !important;
-  box-shadow: 0 14px 36px rgba(13,148,136,0.18) !important;
+.about-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(13,148,136,0.18);
 }
 
-.v-theme--dark :deep(.v-card:hover) {
-  transform: translateY(-6px) !important;
-  box-shadow: 0 14px 36px rgba(45,212,191,0.2) !important;
-}
-
-/* Clickable member card */
 .member-clickable { cursor: pointer; }
-.member-clickable:active { transform: scale(0.97) translateY(-6px) !important; }
+.member-clickable:active { transform: scale(0.97) translateY(-8px); }
 
 .member-avatar-wrap { position: relative; display: inline-block; }
 
-/* Tiny portfolio link hint */
 .portfolio-hint {
   position: absolute;
   top: 0;
