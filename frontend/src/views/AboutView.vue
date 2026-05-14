@@ -99,8 +99,8 @@ export default {
   },
   methods: {
     lift(e) {
-      e.currentTarget.style.transform = 'translateY(-8px)'
-      e.currentTarget.style.filter = 'drop-shadow(0 14px 28px rgba(13,148,136,0.22))'
+      e.currentTarget.style.transform = 'translateY(-14px) scale(1.03)'
+      e.currentTarget.style.filter = 'drop-shadow(0 20px 32px rgba(13,148,136,0.45))'
     },
     drop(e) {
       e.currentTarget.style.transform = 'translateY(0)'
@@ -115,8 +115,8 @@ export default {
 
 <style scoped>
 .card-wrap {
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-              filter 0.4s ease;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.25s ease;
   will-change: transform;
 }
 
