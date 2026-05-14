@@ -46,10 +46,6 @@
           class="team-card text-center pa-6"
           @click="m.link && openLink(m.link)"
         >
-          <!-- Role icon — slides down and fades in on hover, just like tech stack -->
-          <div class="team-icon-wrap mb-2">
-            <v-icon :color="m.color" size="32" class="team-icon">{{ m.icon }}</v-icon>
-          </div>
           <div class="member-avatar-wrap">
             <v-avatar color="primary" size="60" class="mb-3">
               <span style="font-size:20px;font-weight:700;color:white;">{{ m.initials }}</span>
@@ -104,11 +100,31 @@ export default {
 </script>
 
 <style scoped>
+/* ── Smooth hover for BOTH tech stack and team cards ── */
+/* Override Vuetify's v-card transition so the lift is smooth not instant */
+:deep(.v-card) {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.28s ease !important;
+  will-change: transform;
+}
+
+.v-theme--light :deep(.v-card:hover) {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 14px 36px rgba(13,148,136,0.18) !important;
+}
+
+.v-theme--dark :deep(.v-card:hover) {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 14px 36px rgba(45,212,191,0.2) !important;
+}
+
+/* Clickable member card */
 .member-clickable { cursor: pointer; }
-.member-clickable:active { transform: scale(0.97) !important; }
+.member-clickable:active { transform: scale(0.97) translateY(-6px) !important; }
 
 .member-avatar-wrap { position: relative; display: inline-block; }
 
+/* Tiny portfolio link hint */
 .portfolio-hint {
   position: absolute;
   top: 0;
@@ -117,25 +133,4 @@ export default {
   transition: opacity 0.2s ease;
 }
 .member-clickable:hover .portfolio-hint { opacity: 1; }
-
-/* ── Team icon — same hover reveal as tech stack cards ── */
-.team-icon-wrap {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.team-icon {
-  opacity: 0;
-  transform: translateY(-12px);
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-/* Reveal icon when the card is hovered */
-.team-card:hover .team-icon {
-  opacity: 1;
-  transform: translateY(0);
-}
 </style>
