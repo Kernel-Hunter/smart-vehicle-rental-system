@@ -27,16 +27,17 @@
     <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">Tech Stack</h2>
     <v-row class="mb-8">
       <v-col v-for="(t, i) in tech" :key="t.name" cols="6" md="4" lg="2">
-        <v-card
-          :class="`fade-up-${(i%4)+1}`"
-          rounded="xl" elevation="1" class="text-center pa-4 about-card"
-          @mouseenter="e => e.currentTarget.style.cssText += ';transform:translateY(-8px);box-shadow:0 16px 40px rgba(13,148,136,0.22);'"
-          @mouseleave="e => e.currentTarget.style.cssText += ';transform:translateY(0);box-shadow:0 2px 8px rgba(15,23,42,0.08);'"
+        <div
+          :class="`fade-up-${(i%4)+1} card-wrap`"
+          @mouseenter="lift"
+          @mouseleave="drop"
         >
-          <v-icon :color="t.color" size="32" class="mb-2">{{ t.icon }}</v-icon>
-          <div style="font-size:13px;font-weight:700;">{{ t.name }}</div>
-          <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">{{ t.desc }}</div>
-        </v-card>
+          <v-card rounded="xl" elevation="1" class="text-center pa-4 h-100">
+            <v-icon :color="t.color" size="32" class="mb-2">{{ t.icon }}</v-icon>
+            <div style="font-size:13px;font-weight:700;">{{ t.name }}</div>
+            <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">{{ t.desc }}</div>
+          </v-card>
+        </div>
       </v-col>
     </v-row>
 
@@ -44,22 +45,23 @@
     <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">The Team</h2>
     <v-row class="mb-8">
       <v-col v-for="(m, i) in team" :key="m.name" cols="6" md="3">
-        <v-card
-          :class="`about-card fade-up-${i+1}${m.link ? ' member-clickable' : ''}`"
-          rounded="xl"
-          elevation="1"
-          class="text-center pa-6"
+        <div
+          :class="`fade-up-${i+1} card-wrap${m.link ? ' clickable' : ''}`"
+          @mouseenter="lift"
+          @mouseleave="drop"
           @click="m.link && openLink(m.link)"
         >
-          <div class="member-avatar-wrap">
-            <v-avatar color="primary" size="60" class="mb-3">
-              <span style="font-size:20px;font-weight:700;color:white;">{{ m.initials }}</span>
-            </v-avatar>
-            <v-icon v-if="m.link" class="portfolio-hint" size="14" color="primary">mdi-open-in-new</v-icon>
-          </div>
-          <div style="font-weight:700;font-size:14px;">{{ m.name }}</div>
-          <div style="font-size:12px;color:rgb(var(--v-theme-on-surface-variant));margin-top:3px;">{{ m.role }}</div>
-        </v-card>
+          <v-card rounded="xl" elevation="1" class="text-center pa-6 h-100">
+            <div class="member-avatar-wrap">
+              <v-avatar color="primary" size="60" class="mb-3">
+                <span style="font-size:20px;font-weight:700;color:white;">{{ m.initials }}</span>
+              </v-avatar>
+              <v-icon v-if="m.link" class="portfolio-hint" size="14" color="primary">mdi-open-in-new</v-icon>
+            </div>
+            <div style="font-weight:700;font-size:14px;">{{ m.name }}</div>
+            <div style="font-size:12px;color:rgb(var(--v-theme-on-surface-variant));margin-top:3px;">{{ m.role }}</div>
+          </v-card>
+        </div>
       </v-col>
     </v-row>
 
@@ -96,6 +98,14 @@ export default {
     }
   },
   methods: {
+    lift(e) {
+      e.currentTarget.style.transform = 'translateY(-8px)'
+      e.currentTarget.style.filter = 'drop-shadow(0 14px 28px rgba(13,148,136,0.22))'
+    },
+    drop(e) {
+      e.currentTarget.style.transform = 'translateY(0)'
+      e.currentTarget.style.filter = 'none'
+    },
     openLink(url) {
       window.open(url, '_blank', 'noopener')
     }
@@ -104,27 +114,14 @@ export default {
 </script>
 
 <style scoped>
-/* transition on the card element itself — inline style handles the values */
-.about-card {
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.45s ease !important;
+.card-wrap {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.4s ease;
   will-change: transform;
 }
 
-/* The only class on these cards is .about-card — no global interference */
-.about-card {
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.4s ease;
-  cursor: default;
-}
-
-.about-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 40px rgba(13,148,136,0.18);
-}
-
-.member-clickable { cursor: pointer; }
-.member-clickable:active { transform: scale(0.97) translateY(-8px); }
+.clickable { cursor: pointer; }
+.clickable:active { transform: scale(0.97) !important; }
 
 .member-avatar-wrap { position: relative; display: inline-block; }
 
@@ -135,5 +132,5 @@ export default {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-.member-clickable:hover .portfolio-hint { opacity: 1; }
+.clickable:hover .portfolio-hint { opacity: 1; }
 </style>
