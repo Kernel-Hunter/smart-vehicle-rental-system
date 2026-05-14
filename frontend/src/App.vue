@@ -420,7 +420,7 @@ h1, h2, h3, h4, .font-display {
 .reveal-delay-4   { animation: enter-up 0.45s 0.28s cubic-bezier(0.22,1,0.36,1) both; }
 
 /* Hover lift base */
-.hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
+.hover-lift { transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease !important; }
 
 /* Skeleton */
 @keyframes sk-pulse { 0%,100% { opacity:1 } 50% { opacity:0.45 } }
