@@ -485,7 +485,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* ── v-card smooth transition ── */
-.v-card { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
+.v-card { transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease !important; }
 
 /* ── Hover lift shadow — stronger in light ── */
 .v-theme--light .hover-lift:hover {
