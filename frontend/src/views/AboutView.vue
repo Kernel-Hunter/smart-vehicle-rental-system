@@ -27,7 +27,7 @@
     <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">Tech Stack</h2>
     <v-row class="mb-8">
       <v-col v-for="(t, i) in tech" :key="t.name" cols="6" md="4" lg="2">
-        <v-card :class="`hover-lift -delay-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4">
+        <v-card :class="`hover-lift fade-up-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4">
           <v-icon :color="t.color" size="32" class="mb-2">{{ t.icon }}</v-icon>
           <div style="font-size:13px;font-weight:700;">{{ t.name }}</div>
           <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">{{ t.desc }}</div>
@@ -84,7 +84,7 @@ export default {
         { icon: 'mdi-docker',      color: 'primary',   name: 'Docker',      desc: 'Deployment'    },
       ],
       team: [
-        { name: 'Karim Masmoudi', initials: 'KM', role: 'Lead Developer', link: 'https://karimmasmoudi.vercel.app/' },
+        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer', link: 'https://karimmasmoudi.vercel.app/' },
         { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer', link: null },
         { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer', link: null },
         { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer', link: null },
