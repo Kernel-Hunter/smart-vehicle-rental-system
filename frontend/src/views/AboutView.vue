@@ -43,14 +43,17 @@
           :class="`hover-lift fade-up-${i+1}${m.link ? ' member-clickable' : ''}`"
           rounded="xl"
           elevation="1"
-          class="text-center pa-6"
+          class="team-card text-center pa-6"
           @click="m.link && openLink(m.link)"
         >
+          <!-- Role icon — slides down and fades in on hover, just like tech stack -->
+          <div class="team-icon-wrap mb-2">
+            <v-icon :color="m.color" size="32" class="team-icon">{{ m.icon }}</v-icon>
+          </div>
           <div class="member-avatar-wrap">
             <v-avatar color="primary" size="60" class="mb-3">
               <span style="font-size:20px;font-weight:700;color:white;">{{ m.initials }}</span>
             </v-avatar>
-            <!-- Secret portfolio icon, only shown on Karim's card -->
             <v-icon v-if="m.link" class="portfolio-hint" size="14" color="primary">mdi-open-in-new</v-icon>
           </div>
           <div style="font-weight:700;font-size:14px;">{{ m.name }}</div>
@@ -84,10 +87,10 @@ export default {
         { icon: 'mdi-docker',      color: 'primary',   name: 'Docker',      desc: 'Deployment'    },
       ],
       team: [
-        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer', link: 'https://karimmasmoudi.vercel.app/' },
-        { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer', link: null },
-        { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer', link: null },
-        { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer', link: null },
+        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer', link: 'https://karimmasmoudi.vercel.app/', icon: 'mdi-code-braces',     color: 'primary'   },
+        { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer', link: null,                                 icon: 'mdi-laptop',          color: 'secondary' },
+        { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer', link: null,                                 icon: 'mdi-palette-outline', color: 'success'   },
+        { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer', link: null,                                 icon: 'mdi-cog-outline',     color: 'warning'   },
       ]
     }
   },
@@ -106,7 +109,6 @@ export default {
 
 .member-avatar-wrap { position: relative; display: inline-block; }
 
-/* The tiny link icon — barely visible, reveals on hover */
 .portfolio-hint {
   position: absolute;
   top: 0;
@@ -115,4 +117,25 @@ export default {
   transition: opacity 0.2s ease;
 }
 .member-clickable:hover .portfolio-hint { opacity: 1; }
+
+/* ── Team icon — same hover reveal as tech stack cards ── */
+.team-icon-wrap {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.team-icon {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* Reveal icon when the card is hovered */
+.team-card:hover .team-icon {
+  opacity: 1;
+  transform: translateY(0);
+}
 </style>
