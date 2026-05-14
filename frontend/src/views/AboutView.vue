@@ -84,7 +84,7 @@ export default {
         { icon: 'mdi-docker',      color: 'primary',   name: 'Docker',      desc: 'Deployment'    },
       ],
       team: [
-        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer', link: 'https://karimmasmoudi.vercel.app/' },
+        { name: 'Karim Masmoudi', initials: 'KM', role: 'Lead Developer', link: 'https://karimmasmoudi.vercel.app/' },
         { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer', link: null },
         { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer', link: null },
         { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer', link: null },
