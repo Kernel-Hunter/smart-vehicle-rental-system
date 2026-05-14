@@ -2,7 +2,7 @@
   <div class="map-page">
 
     <!-- ── Header ── -->
-    <div class="map-header">
+    <div class="map-header reveal">
       <div>
         <h2 class="map-title">
           <v-icon color="primary" class="mr-2">mdi-map-marker-radius</v-icon>
@@ -31,7 +31,7 @@
     <div class="map-layout">
 
       <!-- LEFT: Interactive map -->
-      <div class="map-container">
+      <div class="map-container reveal">
 
         <!-- Map legend -->
         <div class="map-legend">
@@ -118,7 +118,7 @@
 
         <!-- If a vehicle is selected: show detail -->
         <template v-if="selectedVehicle">
-          <div class="sidebar-detail">
+          <div class="sidebar-detail reveal">
             <div class="detail-header">
               <v-btn icon="mdi-arrow-left" variant="text" size="small" @click="selectedVehicle = null" />
               <span class="detail-back-label">Back to list</span>
@@ -286,9 +286,11 @@
 
 <script>
 import { getVehicles, getCompanyById, startInstantRental, submitContractRental, getCurrentUser } from '../store/data.js'
+import { useReveal } from '../composables/useReveal.js'
 
 export default {
   name: 'MapView',
+  setup() { return useReveal() },
   data() {
     return {
       vehicles:        getVehicles(),
@@ -327,7 +329,7 @@ export default {
     }
   },
 
-  mounted() { },
+  mounted() { this.setupReveal() },
 
   methods: {
     statusColor(s) {
@@ -401,20 +403,31 @@ export default {
 /* ── Map container ── */
 .map-container {
   position: relative;
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 20px;
   overflow: hidden;
 }
 
-.v-theme--dark .map-container { border-color: rgba(255,255,255,0.08); }
+/* Light: real slate-blue so blocks, roads and markers are all visible */
+.v-theme--light .map-container {
+  background: #c8d9ea;
+  border: 1.5px solid #7a9bbf;
+}
+/* Dark: keep deep navy */
+.v-theme--dark .map-container {
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(255,255,255,0.08);
+}
 
 .map-svg { width: 100%; height: 100%; display: block; }
 
-.v-theme--light .city-block { fill: rgba(13,148,136,0.04); stroke: rgba(13,148,136,0.1); stroke-width: 0.3; }
+/* Light: solid visible tiles against the slate-blue background */
+.v-theme--light .city-block { fill: #d8e8f4; stroke: #8aabcc; stroke-width: 0.5; }
 .v-theme--dark  .city-block { fill: rgba(45,212,191,0.06); stroke: rgba(45,212,191,0.12); stroke-width: 0.3; }
-.park-block { fill: rgba(22,163,74,0.1); stroke: rgba(22,163,74,0.2); stroke-width: 0.3; }
-.v-theme--light .road { stroke: rgba(13,148,136,0.07); stroke-width: 1.5; }
+/* Park stays green in both */
+.v-theme--light .park-block { fill: rgba(16,185,129,0.22); stroke: rgba(16,185,129,0.5); stroke-width: 0.5; }
+.v-theme--dark  .park-block { fill: rgba(22,163,74,0.1); stroke: rgba(22,163,74,0.2); stroke-width: 0.3; }
+/* Roads clearly visible in light */
+.v-theme--light .road { stroke: #8aabcc; stroke-width: 2; }
 .v-theme--dark  .road { stroke: rgba(45,212,191,0.08); stroke-width: 1.5; }
 
 /* ── Markers ── */
