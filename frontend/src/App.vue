@@ -488,13 +488,15 @@ h1, h2, h3, h4, .font-display {
 .v-card { transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease !important; }
 
 /* ── Hover lift shadow — stronger in light ── */
-.v-theme--light .hover-lift:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 32px rgba(13,148,136,0.22) !important;
+.v-theme--light .v-card.hover-lift:hover,
+.v-theme--light .hover-lift.v-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 14px 36px rgba(13,148,136,0.28) !important;
 }
-.v-theme--dark .hover-lift:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 32px rgba(45,212,191,0.18) !important;
+.v-theme--dark .v-card.hover-lift:hover,
+.v-theme--dark .hover-lift.v-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 14px 36px rgba(45,212,191,0.24) !important;
 }
 
 /* ── Input focus ring ── */
