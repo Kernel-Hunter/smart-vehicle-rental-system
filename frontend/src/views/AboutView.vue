@@ -27,7 +27,7 @@
     <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">Tech Stack</h2>
     <v-row class="mb-8">
       <v-col v-for="(t, i) in tech" :key="t.name" cols="6" md="4" lg="2">
-        <v-card :class="`about-card fade-up-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4" style="transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;">
+        <v-card :class="`about-card fade-up-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4">
           <v-icon :color="t.color" size="32" class="mb-2">{{ t.icon }}</v-icon>
           <div style="font-size:13px;font-weight:700;">{{ t.name }}</div>
           <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">{{ t.desc }}</div>
@@ -44,7 +44,6 @@
           rounded="xl"
           elevation="1"
           class="text-center pa-6"
-          style="transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;"
           @click="m.link && openLink(m.link)"
         >
           <div class="member-avatar-wrap">
