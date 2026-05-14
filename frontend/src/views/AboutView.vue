@@ -1,77 +1,71 @@
 <!-- AboutView.vue -->
 <template>
-  <div class="about-page">
-
-    <!-- Header -->
-    <div class="about-header">
+  <div style="max-width:1100px; margin:0 auto; padding:28px 32px;">
+    <div class="text-center py-10">
       <v-chip color="primary" variant="tonal" size="small" class="mb-4">Academic Project</v-chip>
-      <h1 class="about-title">
-        About <span class="gradient-text">SmartRent</span>
+      <h1 style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:800;margin-bottom:16px;">
+        About <span style="color:rgb(var(--v-theme-primary))">SmartRent</span>
       </h1>
-      <p class="about-sub">
-        Smart Vehicle Rental Marketplace — ISS Project<br />
-        South Mediterranean University · MedTech
+      <p style="font-size:16px;color:rgb(var(--v-theme-on-surface-variant));max-width:560px;margin:0 auto;line-height:1.8;">
+        Smart Vehicle Rental Marketplace — ISS Project<br />South Mediterranean University · MedTech
       </p>
     </div>
 
     <!-- Description -->
-    <v-card rounded="xl" elevation="1" class="mb-8 fade-up-1">
+    <v-card rounded="xl" elevation="1" class="mb-8">
       <v-card-text class="pa-8">
         <p class="text-overline text-primary mb-3">The Project</p>
-        <p class="about-body">
+        <p style="font-size:16px;line-height:1.8;color:rgb(var(--v-theme-on-surface));">
           SmartRent is a two-sided vehicle rental marketplace. Companies register and list their fleets.
           Customers open the map, find nearby available vehicles, and rent them instantly or via scheduled contract.
-          Built as part of the ISS curriculum to demonstrate component-driven architecture,
-          role-based access control, and real-world UX patterns.
+          Built as part of the ISS curriculum to demonstrate full-stack development, role-based access, and real-world UX patterns.
         </p>
       </v-card-text>
     </v-card>
 
     <!-- Tech stack -->
-    <h2 class="section-heading mb-5 fade-up-1">Tech Stack</h2>
-    <v-row class="mb-10">
-      <v-col v-for="(t, i) in tech" :key="t.name" cols="6" sm="4" md="3" lg="2">
-        <v-card
-          :class="`hover-lift fade-up-${(i % 4) + 1}`"
-          rounded="xl"
-          elevation="1"
-          class="tech-card text-center pa-5"
-        >
-          <v-icon :color="t.color" size="34" class="mb-3">{{ t.icon }}</v-icon>
-          <div class="tech-name">{{ t.name }}</div>
-          <div class="tech-desc">{{ t.desc }}</div>
+    <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">Tech Stack</h2>
+    <v-row class="mb-8">
+      <v-col v-for="(t, i) in tech" :key="t.name" cols="6" md="4" lg="2">
+        <v-card :class="`hover-lift about-card fade-up-${(i%4)+1}`" rounded="xl" elevation="1" class="text-center pa-4">
+          <v-icon :color="t.color" size="32" class="mb-2">{{ t.icon }}</v-icon>
+          <div style="font-size:13px;font-weight:700;">{{ t.name }}</div>
+          <div style="font-size:11px;color:rgb(var(--v-theme-on-surface-variant));margin-top:2px;">{{ t.desc }}</div>
         </v-card>
       </v-col>
     </v-row>
 
     <!-- Team -->
-    <h2 class="section-heading mb-5 fade-up-1">The Team</h2>
-    <v-row class="mb-10">
+    <h2 class="mb-4" style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:26px;font-weight:700;">The Team</h2>
+    <v-row class="mb-8">
       <v-col v-for="(m, i) in team" :key="m.name" cols="6" md="3">
         <v-card
-          :class="`hover-lift fade-up-${i + 1}`"
+          :class="`hover-lift about-card fade-up-${i+1}${m.link ? ' member-clickable' : ''}`"
           rounded="xl"
           elevation="1"
-          class="team-card text-center pa-6"
+          class="text-center pa-6"
+          @click="m.link && openLink(m.link)"
         >
-          <v-avatar color="primary" size="64" class="mb-4">
-            <span class="avatar-initials">{{ m.initials }}</span>
-          </v-avatar>
-          <div class="member-name">{{ m.name }}</div>
-          <div class="member-role">{{ m.role }}</div>
+          <div class="member-avatar-wrap">
+            <v-avatar color="primary" size="60" class="mb-3">
+              <span style="font-size:20px;font-weight:700;color:white;">{{ m.initials }}</span>
+            </v-avatar>
+            <v-icon v-if="m.link" class="portfolio-hint" size="14" color="primary">mdi-open-in-new</v-icon>
+          </div>
+          <div style="font-weight:700;font-size:14px;">{{ m.name }}</div>
+          <div style="font-size:12px;color:rgb(var(--v-theme-on-surface-variant));margin-top:3px;">{{ m.role }}</div>
         </v-card>
       </v-col>
     </v-row>
 
     <!-- University -->
-    <v-card color="primary" variant="tonal" rounded="xl" elevation="0" class="fade-up-1">
+    <v-card color="primary" variant="tonal" rounded="xl" elevation="0">
       <v-card-text class="pa-6">
-        <p class="text-overline mb-2">Institution</p>
-        <p class="uni-name">South Mediterranean University — MedTech</p>
-        <p class="uni-sub">Program: ISS — Ingénierie des Systèmes et des Services</p>
+        <p class="text-overline mb-1">Institution</p>
+        <p style="font-family:'Cabinet Grotesk','Instrument Sans',sans-serif;font-size:20px;font-weight:700;">South Mediterranean University — MedTech</p>
+        <p style="font-size:14px;color:rgb(var(--v-theme-on-surface-variant));margin-top:4px;">Program: ISS — Ingénierie des Systèmes et des Services</p>
       </v-card-text>
     </v-card>
-
   </div>
 </template>
 
@@ -81,124 +75,53 @@ export default {
   data() {
     return {
       tech: [
-        { icon: 'mdi-vuejs',          color: 'success',   name: 'Vue 3',       desc: 'Framework'    },
-        { icon: 'mdi-alpha-v-box',    color: 'primary',   name: 'Vuetify 3',   desc: 'UI Library'   },
-        { icon: 'mdi-lightning-bolt', color: 'warning',   name: 'Vite',        desc: 'Build Tool'   },
-        { icon: 'mdi-routes',         color: 'info',      name: 'Vue Router',  desc: 'Navigation'   },
-        { icon: 'mdi-harddisk',       color: 'secondary', name: 'localStorage',desc: 'Data Layer'   },
-        { icon: 'mdi-cloud-upload',   color: 'primary',   name: 'Vercel',      desc: 'Deployment'   },
+        { icon: 'mdi-coffee',      color: 'warning',   name: 'Spring Boot', desc: 'Java backend'  },
+        { icon: 'mdi-vuejs',       color: 'success',   name: 'Vue 3',       desc: 'Frontend'      },
+        { icon: 'mdi-alpha-v-box', color: 'primary',   name: 'Vuetify 3',   desc: 'UI Library'    },
+        { icon: 'mdi-database',    color: 'info',      name: 'MySQL',       desc: 'Database'      },
+        { icon: 'mdi-shield-key',  color: 'secondary', name: 'JWT',         desc: 'Auth'          },
+        { icon: 'mdi-docker',      color: 'primary',   name: 'Docker',      desc: 'Deployment'    },
       ],
       team: [
-        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer' },
-        { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer' },
-        { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer' },
-        { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer' },
+        { name: 'Karim Masmoudi', initials: 'KM', role: 'Full Stack Developer', link: 'https://karimmasmoudi.vercel.app/' },
+        { name: 'Bilel Didi',     initials: 'BD', role: 'Full Stack Developer', link: null },
+        { name: 'Aziz Zemzmi',    initials: 'AZ', role: 'Full Stack Developer', link: null },
+        { name: 'Ahmed Tahri',    initials: 'AT', role: 'Full Stack Developer', link: null },
       ]
+    }
+  },
+  methods: {
+    openLink(url) {
+      window.open(url, '_blank', 'noopener')
     }
   }
 }
 </script>
 
 <style scoped>
-.about-page {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 28px 32px;
+/* The only class on these cards is .about-card — no global interference */
+.about-card {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s ease;
+  cursor: default;
 }
 
-@media (max-width: 600px) {
-  .about-page { padding: 16px; }
+.about-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(13,148,136,0.18);
 }
 
-/* Header */
-.about-header {
-  text-align: center;
-  padding: 40px 0 32px;
-}
+.member-clickable { cursor: pointer; }
+.member-clickable:active { transform: scale(0.97) translateY(-8px); }
 
-.about-title {
-  font-family: 'Cabinet Grotesk', 'Instrument Sans', sans-serif;
-  font-size: clamp(32px, 5vw, 52px);
-  font-weight: 800;
-  margin-bottom: 16px;
-  color: rgb(var(--v-theme-on-background));
-}
+.member-avatar-wrap { position: relative; display: inline-block; }
 
-.about-sub {
-  font-size: 16px;
-  line-height: 1.8;
-  color: rgb(var(--v-theme-on-surface-variant));
-  max-width: 520px;
-  margin: 0 auto;
+.portfolio-hint {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
-
-/* Description */
-.about-body {
-  font-size: 16px;
-  line-height: 1.85;
-  color: rgb(var(--v-theme-on-surface));
-}
-
-/* Section heading */
-.section-heading {
-  font-family: 'Cabinet Grotesk', 'Instrument Sans', sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  color: rgb(var(--v-theme-on-background));
-}
-
-/* Tech cards */
-.tech-card {
-  height: 100%;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tech-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: rgb(var(--v-theme-on-surface));
-}
-
-.tech-desc {
-  font-size: 11px;
-  color: rgb(var(--v-theme-on-surface-variant));
-  margin-top: 3px;
-}
-
-/* Team cards */
-.team-card {
-  height: 100%;
-}
-
-.avatar-initials {
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
-}
-
-.member-name {
-  font-weight: 700;
-  font-size: 14px;
-  color: rgb(var(--v-theme-on-surface));
-  margin-bottom: 4px;
-}
-
-.member-role {
-  font-size: 12px;
-  color: rgb(var(--v-theme-on-surface-variant));
-}
-
-/* University card */
-.uni-name {
-  font-family: 'Cabinet Grotesk', 'Instrument Sans', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: rgb(var(--v-theme-on-surface));
-}
-
-.uni-sub {
-  font-size: 14px;
-  color: rgb(var(--v-theme-on-surface-variant));
-  margin-top: 6px;
-}
+.member-clickable:hover .portfolio-hint { opacity: 1; }
 </style>
