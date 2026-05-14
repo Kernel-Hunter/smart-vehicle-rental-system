@@ -46,10 +46,7 @@
           class="team-card text-center pa-6"
           @click="m.link && openLink(m.link)"
         >
-          <!-- Role icon — slides down and fades in on hover, just like tech stack -->
-          <div class="team-icon-wrap mb-2">
-            <v-icon :color="m.color" size="32" class="team-icon">{{ m.icon }}</v-icon>
-          </div>
+          <v-icon :color="m.color" size="32" class="mb-2">{{ m.icon }}</v-icon>
           <div class="member-avatar-wrap">
             <v-avatar color="primary" size="60" class="mb-3">
               <span style="font-size:20px;font-weight:700;color:white;">{{ m.initials }}</span>
@@ -118,23 +115,15 @@ export default {
 }
 .member-clickable:hover .portfolio-hint { opacity: 1; }
 
-/* ── Team icon — same hover reveal as tech stack cards ── */
+/* ── Team icon — always visible, same as tech stack ── */
 .team-icon-wrap {
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .team-icon {
-  opacity: 0;
-  transform: translateY(-12px);
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-/* Reveal icon when the card is hovered */
-.team-card:hover .team-icon {
   opacity: 1;
   transform: translateY(0);
 }
